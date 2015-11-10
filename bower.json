@@ -1,0 +1,25 @@
+{
+  "name": "ae-manage",
+  "version": "0.0.0",
+  "authors": [
+    "melhuishj <jesse.melhuish@uky.edu>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0",
+    "iron-elements": "PolymerElements/iron-elements#~1.0.4",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.5",
+    "neon-elements": "PolymerElements/neon-elements#~1.0.0"
+  }
+}

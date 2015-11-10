@@ -1,0 +1,57 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<dom-module id="notification-tile">
+    <style>
+        paper-material {
+            height: 150px;
+            width: 300px;
+            background-color: white;
+            margin: 5px;
+        }
+    </style>
+    
+    
+    <template>
+        <iron-ajax
+            auto
+            url="getNotificationInfo.php"
+            params='{{ajaxParams}}'
+            handle-as="json"
+            on-response="updateNotificationInfo"
+            last-response="{{ajaxNotificationInfo}}"></iron-ajax>
+        
+        <paper-material>
+            <span><b>{{noteShort}}</b></span><br/><span>{{noteLong}}</span>
+        </paper-material>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "notification-tile",
+           
+           properties: {
+               noteId: String,
+               noteShort: String,
+               noteLong: String,
+               ajaxParams: {
+                   type: Object,
+                   computed: 'getParams(noteId)'
+               }
+           },
+           
+           getParams: function(note) {
+             return {
+                 noteId: note
+             };
+           },
+           
+           updateNotificationInfo: function() {
+               this.noteShort = this.ajaxNotificationInfo['noteShort'];
+               this.noteLong = this.ajaxNotificationInfo['noteLong'];
+           }
+        });
+    </script>
+</dom-module>

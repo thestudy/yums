@@ -1,0 +1,32 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../group-tile/group-tile.html">
+
+<dom-module id="main-page-groups">
+    <template>
+        <group-tile group-id="0"></group-tile>
+        <group-tile group-id="1"></group-tile>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "main-page-groups",
+           
+           behaviors: [
+               Polymer.NeonSharedElementAnimatableBehavior
+           ],
+           
+           properties: {
+               entryAnimation: {
+                    value: 'slide-from-right-animation'
+                },
+                exitAnimation: {
+                    value: 'slide-right-animation'
+                }
+           }
+        });
+    </script>
+</dom-module>

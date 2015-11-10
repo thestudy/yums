@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="bower_components/polymer/polymer.html">
+    <link rel="import" href="bower_components/neon-animation/neon-animated-pages.html">
+        <link rel="import" href="components/user-menu/user-menu.html">
+        <link rel="import" href="components/main-page-groups/main-page-groups.html">
+        <link rel="import" href="components/main-page-pages/main-page-pages.html">
+    </head>
+    <body style="padding: 0px; margin: 0px;">
+        <user-menu user-id="10800662"></user-menu>
+        <neon-animated-pages id="pages" class="flex" selected="0">
+            <main-page-groups id="maingroups"></main-page-groups>
+            <main-page-pages id="mainpages" group-id="0"></main-page-pages>
+        </neon-animated-pages>
+    </body>
+    
+    <script>
+        document.querySelector("#maingroups").addEventListener('group-click', function(event) {
+            document.querySelector("#mainpages").groupId = event.detail.groupId;
+            document.querySelector("#pages").selected = 1;
+        });
+        
+        document.querySelector("#mainpages").addEventListener('back-page-click', function(event) {
+            document.querySelector("#pages").selected = 0;
+        });
+    </script>
+</html>

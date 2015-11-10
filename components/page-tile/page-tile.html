@@ -1,0 +1,87 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<dom-module id="page-tile">
+    <style>
+        paper-material {
+            height: 200px;
+            width: 200px;
+            background-color: white;
+            margin: 5px;
+        }
+        iron-image {
+            height: 160px;
+            width: 200px;
+        }
+    </style>
+    
+    
+    <template>
+        <iron-ajax
+            auto
+            url="getPageInfo.php"
+            params='{{ajaxParams}}'
+            handle-as="json"
+            on-response="updatePageInfo"
+            last-response="{{ajaxPageInfo}}"></iron-ajax>
+        
+        <paper-material on-click="clickAction">
+            <iron-image src="{{fileName}}"></iron-image>
+            <span>{{pageName}}</span><br/><span>{{pageDesc}}</span>
+        </paper-material>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "page-tile",
+           
+           properties: {
+               pageId: String,
+               pageName: String,
+               pageDesc: String,
+               imgName: String,
+               imgDir: String,
+               backPage: {
+                   type: Boolean,
+                   value: false
+               },
+               fileName: {
+                   type: String,
+                   computed: "getFileName(imgDir, imgName)"
+               },
+               ajaxParams: {
+                   type: Object,
+                   computed: 'getParams(pageId)'
+               }
+           },
+           
+           getFileName: function(imgDir, imgName) {
+               return '../../' + imgDir + imgName;
+           },
+           
+           getParams: function(page) {
+             return {
+                 pageId: page
+             };
+           },
+           
+           updatePageInfo: function() {
+               this.imgName = this.ajaxPageInfo['imgName'];
+               this.imgDir = this.ajaxPageInfo['imgDir'];
+               this.pageName = this.ajaxPageInfo['pageName'];
+               this.pageDesc = this.ajaxPageInfo['pageDesc'];
+           },
+           
+           clickAction: function() {
+               if (this.backPage) {
+                   this.fire('back-page-click');
+               } else {
+                   this.fire('page-click', {pageId: this.pageId});
+               }
+           }
+        });
+    </script>
+</dom-module>

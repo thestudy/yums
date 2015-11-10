@@ -1,0 +1,86 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<dom-module id="group-tile">
+    <style>
+        #outerbox {
+            height: 200px;
+            width: 100%;
+            margin: 5px;
+        }
+        
+        iron-image {
+            height: 200px;
+            float: left;
+        }
+        
+        p {
+            width: 100%;
+        }
+    </style>
+    
+    <template>
+        <iron-ajax
+            auto
+            url="getGroupInfo.php"
+            params='{{ajaxParams}}'
+            handle-as="json"
+            on-response="updateGroupInfo"
+            last-response="{{ajaxGroupInfo}}"></iron-ajax>
+            
+        <paper-material raised id="outerbox" on-click="clickAction">
+            <iron-image src="{{fileName}}"></iron-image>
+            <div style="overflow: hidden">
+                <div>{{groupName}}</div>
+                <div id="groupdesc"><p>{{groupDesc}}</p></div>
+            </div>
+        </paper-material>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "group-tile",
+           
+           properties: {
+               groupId: String,
+               groupName: String,
+               groupDesc: String,
+               imgDir: String,
+               imgName: String,
+               fileName: {
+                   type: String,
+                   computed: "getFileName(imgDir, imgName)"
+               },
+               ajaxParams: {
+                   type: Object,
+                   computed: 'getParams(groupId)'
+               }
+           },
+           
+           clickAction: function() {
+               this.fire('group-click', {groupId: this.groupId});
+           },
+           
+           updateGroupInfo: function() {
+               this.$.outerbox.style.backgroundColor = this.ajaxGroupInfo['bgColor'];
+               this.groupName = this.ajaxGroupInfo['groupName'];
+               this.groupDesc = this.ajaxGroupInfo['groupDesc'];
+               this.imgDir = this.ajaxGroupInfo['imgDir'];
+               this.imgName = this.ajaxGroupInfo['imgName'];
+           },
+           
+           getFileName: function(imgDir, imgName) {
+               return '../../' + imgDir + imgName;
+           },
+           
+           getParams: function(group) {
+             return {
+                 groupId: group
+             };
+           }
+        });
+    </script>
+</dom-module>
