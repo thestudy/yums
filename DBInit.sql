@@ -2,6 +2,14 @@
     import cog
     ]]]*/
 /* [[[end]]]*/
+CREATE VIEW Users (userId, userName, userPassword, userFirstName, userLastName) AS
+/* [[[cog
+    cog.outl("SELECT A." + UserIdColumnName + ", A." + UserNameColumnName + ", A." + UserPasswordColumnName + ", A." + UserFirstNameColumnName + ", A." + UserLastNameColumnName)
+    cog.outl("FROM " + UserTableName + " A;")
+    ]]]*/
+/* [[[end]]] */
+
+
 CREATE TABLE Pages (
     pageId INT AUTO_INCREMENT,
     pageURL TEXT NOT NULL,
@@ -31,8 +39,9 @@ CREATE TABLE GroupPages (
 );
 
 CREATE TABLE Settings (
-    sKey TEXT,
-    sVal TEXT
+    sKey VARCHAR(60) UNIQUE,
+    sVal TEXT,
+    PRIMARY KEY (sKey)
 );
 
 CREATE TABLE Clicks (
@@ -42,7 +51,7 @@ CREATE TABLE Clicks (
     FOREIGN KEY (pageId)
         REFERENCES Pages(pageId),
     FOREIGN KEY (userId)
-        /* [[[cog cog.out("REFERENCES " + UserTableName + "(" + UserColumnName + ")")]]] */
+        /* [[[cog cog.out("REFERENCES " + UserTableName + "(" + UserIdColumnName + ")")]]] */
         /* [[[end]]] */
 );
 
@@ -50,10 +59,10 @@ CREATE TABLE Supervises (
     supervisorId INT,
     superviseeId INT,
     FOREIGN KEY (supervisorId)
-        /* [[[cog cog.outl("REFERENCES " + UserTableName + "(" + UserColumnName + ")");]]] */
+        /* [[[cog cog.out("REFERENCES " + UserTableName + "(" + UserIdColumnName + "),")]]] */
         /* [[[end]]] */
     FOREIGN KEY (superviseeId)
-        /* [[[cog cog.outl("REFERENCES " + UserTableName + "(" + UserColumnName + ")");]]] */
+        /* [[[cog cog.out("REFERENCES " + UserTableName + "(" + UserIdColumnName + ")")]]] */
         /* [[[end]]] */
 );
 
@@ -68,7 +77,7 @@ CREATE TABLE UserRoles (
     userId INT,
     roleId INT,
     FOREIGN KEY (userId)
-        /* [[[cog cog.outl("REFERENCES " + UserTableName + "(" + UserColumnName + ")");]]] */
+        /* [[[cog cog.out("REFERENCES " + UserTableName + "(" + UserIdColumnName + "),")]]] */
         /* [[[end]]] */
     FOREIGN KEY (roleId)
         REFERENCES Roles(roleId)
@@ -78,7 +87,7 @@ CREATE TABLE RoleAccess (
     roleId INT,
     pageId INT,
     FOREIGN KEY (roleId)
-        REFERENCES Roles(roleId)
+        REFERENCES Roles(roleId),
     FOREIGN KEY (pageId)
         REFERENCES Pages(pageId)
 );
@@ -88,7 +97,8 @@ CREATE TABLE Notifications (
     noteIdent TEXT,
     noteShort TEXT NOT NULL,
     noteLong TEXT NOT NULL,
-    noteURL TEXT NOT NULL
+    noteURL TEXT NOT NULL,
+    PRIMARY KEY (noteId)
 );
 
 CREATE TABLE UserNotifications (
@@ -97,7 +107,7 @@ CREATE TABLE UserNotifications (
     dismissed BOOLEAN,
     resolved BOOLEAN,
     FOREIGN KEY (userId)
-        /* [[[cog cog.outl("REFERENCES " + UserTableName + "(" + UserColumnName + ")");]]] */
+        /* [[[cog cog.out("REFERENCES " + UserTableName + "(" + UserIdColumnName + "),")]]] */
         /* [[[end]]] */
     FOREIGN KEY (noteId)
         REFERENCES Notifications(noteId)

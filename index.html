@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+        <link rel="import" href="bower_components/polymer/polymer.html">
+        <link rel="import" href="components/main-page/main-page.html">
+        <link rel="import" href="components/login-page/login-page.html">
+    </head>
+    
+    <body style="padding: 0px; margin: 0px;">
+        <login-page id="login"></login-page>
+    </body>
+    
+    <script>
+        document.addEventListener('login-success', function(e){
+            console.log("Success");
+            document.querySelector("#login").remove();
+            var myMainPage = document.createElement("main-page");
+            myMainPage.setAttribute("user-id", e.detail.userId);
+            document.body.appendChild(myMainPage);
+        });
+    </script>
+</html>

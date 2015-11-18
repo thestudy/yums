@@ -1,0 +1,68 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="login-page">
+    <style>
+        paper-material {
+            width: 400px;
+            height: 40%;
+            margin: auto;
+        }
+        
+        paper-input {
+            width: 300px;
+            margin:auto;
+        }
+        
+        paper-button {
+            margin: auto;
+        }
+    </style>
+    
+    <template>
+        <paper-material id="loginBox" elevation=2>
+            <paper-input id="userName" label="User Name"></paper-input>
+            <paper-input id="userPassword" label="Password" type="password"></paper-input>
+            <paper-button raised on-click="logIn">Login</paper-button>
+            <iron-ajax
+                id="logInAjax"
+                url="logIn.php"
+                handle-as="json"
+                on-response="logInResponse"
+                last-response="{{ajaxUserInfo}}"></iron-ajax>
+        </paper-material>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "login-page",
+           
+           properties: {
+             ajaxParams: {
+                 type: Object,
+                 computed: 'getParams()'
+             }
+           },
+           
+           getParams: function() {
+               return {
+                   userName: this.$.userName.value,
+                   userPassword: this.$.userPassword.value
+               }
+           },
+           
+           logIn: function() {
+               this.$.logInAjax.params = this.getParams();
+               this.$.logInAjax.generateRequest();
+           },
+           
+           logInResponse: function() {
+               if (this.ajaxUserInfo != null) this.fire('login-success', {userId: this.ajaxUserInfo['userId']});
+           }
+        });
+    </script>
+</dom-module>

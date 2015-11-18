@@ -23,7 +23,7 @@
                 <iron-ajax
                     auto
                     url="getUserInfo.php"
-                    params='{"userId":"10800662"}'
+                    params='{{ajaxParams}}'
                     handle-as="json"
                     on-response="updateUserInfo"
                     last-response="{{ajaxUserInfo}}"></iron-ajax>
@@ -58,7 +58,17 @@
             properties: {
                 firstName: String,
                 lastName: String,
-                userId: String
+                userId: String,
+                ajaxParams: {
+                    type: Object,
+                    computed: 'getParams(userId)'
+                }
+            },
+            
+            getParams: function(user) {
+                return {
+                    userId: user
+                };
             },
             
             toggleInfo: function() {
@@ -68,8 +78,8 @@
             },
             
             updateUserInfo: function() {
-                this.firstName = this.ajaxUserInfo['firstName'];
-                this.lastName = this.ajaxUserInfo['lastName'];
+                this.firstName = this.ajaxUserInfo['userFirstName'];
+                this.lastName = this.ajaxUserInfo['userLastName'];
             }
         });
     </script>
