@@ -1,0 +1,280 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="calendar-block.html">
+
+<dom-module id="create-availability">
+    <style>
+        #calendar {
+            margin: auto;
+        }
+    
+        .day {
+            float:left;
+        }
+    </style>
+    
+    <template>
+        <div id="calendar">
+            <div id="Sunday" class="day">
+                <template is="dom-repeat" items="{{blocks}}">
+                    <calendar-block block-id$="{{ getBlockId('S', item) }}"></calendar-block>
+                </template>
+            </div>
+            <div id="Monday" class="day">
+                <template is="dom-repeat" items="{{blocks}}">
+                    <calendar-block block-id$="{{ getBlockId('M', item) }}"></calendar-block>
+                </template>
+            </div>
+            <div id="Tuesday" class="day">
+                <template is="dom-repeat" items="{{blocks}}">
+                    <calendar-block block-id$="{{ getBlockId('T', item) }}"></calendar-block>
+                </template>
+            </div>
+            <div id="Wednesday" class="day">
+                <template is="dom-repeat" items="{{blocks}}">
+                    <calendar-block block-id$="{{ getBlockId('W', item) }}"></calendar-block>
+                </template>
+            </div>
+            <div id="Thursday" class="day">
+                <template is="dom-repeat" items="{{blocks}}">
+                    <calendar-block block-id$="{{ getBlockId('H', item) }}"></calendar-block>
+                </template>
+            </div>
+            <div id="Friday" class="day">
+                <template is="dom-repeat" items="{{blocks}}">
+                    <calendar-block block-id$="{{ getBlockId('F', item) }}"></calendar-block>
+                </template>
+            </div>
+            <div id="Saturday" class="day">
+                <template is="dom-repeat" items="{{blocks}}">
+                    <calendar-block block-id$="{{ getBlockId('A', item) }}"></calendar-block>
+                </template>
+            </div>
+        </div>
+        <div id="information">
+            <span>Block Intervals:</span>
+            <paper-dropdown-menu id="intervals" label="MM" on-iron-select="updateFromInterval">
+                <paper-menu class="dropdown-content">
+                    <paper-item value="05">05</paper-item>
+                    <paper-item value="10">10</paper-item>
+                    <paper-item value="15">15</paper-item>
+                    <paper-item value="20">20</paper-item>
+                    <paper-item value="30">30</paper-item>
+                    <paper-item value="60">60</paper-item>
+                </paper-menu>
+            </paper-dropdown-menu>
+            <br>
+            <span>Start Time:</span>
+            <paper-dropdown-menu id="StartHoursParent" label="HH" on-iron-select="updateStartHours">
+                <paper-menu class="dropdown-content">
+                    <template is="dom-repeat" items="{{hours}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
+                </paper-menu>
+            </paper-dropdown-menu>
+            <span>:</span>
+            <paper-dropdown-menu id="StartMinutesParent" label="MM" on-iron-select="updateStartMinutes">
+                <paper-menu class="dropdown-content" id="StartMinutes">
+                    <template is="dom-repeat" items="{{minutes}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
+                </paper-menu>
+            </paper-dropdown-menu>
+            <br>
+            <span>End Time: </span>
+            <paper-dropdown-menu label="HH" on-iron-select="updateEndHours">
+                <paper-menu class="dropdown-content">
+                    <template is="dom-repeat" items="{{hours}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
+                </paper-menu>
+            </paper-dropdown-menu>
+            <span>:</span>
+            <paper-dropdown-menu id="EndMinutesParent" label="MM" on-iron-select="generateCalendar">
+                <paper-menu class="dropdown-content" id="EndMinutes">
+                    <template is="dom-repeat" items="{{minutes}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
+                </paper-menu>
+            </paper-dropdown-menu>
+        </div>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "create-availability",
+           
+           behaviors: [
+                Polymer.NeonAnimatableBehavior
+           ],
+           
+           listeners: {
+             "select-begin": "beginSelection",
+             "select-continue": "updateSelection"
+           },
+           
+           properties: {
+               minutes: Array,
+               hours: {
+                   type: Array,
+                   value: ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
+               },
+               blocks: Array,
+               interval: String,
+               selectionActive: {
+                   type: Boolean,
+                   value: false
+               }
+           },
+           
+           updateFromInterval: function(e) {
+               this.interval = e.detail.item.getAttribute("value");
+               switch(e.detail.item.getAttribute("value")) {
+                   case "05":
+                        this.minutes = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+                        break;
+                    case "10":
+                        this.minutes = ["00", "10", "20", "30", "40", "50"];
+                        break;
+                    case "15":
+                        this.minutes = ["00", "15", "30", "45"];
+                        break;
+                    case "20":
+                        this.minutes = ["00", "20", "40"];
+                        break;
+                    case "30":
+                        this.minutes = ["00", "30"];
+                        break;
+                    case "60":
+                        this.minutes = ["00"];
+                        break;
+               }
+           },
+           
+           updateStartHours: function(e) {
+                this.StartHours = parseInt(e.detail.item.innerHTML);  
+           },
+           
+           updateStartMinutes: function(e) {
+                this.StartMinutes = parseInt(e.detail.item.innerHTML);
+           },
+           
+           updateEndHours: function(e) {
+                this.EndHours = parseInt(e.detail.item.innerHTML);
+           },
+           
+           generateCalendar: function(e) {
+               this.EndMinutes = parseInt(e.detail.item.innerHTML);
+               
+               var h;
+               var m;
+                blocks = new Array;
+               for (h in this.hours) {
+                   if (parseInt(this.hours[h]) === this.StartHours) {
+                       for (m in this.minutes) {
+                           if (parseInt(this.minutes[m]) >= this.StartMinutes) {
+                               blocks.push(this.hours[h] + ":" + this.minutes[m]);
+                           }
+                       }
+                   } else if (parseInt(this.hours[h]) >= this.StartHours && parseInt(this.hours[h]) < this.EndHours) {
+                       for (m in this.minutes) {
+                           blocks.push(this.hours[h] + ":" + this.minutes[m]);
+                       }
+                   }
+               }
+               this.blocks = blocks;
+           },
+           
+           getBlockId: function(day, block) {
+               return day + block;
+           },
+           
+           beginSelection: function(e) {
+             this.beginBlockId = e.detail.blockId;
+             this.selectionActive = true;
+           },
+           
+           updateSelection: function(e) {
+               var days = {
+                 "S": 0,
+                 "M": 1,
+                 "T": 2,
+                 "W": 3,
+                 "H": 4,
+                 "F": 5,
+                 "A": 6,
+                 0: "S",
+                 1: "M",
+                 2: "T",
+                 3: "W",
+                 4: "H",
+                 5: "F",
+                 6: "A"
+               };
+               
+               if (this.selectionActive) {
+                   for (var i = days[this.beginBlockId[0]]; i <= days[e.detail.blockId[0]]; i++) {
+                       var startTime = this.minTime(this.beginBlockId.slice(1, 6), e.detail.blockId.slice(1,6));
+                       var endTime = this.maxTime(this.beginBlockId.slice(1, 6), e.detail.blockId.slice(1,6));
+                       console.log("Day: " + days[i]);
+                       console.log("startTime: " + startTime);
+                       console.log("endTime: " + endTime);
+                       
+                       for (var s = startTime; s !== endTime; s = this.addInterval(s, parseInt(this.interval))) {
+                           console.log(s);
+                       }
+                   }
+               }
+           },
+           
+           addInterval: function(time, interval) {
+               var hour = parseInt(time[0] + time[1]);
+               var minute = parseInt(time[3] + time[4]);
+               minute += interval;
+               
+               if (minute == 60) {
+                   hour++;
+                   minute = 0;
+               }
+               
+               hour = (hour < 10) ? "0" + String(hour) : String(hour);
+               minute = (minute < 10) ? "0" + String(minute) : String(minute);
+               
+               return hour + ":" + minute;
+           },
+           
+           minTime: function(time1, time2) {
+               var hour1 = parseInt(time1[0] + time1[1]);
+               var hour2 = parseInt(time2[0] + time2[2]);
+               
+               if (hour1 === hour2) {
+                   var minute1 = parseInt(time1[3] + time1[4]);
+                   var minute2 = parseInt(time2[3] + time2[4]);
+                   
+                   if (minute1 === minute2) {
+                       return time1;
+                   } else if (minute1 < minute2) {
+                       return time1;
+                   } else {
+                       return time2;
+                   }
+               } else if (hour1 < hour2) {
+                   return time1;
+               } else {
+                   return time2;
+               }
+           },
+           
+           maxTime: function(time1, time2) {
+               if (this.minTime(time1, time2) !== time1) {
+                   return time1;
+               } else {
+                   return time2;
+               }
+           }
+        });
+    </script>
+</dom-module>

@@ -19,11 +19,21 @@
         }
         
         paper-button {
-            margin: auto;
+            margin-left: 150px;
+            width: 100px;
         }
     </style>
     
     <template>
+        
+        
+        <iron-ajax
+            auto
+            url="../../getSessionInfo.php"
+            handle-as="json"
+            last-response="{{sessionInfo}}"
+            on-response="sessionInfoResponse"></iron-ajax>
+        
         <paper-material id="loginBox" elevation=2>
             <paper-input id="userName" label="User Name"></paper-input>
             <paper-input id="userPassword" label="Password" type="password"></paper-input>
@@ -62,6 +72,10 @@
            
            logInResponse: function() {
                if (this.ajaxUserInfo != null) this.fire('login-success', {userId: this.ajaxUserInfo['userId']});
+           },
+           
+           sessionInfoResponse: function() {
+               if (this.sessionInfo['userId'] != null) this.fire('login-success', {userId: this.sessionInfo['userId']});
            }
         });
     </script>

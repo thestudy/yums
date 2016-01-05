@@ -1,0 +1,42 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
+
+<link rel="import" href="create-availability.html">
+
+<dom-module id="schedule-builder">
+    <style>
+        .page {
+            width: 220px;
+            height: 250px;
+            margin: 8px;
+        }
+    </style>
+        
+    <template>
+        <neon-animated-pages id="selections" selected="0" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation">
+            <neon-animatable>
+                <div class="horizontal layout wrap">
+                    <paper-material class="page" on-click="goToCreateAvailability"></paper-material>
+                    <paper-material class="page"></paper-material>
+                    <paper-material class="page"></paper-material>
+                    <paper-material class="page"></paper-material>
+                </div>
+            </neon-animatable>
+            <create-availability></create-availability>
+        </neon-animated-pages>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "schedule-builder",
+           
+           goToCreateAvailability: function() {
+               this.$.selections.selected = 1;
+           }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,104 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/iron-selector/iron-selectable.html">
+
+<link rel="import" href="search-list-entry.html">
+<link rel="import" href="employee-information.html">
+
+<dom-module id="employee-management">
+    <style>
+        #search-bar {
+            width: 20%;
+            height: 100%;
+            float: left;
+        }
+        
+        #info-div {
+            width: 80%;
+            height: 100%;
+            float: right;
+        }
+    </style>
+    
+    <template>
+        <neon-animatable>
+            <div id="search-bar">
+                <paper-input id="userFirstNameSearch" label="First Name" on-keyup="updateList"></paper-input>
+                <paper-input id="userLastNameSearch" label="Last Name" on-keyup="updateList"></paper-input>
+                <paper-input id="userIdSearch" label="User ID" on-keyup="updateList"></paper-input>
+                <iron-ajax
+                    id="userSearchAjax"
+                    url="userSearch.php"
+                    handle-as="json"
+                    last-response="{{userSearchAjaxResults}}"></iron-ajax>
+                <div class="vertical layout">
+                    <template is="dom-repeat" items="{{userSearchAjaxResults}}">
+                        <search-list-entry user-id="{{item.userId}}" user-first-name="{{item.userFirstName}}" user-last-name="{{item.userLastName}}"></search-list-entry>
+                    </template>
+                </div>
+            </div>
+            <div id="info-div">
+                <employee-information id="info" user-id="{{activeSelect}}"></employee-information>
+            </div>
+        </neon-animatable>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "employee-management",
+           
+           behaviors: [
+               Polymer.NeonAnimationRunnerBehavior
+            ],
+            
+            properties: {
+                activeSelect: String,
+                animationConfig: {
+                  value: function() {
+                    return {
+                      'entry': {
+                        // provided by neon-animation/animations/scale-up-animation.html
+                        name: 'scale-up-animation',
+                        node: this
+                      },
+                      'exit': {
+                        // provided by neon-animation-animations/fade-out-animation.html
+                        name: 'fade-out-animation',
+                        node: this
+                      }
+                    }
+                  }
+                }
+            },
+           
+           listeners: {
+               'search-select': 'updateInfo'
+           },
+           
+           getParams: function() {
+               return {
+                   userFirstName: this.$.userFirstNameSearch.value,
+                   userLastName: this.$.userLastNameSearch.value,
+                   userId: this.$.userIdSearch.value
+               }
+           },
+           
+           updateList: function() {
+               this.$.userSearchAjax.params = this.getParams();
+               this.$.userSearchAjax.generateRequest();
+           },
+           
+           updateInfo: function(e) {
+               this.activeSelect = e.detail.userId;
+           }
+        });
+    </script>
+</dom-module>

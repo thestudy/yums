@@ -4,19 +4,19 @@
         <link rel="import" href="bower_components/polymer/polymer.html">
         <link rel="import" href="components/main-page/main-page.html">
         <link rel="import" href="components/login-page/login-page.html">
+        <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
     </head>
     
     <body style="padding: 0px; margin: 0px;">
         <login-page id="login"></login-page>
+        <main-page id="main" hidden></main-page>
     </body>
     
     <script>
         document.addEventListener('login-success', function(e){
             console.log("Success");
-            document.querySelector("#login").remove();
-            var myMainPage = document.createElement("main-page");
-            myMainPage.setAttribute("user-id", e.detail.userId);
-            document.body.appendChild(myMainPage);
+            document.querySelector("#login").hidden = true;
+            document.querySelector("#main").hidden = false;
         });
     </script>
 </html>

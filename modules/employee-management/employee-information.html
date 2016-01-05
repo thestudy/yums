@@ -1,0 +1,48 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+
+<dom-module id="employee-information">
+    <style>
+        #user-image {
+            width: 400px;
+            height: 400px;
+            background-color: lightgray;
+        }
+        .iron-selected {
+        }
+    </style>
+    
+    <template>
+        <iron-ajax
+            auto
+            url="getUserInfo.php"
+            params="{{ajaxParams}}"
+            handle-as="json"
+            last-response="{{userInfoAjax}}"></iron-ajax>
+        <iron-image id="user-image" sizing="contain" src="http://lorempixel.com/600/400"></iron-image>
+        <span>{{userInfoAjax.userId}}</span>
+        <span>{{userInfoAjax.userFirstName}}</span>
+    </template>
+    
+    <script>
+        Polymer({
+            is: "employee-information",
+            
+            properties: {
+                userId: String,
+                ajaxParams: {
+                    type: Object,
+                    computed: "getParams(userId)"
+                }
+            },
+            
+            getParams: function(user) {
+                return {
+                    userId: user
+                }
+            }
+        });
+    </script>
+</dom-module>

@@ -7,8 +7,14 @@
 
 <dom-module id="main-page-groups">
     <template>
-        <group-tile group-id="0"></group-tile>
-        <group-tile group-id="1"></group-tile>
+        <iron-ajax
+            auto
+            url="getGroups.php"
+            handle-as="json"
+            last-response="{{groupsAjax}}"></iron-ajax>
+        <template is="dom-repeat" items="{{groupsAjax}}">
+            <group-tile group-id="{{item.groupId}}"></group-tile>
+        </template>
     </template>
     
     <script>

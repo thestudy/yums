@@ -42,8 +42,8 @@
                pageId: String,
                pageName: String,
                pageDesc: String,
-               imgName: String,
-               imgDir: String,
+               tileImg: String,
+               pageURL: String,
                backPage: {
                    type: Boolean,
                    value: false
@@ -63,23 +63,23 @@
            },
            
            getParams: function(page) {
-             return {
-                 pageId: page
-             };
+               return {
+                   pageId: page
+               };
            },
            
            updatePageInfo: function() {
-               this.imgName = this.ajaxPageInfo['imgName'];
-               this.imgDir = this.ajaxPageInfo['imgDir'];
+               this.tileImg = this.ajaxPageInfo['tileImg'];
                this.pageName = this.ajaxPageInfo['pageName'];
                this.pageDesc = this.ajaxPageInfo['pageDesc'];
+               this.pageURL = this.ajaxPageInfo['pageURL'];
            },
            
            clickAction: function() {
                if (this.backPage) {
                    this.fire('back-page-click');
                } else {
-                   this.fire('page-click', {pageId: this.pageId});
+                   this.fire('page-click', {pageURL: this.pageURL});
                }
            }
         });
