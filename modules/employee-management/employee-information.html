@@ -12,18 +12,52 @@
         }
         .iron-selected {
         }
+        .left{
+            float: left;
+            padding: 50px;
+        }
+        
+        .center {
+            margin: auto;
+            width: 70%;
+
+        }
+        paper-button.blue{
+            background-color: var(--paper-blue-500);
+            color:white;
+            
+        }
+
     </style>
     
     <template>
+        <div class="center" >
+            <div class="left">
+                <paper-input label="First Name" placeholder="{{userFirstName}}" disabled></paper-input>
+                <paper-input label="Last Name" placeholder="{{userLastName}}"  disabled></paper-input>
+                <paper-input label="Student ID" placeholder="{{userId}}"disabled></paper-input>
+                <paper-input label="Username" placeholder="{{userName}}" disabled></paper-input>
+                
+                <div>
+                    <paper-button id="button" raised noink class="blue" float="left" on-click="clickEvent">edit</paper-button>
+                
+                </div>
+                
+            </div>
+            
+            <div class="left" >
+                <img src="http://lorempixel.com/600/400" style="width:600px;height:400px;">
+            </div>
+            
+        </div>
+        
         <iron-ajax
-            auto
-            url="getUserInfo.php"
-            params="{{ajaxParams}}"
-            handle-as="json"
-            last-response="{{userInfoAjax}}"></iron-ajax>
-        <iron-image id="user-image" sizing="contain" src="http://lorempixel.com/600/400"></iron-image>
-        <span>{{userInfoAjax.userId}}</span>
-        <span>{{userInfoAjax.userFirstName}}</span>
+                    auto
+                    url="getUserInfo.php"
+                    params="{{ajaxParams}}"
+                    handle-as="json"
+                    last-response="{{userAjaxResults}}"
+                    on-response="updateUserInfo"></iron-ajax>
     </template>
     
     <script>
@@ -32,6 +66,9 @@
             
             properties: {
                 userId: String,
+                userFirstName: String,
+                userLastName: String,
+                userName: String,
                 ajaxParams: {
                     type: Object,
                     computed: "getParams(userId)"
@@ -42,6 +79,35 @@
                 return {
                     userId: user
                 }
+            },
+            
+            clickEvent: function(){
+                
+                if(this.$.button.innerHTML == "save"){
+                    this.$.button.innerHTML="edit";
+                    var inputs = this.querySelectorAll("paper-input");
+                    var i;
+                    for(i = 0; i < inputs.length; i++){
+                        inputs[i].disabled = true;
+                    }
+                    
+                }
+                else{
+                    this.$.button.innerHTML="save";
+                    var inputs = this.querySelectorAll("paper-input");
+                    var i;
+                    for(i = 0; i < inputs.length; i++){
+                        inputs[i].disabled = false;
+                    }
+                }
+                
+            },
+            
+            updateUserInfo: function(){
+                this.userFirstName = this.userAjaxResults['userFirstName'];
+                this.userLastName = this.userAjaxResults['userLastName'];
+                this.userName = this.userAjaxResults['userName'];
+                
             }
         });
     </script>

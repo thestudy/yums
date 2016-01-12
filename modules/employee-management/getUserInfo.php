@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 $host = 'localhost';
-$username = 'melhuishj';
+$username = 'johntompkins';
 $password = '';
 $db_name = 'c9';
 
