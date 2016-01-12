@@ -1,0 +1,82 @@
+<script src="../../bower_components/webcomponentsjs/webcomponentsjs-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+
+<dom-module id="module-launcher">
+    
+    <style>
+        #container {
+            height:200px;
+            width:200px;
+            position:relative;
+        }
+        
+        #image {
+            z-index: 1;
+            position:absolute;
+            width: 200px;
+            height: 200px;
+            left: 0px;
+            top: 0px;
+        }
+        
+        #title {
+            z-index: 100;
+            position: absolute;
+            width: 200px;
+            height: 40;
+            left: 0px;
+            top: 0px;
+            background: rgb(146, 146, 146);
+            background: rgba(146, 146, 146, .9);
+            margin: 0px
+        }
+        
+        #desc {
+            z-index:100;
+            position:absolute;
+            left:0px;
+            top:40px;
+            width: 200px;
+            height: 160px;
+            background: rgb(146, 146, 146);
+            background: rgba(146, 146, 146, .9);
+            margin: 0px
+        }
+    </style>
+    
+    <template>
+        <div id="container" on-mouseover="hoverOn" on-mouseout="hoverOff" on-click="clickAction">
+            <iron-image id="image" src="../../modules/employee-management/AEDBSmall.png" sizing="contain"></iron-image>
+            <h1 id="title" hidden>Test</h1>
+            <p id="desc" hidden>Hello! This is some longer text meant to test whether the word wrap will work</p>
+        </div>
+    </template>
+    
+    
+    <script>
+        Polymer({
+           is: "module-launcher",
+           
+           properties: {
+               pageName: String,
+               pageDesc: String
+           },
+           
+           hoverOn: function() {
+               this.$.title.hidden = false;
+               this.$.desc.hidden = false;
+           },
+           
+           hoverOff: function() {
+              this.$.title.hidden = true;
+              this.$.desc.hidden = true;
+           },
+           
+           clickAction: function(){
+               console.log("Launch!");
+           }
+        });
+    </script>
+</dom-module>

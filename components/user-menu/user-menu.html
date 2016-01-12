@@ -1,86 +1,36 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
-<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-
-<link rel="import" href="../page-tile/page-tile.html">
-<link rel="import" href="../notification-tile/notification-tile.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 
 <dom-module id="user-menu">
+    
     <style>
-        paper-badge {
-            --paper-badge-margin-bottom: -25px;
+        #expand {
+            margin: 0 auto;
         }
     </style>
     
     <template>
-        <div style="min-height: 60px; width: 100%; overflow: hidden; background-color: lightgray;">
-            <div id ="user" style="float: left;">
-                <iron-image id="user-image" on-click="toggleInfo" style="width:60px; height:60px; border-radius:30px; background-color:lightgray;" src="http://www.uky.edu/AE/sites/www.uky.edu.AE/files/studylogo.png"></iron-image></iron-image>
-                <paper-badge for="user-image" label="7"></paper-badge>
-                <iron-ajax
-                    auto
-                    url="getUserInfo.php"
-                    params='{{ajaxParams}}'
-                    handle-as="json"
-                    on-response="updateUserInfo"
-                    last-response="{{ajaxUserInfo}}"></iron-ajax>
-                <iron-collapse id="info" style="padding: 10px;">
-                    <span>{{firstName}}</span><span> </span><span>{{lastName}}</span><br /><span>{{userId}}</span>
-                </iron-collapse>
-            </div>
-            <div style="overflow: hidden;">
-                <iron-collapse id="commonpages">
-                    <div class="layout horizontal wrap">
-                        <page-tile page-id="0"></page-tile>
-                        <page-tile page-id="2"></page-tile>
-                        <page-tile page-id="4"></page-tile>
-                    </div>
-                </iron-collapse>
-            </div>
-            <div style="overflow: hidden;">
-                <iron-collapse id="notifications">
-                    <div class="layout horizontal wrap">
-                        <notification-tile note-id="1"></notification-tile>
-                        <notification-tile note-id="2"></notification-tile>
-                    </div>
-                </iron-collapse>
-            </div>
-        </div>
+        <paper-toolbar id="menu">
+            <paper-icon-button id="expand" icon="expand-more" on-tap="expandMenu"></paper-icon-button>
+        </paper-toolbar>
+        <paper-toolbar class="medium-tall" id="details" hidden>
+            
+        </paper-toolbar>
     </template>
     
     <script>
         Polymer({
             is: "user-menu",
             
-            properties: {
-                firstName: String,
-                lastName: String,
-                userId: String,
-                ajaxParams: {
-                    type: Object,
-                    computed: 'getParams(userId)'
-                }
-            },
-            
-            getParams: function(user) {
-                return {
-                    userId: user
-                };
-            },
-            
-            toggleInfo: function() {
-                this.$.info.toggle();
-                this.$.commonpages.toggle();
-                this.$.notifications.toggle();
-            },
-            
-            updateUserInfo: function() {
-                this.firstName = this.ajaxUserInfo['userFirstName'];
-                this.lastName = this.ajaxUserInfo['userLastName'];
+            expandMenu: function() {
+                this.$.details.hidden = !this.$.details.hidden;
+                this.$.expand.icon = (this.$.expand.icon == "expand-less") ? "expand-more" : "expand-less";
             }
-        });
+        })
     </script>
+    
 </dom-module>

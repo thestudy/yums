@@ -16,7 +16,7 @@
             last-response="{{sessionInfo}}"
             on-response="sessionInfoResponse"></iron-ajax>
         
-        <user-menu user-id="{{userId}}"></user-menu>
+        <user-menu></user-menu>
         <div id="display">
             <neon-animated-pages id="pages" class="flex" selected="0" entry-animation="slide-from-left-animation" exit-animation="slide-right-animation">
                 <main-page-groups id="maingroups"></main-page-groups>
@@ -60,7 +60,6 @@
             },
             
             sessionInfoResponse: function() {
-                console.log(this.sessionInfo);
                 this.userId = this.sessionInfo['userId'];
             }
         });
