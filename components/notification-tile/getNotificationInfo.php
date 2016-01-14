@@ -1,9 +1,6 @@
 <?php
 header('Content-Type: application/json');
-$host = 'localhost';
-$username = 'melhuishj';
-$password = '';
-$db_name = 'c9';
+include '../../DBConfig/config.php';
 
 $noteId = $_GET['noteId'];
 $SQLFetchNoteInfo = 'SELECT N.noteShort, N.noteLong FROM Notification N WHERE N.noteId = '.$noteId;

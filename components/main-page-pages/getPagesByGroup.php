@@ -1,9 +1,6 @@
 <?php
 header('Content-Type: application/json');
-$host = 'localhost';
-$username = 'melhuishj';
-$password = '';
-$db_name = 'c9';
+include '../../DBConfig/config.php';
 
 $groupId = $_GET['groupId'];
 $SQLFetchPageInfo = 'SELECT P.pageId FROM Pages P, ContainsPages C WHERE C.groupId = '.$groupId.' AND C.pageId = P.pageId';
