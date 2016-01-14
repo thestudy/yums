@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
-<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="../page-tile/page-tile.html">
 
 <dom-module id="main-page-pages">
@@ -11,6 +11,8 @@
         div {
             width: 100%;
             margin: 5px;
+            @apply(--layout-horizontal);
+            @apply(--layout-wrap);
         }
     </style>
     
@@ -23,7 +25,7 @@
             handle-as="json"
             last-response="{{ajaxPageInfo}}"></iron-ajax>
 
-        <div class="layout horizontal wrap">
+        <div>
             <page-tile back-page></page-tile>
             <!--<template is="dom-repeat" items="{{ajaxPageInfo}}">-->
             <!--    <page-tile page-id="{{item.pageId}}"></page-tile>-->
