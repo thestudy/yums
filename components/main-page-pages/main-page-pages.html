@@ -4,7 +4,7 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-shared-element-animatable-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../page-tile/page-tile.html">
+<link rel="import" href="../module-launcher/module-launcher.html">
 
 <dom-module id="main-page-pages">
     <style>
@@ -26,11 +26,11 @@
             last-response="{{ajaxPageInfo}}"></iron-ajax>
 
         <div>
-            <page-tile back-page></page-tile>
+            <module-launcher back></module-launcher>
             <!--<template is="dom-repeat" items="{{ajaxPageInfo}}">-->
             <!--    <page-tile page-id="{{item.pageId}}"></page-tile>-->
             <!--</template>-->
-            <page-tile page-id="1"></page-tile>
+            <module-launcher page-id="1"></module-launcher>
         </div>
     </template>
     

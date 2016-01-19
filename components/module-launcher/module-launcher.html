@@ -58,7 +58,7 @@
     
     <template>
         <div id="container" on-mouseover="hoverOn" on-mouseout="hoverOff" on-click="clickAction">
-            <iron-image id="image" src="../../modules/employee-management/AEDBSmall.png" sizing="contain"></iron-image>
+            <iron-image id="image" src="{{imgSrc}}" sizing="contain"></iron-image>
             <h1 id="title" hidden>{{pageName}}</h1>
             <p id="desc" hidden>{{pageDesc}}</p>
         </div>
@@ -78,11 +78,18 @@
            
            properties: {
                pageId: String,
+               back: Boolean,
                pageName: String,
                pageDesc: String,
+               pageURL: String,
+               tileImg: String,
                ajaxParams: {
                    type: Object,
                    computed: "getParams(pageId)"
+               },
+               imgSrc: {
+                   type: String,
+                   computed: "getImgSrc(pageURL, tileImg)"
                }
            },
            
@@ -103,12 +110,32 @@
            },
            
            clickAction: function(){
-               console.log("Launch!");
+               if (this.back) {
+                   this.fire('back-page-click');
+               } else {
+                   this.fire('page-click', {pageURL: this.pageURL});
+               }
            },
            
            updatePageInfo: function(){
-               this.pageName = this.ajaxPageInfo['pageName'];
-               this.pageDesc = this.ajaxPageInfo['pageDesc'];
+               if (this.pageId != null && this.ajaxPageInfo != null) {
+                   this.pageName = this.ajaxPageInfo['pageName'];
+                   this.pageDesc = this.ajaxPageInfo['pageDesc'];
+                   this.pageURL = this.ajaxPageInfo['pageURL'];
+                   this.tileImg = this.ajaxPageInfo['tileImg'];
+               } else if (!this.back) {
+                   this.pageName = "Missing";
+                   this.pageDesc = "This should not happen.  Contact the webmaster.";
+               } else {
+                   this.pageName = "BACK";
+                   this.pageDesc = "Click this tile to go back to the group selection screen.";
+               }
+           },
+           
+           getImgSrc: function(pageURL, tileImg) {
+               //strips module name from pageURL
+               //Note that the '/' is added on purpose to account for pageURL=''
+               return pageURL.substring(0, pageURL.lastIndexOf('/')) + '/' + tileImg;
            }
         });
     </script>
