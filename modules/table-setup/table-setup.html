@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../iron-icons/iron-icons.html">
+<link rel="import" href="table-row.html">
 
 <dom-module id="table-setup">
     <style>
@@ -17,42 +18,12 @@
             width: 60%;
         }
         
-        .blue{
-            background-color: var(--paper-blue-500);
-            color:white;
-            
-        }
-        
     </style>
     
     <template>
         
-        <div class="center">
-            <paper-dropdown-menu label="Table Name">
-                <paper-menu class="dropdown-content">
-                        <paper-item> Table 1</paper-item>
-                        <paper-item> Table 2</paper-item>
-                        <paper-item> Table 3</paper-item>
-                        <paper-item> Table 4</paper-item>
-                </paper-menu>
-            </paper-dropdown-menu><br>
-        
-                <paper-dropdown-menu label="Column Name">
-                    
-                    <paper-menu class="dropdown-content">
-                        <paper-item> Col 1</paper-item>
-                        <paper-item> Col 2</paper-item>
-                        <paper-item> Col 3</paper-item>
-                        <paper-item> Col 4</paper-item>
-                    </paper-menu>
-        
-                </paper-dropdown-menu><br>
-        
-            <paper-input placeholder="View Column Name"></paper-input><br>
-            
-            <paper-button class="blue">Delete</paper-button><br><br>
-            
-            <paper-button class="blue">Edit</paper-button><br>
+        <div class="center" id="table">
+            <table-row rowNumber="0"></table-row>
         </div>
         
         
@@ -63,7 +34,45 @@
     <script>
     Polymer({
         is: "table-setup",
+        
+        
+            
+        listeners: {
+               'delete-row':"deleteRow",
+               'add-row':'addRow'
+           },
+           
+        deleteRow: function(e){
+            alert("delete this???");
+            var rowList = this.querySelectorAll('table-row');
+            var i;
+            for(i = 0; i < rowList.size(); i++){
+                if(rowList[i].rowNumber == e.detail.rowNumber){
+                    Polymer.dom(this.$.table).removeChild(rowList[i].rowNumber);
+                }
+            }
+        },
+        
+        addRow: function(e){
+            var newRow = document.createElement('table-row');
+            newRow.setAttribute("rowNumber", 1);
+            Polymer.dom(this.$.table).appendChild(document.createElement('br'));
+            Polymer.dom(this.$.table).appendChild(newRow);
+            var rowList = this.querySelectorAll('table-row');
+            var i;
+            for(i = 0; i < rowList.size(); i++){
+                if(rowList[i].rowNumber == e.detail.rowNumber){
+                    
+                }
+            }
+        }
+         
+        
     })
+    
+    
+           
+    
     </script>
     
 </dom-module>
