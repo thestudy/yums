@@ -17,8 +17,8 @@
             width: 20%;
         }
         
-        .blue{
-            margin-top:12px;
+        .green{
+            margin-top:13px;
             background-color: var(--paper-green-500);
             color:white;
             width: 3%;
@@ -58,7 +58,7 @@
                 
             <paper-input placeholder="View Column Name" class="element"></paper-input>
             
-            <paper-icon-button class="blue" on-click="addRow" icon="add"></paper-icon-button>       
+            <paper-icon-button class="green" on-click="addRow" icon="add"></paper-icon-button>       
             <paper-icon-button class="red" on-click="deleteRow" icon="clear"></paper-icon-button>
         </div>
     </template>
@@ -72,10 +72,10 @@
             },
             
             deleteRow: function(){
-                this.fire('delete-row', {num: this.rowNumber});
+              table-setup.fire('delete-row',{num: 0});
             },
             addRow: function(){
-                this.fire('add-row', {num: this.rowNumber});
+                table-setup.fire('add-row',{num: 0});
             }
             
         })

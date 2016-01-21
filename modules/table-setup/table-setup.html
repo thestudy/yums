@@ -7,7 +7,6 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
 <link rel="import" href="table-row.html">
 
 <dom-module id="table-setup">
@@ -23,7 +22,7 @@
     <template>
         
         <div class="center" id="table">
-            <table-row rowNumber="0"></table-row>
+            <table-row on-load="setVal"></table-row>
         </div>
         
         
@@ -36,31 +35,38 @@
         is: "table-setup",
         
         
+        
             
         listeners: {
-               'delete-row':"deleteRow",
-               'add-row':'addRow'
+               'add-row':'addRowToTable',
+               'delete-row': 'deleteRowFromTable'
            },
            
-        deleteRow: function(e){
-            alert("delete this???");
+         setVal: function(){
+           var rowList = this.querySelectorAll('table-row');
+           rowList[0].setAttribute('rowNumber', 0);
+             
+         },
+           
+        deleteRowFromTable: function(e){
             var rowList = this.querySelectorAll('table-row');
             var i;
-            for(i = 0; i < rowList.size(); i++){
+            for(i = 0; i < rowList.length; i++){
                 if(rowList[i].rowNumber == e.detail.rowNumber){
-                    Polymer.dom(this.$.table).removeChild(rowList[i].rowNumber);
+                    Polymer.dom(this.$.table).removeChild(rowList[i]);
                 }
             }
         },
         
-        addRow: function(e){
+        addRowToTable: function(e){
+            console.log(e.detail);
             var newRow = document.createElement('table-row');
-            newRow.setAttribute("rowNumber", 1);
+            newRow.setAttribute("rowNumber", e.detail.rowNumber + 1);
             Polymer.dom(this.$.table).appendChild(document.createElement('br'));
             Polymer.dom(this.$.table).appendChild(newRow);
             var rowList = this.querySelectorAll('table-row');
             var i;
-            for(i = 0; i < rowList.size(); i++){
+            for(i = 0; i < rowList.length; i++){
                 if(rowList[i].rowNumber == e.detail.rowNumber){
                     
                 }
