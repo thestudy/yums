@@ -40,23 +40,22 @@
         <div>
             <paper-dropdown-menu label="Table Name" class="element">
                 <paper-menu class="dropdown-content">
-                        <paper-item> Table 1</paper-item>
-                        <paper-item> Table 2</paper-item>
-                        <paper-item> Table 3</paper-item>
-                        <paper-item> Table 4</paper-item>
+                    <template is="dom-repeat" items="{{tableNames}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
+                        
                 </paper-menu>
             </paper-dropdown-menu>
                 
             <paper-dropdown-menu label="Column Name" class="element">
                 <paper-menu class="dropdown-content">
-                    <paper-item> Col 1</paper-item>
-                    <paper-item> Col 2</paper-item>
-                    <paper-item> Col 3</paper-item>
-                    <paper-item> Col 4</paper-item>
+                    <template is="dom-repeat" items="{{colNames}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
                 </paper-menu>
             </paper-dropdown-menu>
                 
-            <paper-input placeholder="View Column Name" class="element"></paper-input>
+            <paper-input class="element" disabled="{{editable}}" placeholder="{{viewName}}"></paper-input>
             
             <paper-icon-button class="green" on-click="addRow" icon="add"></paper-icon-button>       
             <paper-icon-button class="red" on-click="deleteRow" icon="clear"></paper-icon-button>
@@ -66,16 +65,21 @@
     <script>
         Polymer({
             is: "table-row",
-            
+             
             properties: {
-                rowNumber: Number
+                rowID: String,
+                tableNames: Array,
+                colNames: Array,
+                viewName: String,
+                editable: Boolean
+            },
+            
+            addRow: function(){
+                this.fire('add-row', this.rowID);
             },
             
             deleteRow: function(){
-              table-setup.fire('delete-row',{num: 0});
-            },
-            addRow: function(){
-                table-setup.fire('add-row',{num: 0});
+                this.fire('delete-row', this.rowID);
             }
             
         })

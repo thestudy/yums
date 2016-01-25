@@ -21,12 +21,11 @@
     
     <template>
         
-        <div class="center" id="table">
-            <table-row on-load="setVal"></table-row>
+        <div class="center">
+            <template id="table" is="dom-repeat" items="{{rowList}}">
+                <table-row table-names="{{item.tableNames}}" col-names="{{item.colNames}}" view-name="{{item.viewName}}" editable="{{item.disabled}}" row-id="{{item.rowID}}"></table-row>
+            </template>
         </div>
-        
-        
-        
     </template>
     
     
@@ -34,51 +33,35 @@
     Polymer({
         is: "table-setup",
         
-        
+        properties: {
+            rowList: Array(1),
+            
+        },
         
             
         listeners: {
-               'add-row':'addRowToTable',
-               'delete-row': 'deleteRowFromTable'
+               'add-row':'addRow',
+               'delete-row': 'deleteRow'
            },
            
-         setVal: function(){
-           var rowList = this.querySelectorAll('table-row');
-           rowList[0].setAttribute('rowNumber', 0);
-             
-         },
-           
-        deleteRowFromTable: function(e){
-            var rowList = this.querySelectorAll('table-row');
-            var i;
-            for(i = 0; i < rowList.length; i++){
-                if(rowList[i].rowNumber == e.detail.rowNumber){
-                    Polymer.dom(this.$.table).removeChild(rowList[i]);
-                }
-            }
+        
+        deleteRow: function(e){
+            
         },
         
-        addRowToTable: function(e){
-            console.log(e.detail);
-            var newRow = document.createElement('table-row');
-            newRow.setAttribute("rowNumber", e.detail.rowNumber + 1);
-            Polymer.dom(this.$.table).appendChild(document.createElement('br'));
-            Polymer.dom(this.$.table).appendChild(newRow);
-            var rowList = this.querySelectorAll('table-row');
-            var i;
-            for(i = 0; i < rowList.length; i++){
-                if(rowList[i].rowNumber == e.detail.rowNumber){
-                    
-                }
-            }
+        
+        addRow: function(e){
+            
+        },
+        
+        ready: function(){
+            this.rowList= [{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'userID', disabled: true, rowID: "0" }];
+            this.$.table.render();
+            
         }
          
         
     })
-    
-    
-           
-    
     </script>
     
 </dom-module>
