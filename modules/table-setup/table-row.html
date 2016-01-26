@@ -55,7 +55,7 @@
                 </paper-menu>
             </paper-dropdown-menu>
                 
-            <paper-input class="element" disabled="{{editable}}" placeholder="{{viewName}}"></paper-input>
+            <paper-input class="element" disabled="{{disabled}}" placeholder="{{viewName}}"></paper-input>
             
             <paper-icon-button class="green" on-click="addRow" icon="add"></paper-icon-button>       
             <paper-icon-button class="red" on-click="deleteRow" icon="clear"></paper-icon-button>
@@ -71,7 +71,7 @@
                 tableNames: Array,
                 colNames: Array,
                 viewName: String,
-                editable: Boolean
+                disabled: Boolean
             },
             
             addRow: function(){
@@ -79,7 +79,9 @@
             },
             
             deleteRow: function(){
-                this.fire('delete-row', {id: this.rowId});
+                if(!this.disabled){
+                    this.fire('delete-row', {id: this.rowId});
+                }
             }
             
         })
