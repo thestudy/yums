@@ -9,7 +9,8 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../../bower_components/iron-selector/iron-selectable.html">
-
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="search-list-entry.html">
 <link rel="import" href="employee-information.html">
 
@@ -22,9 +23,17 @@
         }
         
         #info-div {
-            width: 80%;
+            width: 75%;
+            height: 100%;
+            float: left;
+        }
+        #close-div {
+            width: 5%;
             height: 100%;
             float: right;
+        }
+        paper-icon-button.red{
+            background-color: var(--paper-red-500);
         }
     </style>
     
@@ -48,6 +57,10 @@
             <div id="info-div">
                 <employee-information id="info" user-id="{{activeSelect}}"></employee-information>
             </div>
+            <div id="close-div">
+                 <paper-icon-button class="red" icon="close"  noink on-click="clickEvent"></paper-icon-button>
+            </div>
+           
         </neon-animatable>
     </template>
     
@@ -98,6 +111,9 @@
            
            updateInfo: function(e) {
                this.activeSelect = e.detail.userId;
+           },
+           clickEvent: function() {
+               this.fire('close-click');
            }
         });
     </script>

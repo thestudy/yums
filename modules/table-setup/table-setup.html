@@ -1,0 +1,69 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+
+<dom-module id="table-setup">
+    <style>
+    
+        .center{
+            margin: auto;
+            width: 60%;
+        }
+        
+        .blue{
+            background-color: var(--paper-blue-500);
+            color:white;
+            
+        }
+        
+    </style>
+    
+    <template>
+        
+        <div class="center">
+            <paper-dropdown-menu label="Table Name">
+                <paper-menu class="dropdown-content">
+                        <paper-item> Table 1</paper-item>
+                        <paper-item> Table 2</paper-item>
+                        <paper-item> Table 3</paper-item>
+                        <paper-item> Table 4</paper-item>
+                </paper-menu>
+            </paper-dropdown-menu><br>
+        
+                <paper-dropdown-menu label="Column Name">
+                    
+                    <paper-menu class="dropdown-content">
+                        <paper-item> Col 1</paper-item>
+                        <paper-item> Col 2</paper-item>
+                        <paper-item> Col 3</paper-item>
+                        <paper-item> Col 4</paper-item>
+                    </paper-menu>
+        
+                </paper-dropdown-menu><br>
+        
+            <paper-input placeholder="View Column Name"></paper-input><br>
+            
+            <paper-button class="blue">Delete</paper-button><br><br>
+            
+            <paper-button class="blue">Edit</paper-button><br>
+        </div>
+        
+        
+        
+    </template>
+    
+    
+    <script>
+    Polymer({
+        is: "table-setup",
+    })
+    </script>
+    
+</dom-module>
