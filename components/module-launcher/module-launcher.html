@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="module-launcher">
     
@@ -22,10 +23,13 @@
         }
         
         #title {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
             z-index: 100;
             position: absolute;
             width: 200px;
-            height: 40;
+            height: 40px;
             left: 0px;
             top: 0px;
             background: rgb(146, 146, 146);
@@ -42,16 +46,29 @@
             height: 160px;
             background: rgb(146, 146, 146);
             background: rgba(146, 146, 146, .9);
-            margin: 0px
+            margin: 0px;
+            
+            /*stuff to wrap and add ellipsis*/
+            display: block;
+            display: -webkit-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
     
     <template>
         <div id="container" on-mouseover="hoverOn" on-mouseout="hoverOff" on-click="clickAction">
-            <iron-image id="image" src="../../modules/employee-management/AEDBSmall.png" sizing="contain"></iron-image>
-            <h1 id="title" hidden>Test</h1>
-            <p id="desc" hidden>Hello! This is some longer text meant to test whether the word wrap will work</p>
+            <iron-image id="image" src="{{imgSrc}}" sizing="contain"></iron-image>
+            <h1 id="title" hidden>{{pageName}}</h1>
+            <p id="desc" hidden>{{pageDesc}}</p>
         </div>
+        <iron-ajax
+            auto
+            url="getPageInfo.php"
+            params="{{ajaxParams}}"
+            handle-as="json"
+            on-response="updatePageInfo"
+            last-response="{{ajaxPageInfo}}"></iron-ajax>
     </template>
     
     
@@ -60,8 +77,26 @@
            is: "module-launcher",
            
            properties: {
+               pageId: String,
+               back: Boolean,
                pageName: String,
-               pageDesc: String
+               pageDesc: String,
+               pageURL: String,
+               tileImg: String,
+               ajaxParams: {
+                   type: Object,
+                   computed: "getParams(pageId)"
+               },
+               imgSrc: {
+                   type: String,
+                   computed: "getImgSrc(pageURL, tileImg)"
+               }
+           },
+           
+           getParams: function(page) {
+                return {
+                    pageId: page
+                };
            },
            
            hoverOn: function() {
@@ -75,7 +110,32 @@
            },
            
            clickAction: function(){
-               console.log("Launch!");
+               if (this.back) {
+                   this.fire('back-page-click');
+               } else {
+                   this.fire('page-click', {pageURL: this.pageURL});
+               }
+           },
+           
+           updatePageInfo: function(){
+               if (this.pageId != null && this.ajaxPageInfo != null) {
+                   this.pageName = this.ajaxPageInfo['pageName'];
+                   this.pageDesc = this.ajaxPageInfo['pageDesc'];
+                   this.pageURL = this.ajaxPageInfo['pageURL'];
+                   this.tileImg = this.ajaxPageInfo['tileImg'];
+               } else if (!this.back) {
+                   this.pageName = "Missing";
+                   this.pageDesc = "This should not happen.  Contact the webmaster.";
+               } else {
+                   this.pageName = "BACK";
+                   this.pageDesc = "Click this tile to go back to the group selection screen.";
+               }
+           },
+           
+           getImgSrc: function(pageURL, tileImg) {
+               //strips module name from pageURL
+               //Note that the '/' is added on purpose to account for pageURL=''
+               return pageURL.substring(0, pageURL.lastIndexOf('/')) + '/' + tileImg;
            }
         });
     </script>

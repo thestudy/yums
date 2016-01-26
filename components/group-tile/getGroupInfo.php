@@ -1,9 +1,6 @@
 <?php
 header('Content-Type: application/json');
-$host = 'localhost';
-$username = 'melhuishj';
-$password = '';
-$db_name = 'c9';
+include '../../DBConfig/config.php';
 
 $groupId = $_GET['groupId'];
 $SQLFetchGroupInfo = 'SELECT G.tileImg, G.groupName, G.groupDesc, G.bgColor FROM Groups G WHERE G.groupId = '.$groupId;

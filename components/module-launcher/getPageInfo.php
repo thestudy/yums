@@ -1,9 +1,6 @@
 <?php
 header('Content-Type: application/json');
-$host = 'localhost';
-$username = 'melhuishj';
-$password = '';
-$db_name = 'c9';
+include '../../DBConfig/config.php';
 
 $pageId = $_GET['pageId'];
 $SQLFetchPageInfo = 'SELECT P.tileImg, P.pageName, P.pageDesc, P.pageURL FROM Pages P WHERE P.pageId = '.$pageId;
