@@ -1,0 +1,123 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../table-setup/table-row.html">
+
+<dom-module id="tutor-management-setup">
+    <style is="custom-style">
+    
+        .center{
+            margin: auto;
+            width: 66%;
+        }
+        
+        .blue{
+            @apply(--paper-font-common-base);
+            font-size: 16px;
+            background-color: var(--paper-blue-500);
+            color:white;
+            width: 66%;
+            
+        }
+        
+        
+    </style>
+    
+    <template>
+        
+        <div class="center">
+            <paper-tabs selected="0" class='blue' noink on-iron-select="onTabSelect">
+                <paper-tab>Subject Setup</paper-tab>
+                <paper-tab>Course Setup</paper-tab>
+                <paper-tab>Tutor Setup</paper-tab>
+            </paper-tabs>
+            <template id="table-setup" is="dom-repeat" items="{{rowList}}" class=>
+                <table-row table-names="{{item.tableNames}}" col-names="{{item.colNames}}" view-name="{{item.viewName}}" disabled="{{item.disabled}}" row-id="{{item.rowId}}"></table-row>
+                <br>
+            </template>
+        </div>
+    </template>
+    
+    
+    <script>
+    Polymer({
+        is: "tutor-management-setup",
+        
+        properties: {
+            rowList: Array,
+            rowLists: Array,
+            currList: Number,
+            rowSize: Number,
+        },
+        
+            
+        listeners: {
+               'add-row':'addRow',
+               'delete-row': 'deleteRow'
+           },
+           
+        
+        deleteRow: function(e){
+            for(var i = 0; i < this.rowList.length; i++){
+                if(this.rowList[i].rowId == e.detail.id){
+                    var newRows = this.rowList.slice();
+                    newRows.splice(i, 1);
+                    this.rowList = newRows;
+                    break;
+                }
+            }
+        },
+        
+        
+        addRow: function(e){
+            
+            console.log(e.detail.id);
+            for( var i = 0; i < this.rowList.length; i++ ){
+                
+                if(this.rowList[i].rowId == e.detail.id){
+                
+                    var str = this.rowSize.toString(10);
+                    this.rowSize++;
+                    var newRows = this.rowList.slice();
+                    newRows.splice(i+1, 0, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'viewName', disabled: false, rowId: str });
+                    this.rowList = newRows;
+                    break;
+                }
+            }
+        },
+        
+        ready: function(){
+            this.rowLists= [[{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Subject ID', disabled: true, rowId: "0" }, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Subject Name', disabled: true, rowId: "1" }, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Subject Description', disabled: true, rowId: "3" },{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Subject Code', disabled: true, rowId: "2" }], 
+                           [{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Course ID', disabled: true, rowId: "4" }, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Course Number', disabled: true, rowId: "5" }, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Course Subject', disabled: true, rowId: "6" }, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Course Name', disabled: true, rowId: "7" },{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Course Description', disabled: true, rowId: "8" }],
+                           [{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'User ID', disabled: true, rowId: "9" }, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'Course ID', disabled: true, rowId: "10" }]] ;
+            this.rowList = this.rowLists[0].slice();
+            this.rowSize = 11;
+            this.currList = 0;
+        },
+        
+        onTabSelect: function(e){
+            console.log(e.target.selected);
+            this.rowLists[this.currList] = this.rowList.slice();
+            var selected = parseInt(e.target.selected, 10);
+            console.log(selected);
+            this.rowList = this.rowLists[selected].slice();
+            this.currList = selected;
+        }
+         
+        
+    })
+    
+    
+    
+    
+    </script>
+    
+</dom-module>
