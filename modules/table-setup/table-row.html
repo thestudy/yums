@@ -67,7 +67,7 @@
             is: "table-row",
              
             properties: {
-                rowID: String,
+                rowId: String,
                 tableNames: Array,
                 colNames: Array,
                 viewName: String,
@@ -75,11 +75,11 @@
             },
             
             addRow: function(){
-                this.fire('add-row', this.rowID);
+                this.fire('add-row', {id : this.rowId});
             },
             
             deleteRow: function(){
-                this.fire('delete-row', this.rowID);
+                this.fire('delete-row', {id: this.rowId});
             }
             
         })

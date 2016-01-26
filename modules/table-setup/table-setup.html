@@ -17,13 +17,15 @@
             width: 60%;
         }
         
+        
     </style>
     
     <template>
         
         <div class="center">
-            <template id="table" is="dom-repeat" items="{{rowList}}">
-                <table-row table-names="{{item.tableNames}}" col-names="{{item.colNames}}" view-name="{{item.viewName}}" editable="{{item.disabled}}" row-id="{{item.rowID}}"></table-row>
+            <template id="table-setup" is="dom-repeat" items="{{rowList}}" class=>
+                <table-row table-names="{{item.tableNames}}" col-names="{{item.colNames}}" view-name="{{item.viewName}}" editable="{{item.disabled}}" row-id="{{item.rowId}}"></table-row>
+                <br>
             </template>
         </div>
     </template>
@@ -34,8 +36,8 @@
         is: "table-setup",
         
         properties: {
-            rowList: Array(1),
-            
+            rowList: Array,
+            rowSize: Number,
         },
         
             
@@ -46,18 +48,38 @@
            
         
         deleteRow: function(e){
-            
+            for(var i = 0; i < this.rowList.length; i++){
+                if(this.rowList[i].rowId == e.detail.id){
+                    var newRows = this.rowList.slice();
+                    newRows.splice(i, 1);
+                    this.rowList = newRows;
+                    break;
+                }
+            }
         },
         
         
         addRow: function(e){
             
+            console.log(e.detail.id);
+            for( var i = 0; i < this.rowList.length; i++ ){
+                
+                if(this.rowList[i].rowId == e.detail.id){
+                
+                    var str = this.rowSize.toString(10);
+                    this.rowSize++;
+                    var newRows = this.rowList.slice();
+                    newRows.splice(i+1, 0, {tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: str, disabled: false, rowId: str });
+                    console.log(newRows);
+                    this.rowList = newRows;
+                    break;
+                }
+            }
         },
         
         ready: function(){
-            this.rowList= [{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'userID', disabled: true, rowID: "0" }];
-            this.$.table.render();
-            
+            this.rowList= [{tableNames: ['dumm1', 'dumm2', 'du4mm3'], colNames:['cdum1', 'cdum2', 'cdum3'], viewName: 'userID', disabled: true, rowId: "0" }];
+            this.rowSize = 1;
         }
          
         
