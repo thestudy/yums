@@ -1,0 +1,110 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+
+
+
+
+
+<dom-module id="access-control">
+    <style is='custom-style'>
+        .element{
+            @apply(--paper-font-common-base);
+            float:left;
+            width: 10%;
+            border-style: solid;
+            
+        }
+        
+        .role{
+            @apply(--paper-font-common-base);
+            float:left;
+            width: 10%;
+            border-style: solid;
+        }
+        
+        
+        
+        .button{
+            float: left;
+            width: 10%;
+            border-style: solid;
+            height: 3.6%;
+        }
+        .spacer{
+            width: 45%;
+            float: left;
+        }
+        paper-item[disabled]{
+            opacity: 1;
+            color: black;
+        }
+        
+        .buttonInside{
+            margin-left: auto;
+            margin-right: auto;
+            
+        }
+    </style>
+    
+    
+    <template>
+        <div class="element"> <paper-item disabled>Roles</paper-item></div>
+        
+        <div>
+            <template is="dom-repeat" items="{{modules}}">
+                <div class="element"><paper-item disabled>{{item}}</paper-item></div>
+            </template>
+        </div>
+        <br>
+        <br>
+        <br>
+        
+        <div>
+            <template is="dom-repeat" items="{{roles}}" >
+                <div class='role'><paper-item disabled>{{item}}</paper-item> </div>
+                <div>
+                   <template is='dom-repeat' items="{{modules}}">
+                       
+                        <div class='button'><br><div class="spacer"><paper-item disabled></paper-item></div><paper-radio-button></paper-radio-button></div>
+                    </template>
+                    
+                </div>
+                <br><br><br>
+            </template>
+        </div>
+    </template>
+</dom-module>
+
+
+
+
+
+
+
+
+<script>
+    Polymer({
+        is: "access-control",
+        
+        properties:{
+            modules: Array,
+            roles: Array
+        },
+        
+        
+        
+        ready: function(){
+            this.modules= ['employee-management', 'table-setup', 'schedule-builder', 'access-control', 'tutor-management'];
+            this.roles= ['tutor','tutor-manager', 'supervisor', 'desk-worker', 'administrator', 'student'];
+        }
+        
+    })
+</script>
