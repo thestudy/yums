@@ -106,10 +106,8 @@
         onTabSelect: function(e){
             console.log(e.target.selected);
             this.rowLists[this.currList] = this.rowList.slice();
-            var selected = parseInt(e.target.selected, 10);
-            console.log(selected);
-            this.rowList = this.rowLists[selected].slice();
-            this.currList = selected;
+            this.rowList = this.rowLists[e.target.selected].slice();
+            this.currList = e.target.selected;
         }
          
         
