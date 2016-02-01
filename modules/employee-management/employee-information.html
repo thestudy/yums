@@ -2,6 +2,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="employee-information">
     <style>
@@ -13,14 +17,14 @@
         .iron-selected {
         }
         .left{
+            @apply(--paper-font-common-base);
             float: left;
-            padding: 50px;
+            padding: 10px;
         }
         
         .center {
             margin: auto;
-            width: 70%;
-
+            padding: 30px;
         }
         paper-button.blue{
             background-color: var(--paper-blue-500);
@@ -32,13 +36,26 @@
     
     <template>
         <div class="center" >
+            <paper-card>
             <div class="left">
                 <paper-input label="First Name" placeholder="{{userFirstName}}" disabled></paper-input>
                 <paper-input label="Last Name" placeholder="{{userLastName}}"  disabled></paper-input>
                 <paper-input label="Student ID" placeholder="{{userId}}"disabled></paper-input>
                 <paper-input label="Username" placeholder="{{userName}}" disabled></paper-input>
+                <paper-card heading="Roles">
+                    <div class="card-content">
+                        <paper-dropdown-menu label="Table Name" class="element">
+                            <paper-menu class="dropdown-content">
+                                <template is="dom-repeat" items="{{roles}}">
+                                        <paper-item><paper-checkbox>{{item}}</paper-checkbox></paper-item>
+                                </template>
+                            </paper-menu>
+                        </paper-dropdown-menu>
+                    </div>
                 
-                <div>
+                </paper-card>
+                <br>
+                <div class="left">
                     <paper-button id="button" raised noink class="blue" float="left" on-click="clickEvent">edit</paper-button>
                 
                 </div>
@@ -48,7 +65,7 @@
             <div class="left" >
                 <img src="http://lorempixel.com/600/400" style="width:600px;height:400px;">
             </div>
-            
+            </paper-card>
         </div>
         
         <iron-ajax
@@ -72,13 +89,19 @@
                 ajaxParams: {
                     type: Object,
                     computed: "getParams(userId)"
-                }
+                },
+                roles: Array
             },
             
             getParams: function(user) {
                 return {
                     userId: user
                 }
+            },
+            
+            ready: function(){
+                this.roles = ['tutor', 'spc', 'supervisor', 'desk', 'admin'];
+                
             },
             
             clickEvent: function(){
