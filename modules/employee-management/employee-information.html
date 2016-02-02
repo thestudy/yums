@@ -6,6 +6,9 @@
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <dom-module id="employee-information">
     <style>
@@ -31,32 +34,46 @@
             color:white;
             
         }
+        paper-button[toggles][active]{
+            background: var(--paper-red-500);
+            
+        }
+        
+         paper-card.yellow{
+             background-color: var(--paper-grey-50);
+             
+         }
+     
+        
 
     </style>
     
     <template>
         <div class="center" >
-            <paper-card>
+            <paper-card class="yellow"  >
             <div class="left">
                 <paper-input label="First Name" placeholder="{{userFirstName}}" disabled></paper-input>
                 <paper-input label="Last Name" placeholder="{{userLastName}}"  disabled></paper-input>
                 <paper-input label="Student ID" placeholder="{{userId}}"disabled></paper-input>
                 <paper-input label="Username" placeholder="{{userName}}" disabled></paper-input>
-                <paper-card heading="Roles">
-                    <div class="card-content">
-                        <paper-dropdown-menu label="Table Name" class="element">
-                            <paper-menu class="dropdown-content">
-                                <template is="dom-repeat" items="{{roles}}">
-                                        <paper-item><paper-checkbox>{{item}}</paper-checkbox></paper-item>
-                                </template>
-                            </paper-menu>
-                        </paper-dropdown-menu>
+                <paper-card style="width: 100%;">
+                    <div class="card-actions">
+                        <paper-item style="float: left;">Roles</paper-item>
+                        <paper-icon-button icon="expand-less" title="roles" on-click="_toggle" style="float:right;"></paper-icon-button>
+                        <iron-collapse id="roles" style="width:100%;">
+                            <template is='dom-repeat' items="{{roles}}">
+                                <paper-checkbox disabled>{{item}}</paper-checkbox><br>
+                            </template>
+                        </iron-collapse>
+                                
                     </div>
+                
+            
                 
                 </paper-card>
                 <br>
                 <div class="left">
-                    <paper-button id="button" raised noink class="blue" float="left" on-click="clickEvent">edit</paper-button>
+                    <paper-button id="button" raised noink class="blue"  on-click="clickEvent" toggles>edit</paper-button>
                 
                 </div>
                 
@@ -99,6 +116,15 @@
                 }
             },
             
+            _toggle: function(){
+                var roles = document.getElementById('roles');
+                var iconButton = Polymer.dom(event).localTarget;
+                iconButton.icon = roles.opened ? 'expand-less'
+                                          : 'expand-more';
+                roles.toggle();
+                
+            },
+            
             ready: function(){
                 this.roles = ['tutor', 'spc', 'supervisor', 'desk', 'admin'];
                 
@@ -113,12 +139,21 @@
                     for(i = 0; i < inputs.length; i++){
                         inputs[i].disabled = true;
                     }
+                    inputs = this.querySelectorAll("paper-checkbox");
+                    for(i = 0; i < inputs.length; i++){
+                        inputs[i].disabled = true;
+                    }
                     
                 }
                 else{
                     this.$.button.innerHTML="save";
+                    
                     var inputs = this.querySelectorAll("paper-input");
                     var i;
+                    for(i = 0; i < inputs.length; i++){
+                        inputs[i].disabled = false;
+                    }
+                    inputs = this.querySelectorAll("paper-checkbox");
                     for(i = 0; i < inputs.length; i++){
                         inputs[i].disabled = false;
                     }
