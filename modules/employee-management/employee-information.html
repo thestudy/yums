@@ -59,7 +59,7 @@
                 <paper-card style="width: 100%;">
                     <div class="card-actions">
                         <paper-item style="float: left;">Roles</paper-item>
-                        <paper-icon-button icon="expand-less" title="roles" on-click="_toggle" style="float:right;"></paper-icon-button><br>
+                        <paper-icon-button id="arrow" icon="expand-less" title="roles" on-click="_toggle" style="float:right;"></paper-icon-button><br>
                         <iron-collapse id="roles" style="width:100%;">
                             <template is='dom-repeat' items="{{roles}}">
                                 <paper-checkbox disabled>{{item}}</paper-checkbox><br>
@@ -143,7 +143,17 @@
                     for(i = 0; i < inputs.length; i++){
                         inputs[i].disabled = true;
                     }
+                    var roles = document.getElementById('roles');
                     
+                    
+                    if(roles.opened){
+                        
+                        var button = document.getElementById('arrow');
+                        button.icon = 'expand-less';
+                        roles.toggle();
+                        
+                        
+                    }
                 }
                 else{
                     this.$.button.innerHTML="save";
@@ -156,6 +166,14 @@
                     inputs = this.querySelectorAll("paper-checkbox");
                     for(i = 0; i < inputs.length; i++){
                         inputs[i].disabled = false;
+                    }
+                    var roles = document.getElementById('roles');
+                    
+                    if(!roles.opened){
+                        
+                        var button = document.getElementById('arrow');
+                        button.icon = 'expand-more';
+                        roles.toggle();
                     }
                 }
                 
