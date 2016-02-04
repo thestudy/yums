@@ -1,0 +1,79 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+
+
+
+<dom-module id='main-menu'>
+    <style>
+            #container > div
+            {
+                display: inline-block;
+               
+            }
+            #container
+            {
+                text-align: center;
+                margin: 10% auto;
+                margin-left: auto;
+                margin-right: auto;
+                width: 60%;
+            } 
+        
+            .green{
+                vertical-align:middle;
+                background-color: var(--paper-green-500);
+            }
+            
+            .red{
+                vertical-align: middle;
+                background-color: var(--paper-red-500);
+            }
+            .blue{
+                vertical-align: middle;
+                background-color: var(--paper-blue-500);
+            }
+        
+    </style>
+    
+    
+    
+    <template>
+        <div id="container">
+                <div style="padding: 30px;">
+                    <paper-icon-button class="green" noink icon ="add" style="width: 200px; height: 200px;" on-click="addModule"></paper-icon-button>
+                </div>
+                
+                <div style="padding: 30px;">
+                    <paper-icon-button class="red" noink icon="content-cut" style="width: 200px; height: 200px;">></paper-icon-button>
+                </div>
+                
+                <div style="padding: 30px;">
+                    <paper-icon-button  noink icon="picture-in-picture" class="blue" style="width: 200px; height: 200px;">></paper-icon-button>
+                </div>
+               
+                
+
+           
+        </div>
+        
+        
+    </template>
+    
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'main-menu',
+        
+        
+        addModule: function(){
+            this.fire('addModule');
+        }
+    })
+</script>
