@@ -50,11 +50,11 @@
                 </div>
                 
                 <div style="padding: 30px;">
-                    <paper-icon-button class="red" noink icon="content-cut" style="width: 200px; height: 200px;">></paper-icon-button>
+                    <paper-icon-button class="red" noink icon="content-cut" style="width: 200px; height: 200px;" on-click='deleteModule'>></paper-icon-button>
                 </div>
                 
                 <div style="padding: 30px;">
-                    <paper-icon-button  noink icon="picture-in-picture" class="blue" style="width: 200px; height: 200px;">></paper-icon-button>
+                    <paper-icon-button  noink icon="picture-in-picture" class="blue" style="width: 200px; height: 200px;" on-click='viewModule'>></paper-icon-button>
                 </div>
                
                 
@@ -74,6 +74,14 @@
         
         addModule: function(){
             this.fire('addModule');
+        },
+        
+        deleteModule: function(){
+            this.fire('deleteModule');
+        },
+        
+        viewModule: function(){
+            this.fire('viewModule');
         }
     })
 </script>

@@ -1,0 +1,76 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="table-row.html">
+
+<dom-module id="view-modules">
+    <style>
+    
+        .center{
+            margin: auto;
+            width: 60%;
+        }
+        
+        
+    </style>
+    
+    <template>
+        
+        <div class="center">
+            <template id="table-setup" is="dom-repeat" items="{{rowList}}" class=>
+                <table-row page-name="{{item.pageName}}" file-location="{{item.fileLocation}}" row-id="{{item.rowId}}" disabled=true></table-row>
+                <br>
+            </template>
+        </div>
+    </template>
+    
+    
+    <script>
+    Polymer({
+        is: "view-modules",
+        
+        properties: {
+            rowList: Array,
+            rowSize: Number,
+        },
+        
+            
+        listeners: {
+               'add-row':'addRow',
+               'delete-row': 'deleteRow'
+           },
+           
+        
+        deleteRow: function(e){
+            for(var i = 0; i < this.rowList.length; i++){
+                if(this.rowList[i].rowId == e.detail.id){
+                    var newRows = this.rowList.slice();
+                    newRows.splice(i, 1);
+                    this.rowList = newRows;
+                    break;
+                }
+            }
+        },
+        
+        ready: function(){
+            this.rowList= [{pageName: 'tutormanagement', fileLocation: 'https', rowId: '0'},
+                            {pageName: 'tutormanant', fileLocation: 'hps', rowId: '1'},
+                            {pageName: 'tutent', fileLocation: 'hs', rowId: '2'},
+                            {pageName: 'tutormaent', fileLocation: 'hps', rowId: '3'},
+                            {pageName: 'tutogement', fileLocation: 'htps', rowId: '4'},
+                            {pageName: 'tutormgement', fileLocation: 'htts', rowId: '5'}
+                            ];
+            this.rowSize = 1;
+        }
+         
+        
+    })
+    </script>
+    
+</dom-module>

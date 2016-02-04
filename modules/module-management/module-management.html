@@ -7,8 +7,8 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="add-module.html">
 <link rel="import" href="main-menu.html">
-
-
+<link rel="import" href="delete-row.html">
+<link rel="import" href="view-modules.html">
 
 
 
@@ -20,8 +20,8 @@
     <template>
         <main-menu id='main-menu'></main-menu>
         <add-module id ="add-module" style="display: none;"></add-module>
-        
-        
+        <delete-row id='delete-row' style="display:none;"></delete-row>
+        <view-modules id='view-modules' style="display:none;"></view-modules>
     </template>
     
 </dom-module>
@@ -31,12 +31,33 @@
     Polymer({
         is: 'module-management',
         
-        listeners: {'addModule':'addModule'},
+        listeners: {'addModule':'addModule',
+                    'closeAdd' : 'closeAdd',
+                    'deleteModule' : 'deleteModule',
+                    'viewModule' : 'viewModule'
+                    },
 
         
         addModule: function(){
             document.getElementById('main-menu').style.display = "none";
             document.getElementById('add-module').style.display = "inline";
+        },
+        
+        closeAdd: function(){
+            document.getElementById('add-module').style.display = "none";
+            document.getElementById('main-menu').style.display = "inline";
+            
+        },
+        
+        deleteModule: function(){
+            document.getElementById('main-menu').style.display = "none";
+            document.getElementById('delete-row').style.display = "inline";
+        },
+        
+        viewModule: function(){
+            document.getElementById('main-menu').style.display = "none";
+            document.getElementById('view-modules').style.display = "inline";
+            
         }
         
     })

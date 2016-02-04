@@ -28,6 +28,11 @@
             margin-right: auto;
             width: 60%;
         } 
+        #close-div {
+            width: 5%;
+            height: 20%;
+            float: right;
+        }
     
         .main{
             @apply(--paper-font-common-base);
@@ -35,7 +40,11 @@
      
         .blue{
             vertical-align: middle;
-            background-color: var(--paper-blue-500);
+            background-color: var(--paper-green-500);
+        }
+        .red{
+            vertical-align: middle;
+            background-color: var(--paper-red-500);
         }
     
 </style>
@@ -55,12 +64,10 @@
                 <div style="padding: 30px;">
                     <paper-icon-button  noink icon="file-upload" class="blue" style="width: 200px; height: 200px;">></paper-icon-button>
                 </div>
-               
-                
-
-           
         </div>
-        
+        <div id="close-div">
+            <paper-icon-button class="red" icon="close"  noink on-click="clickEvent"></paper-icon-button>
+        </div>
         
     </template>
     
@@ -68,7 +75,12 @@
 
 <script>
     Polymer({
-        is: 'add-module'
+        is: 'add-module',
+    
+        clickEvent: function(){
+            this.fire('closeAdd');
+        }
+        
     })
     
 </script>
