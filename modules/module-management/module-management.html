@@ -9,19 +9,46 @@
 <link rel="import" href="main-menu.html">
 <link rel="import" href="delete-row.html">
 <link rel="import" href="view-modules.html">
-
+<link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 
 
 <dom-module id="module-management">
     
+    <style>
+        #module{
+            float: left;
+            width: 95%;
+        }    
     
+         #close
+            {
+                float: right;
+                width: 5%;
+                height: 100%;
+            }
+            
+         .red{
+            vertical-align: middle;
+            background-color: var(--paper-red-500);
+        }
+    </style>
     
     
     <template>
-        <main-menu id='main-menu'></main-menu>
-        <add-module id ="add-module" style="display: none;"></add-module>
-        <delete-row id='delete-row' style="display:none;"></delete-row>
-        <view-modules id='view-modules' style="display:none;"></view-modules>
+        <div id='module'>
+            <main-menu id='menu'></main-menu>
+            <add-module id ="add" style="display: none;"></add-module>
+            <delete-row id='delete' style="display:none;"></delete-row>
+            <view-modules id='view' style="display:none;"></view-modules>
+        </div>
+         <div id='close'>
+            <paper-icon-button class="red" noink icon="close" on-click='closeModule'>></paper-icon-button>
+            
+        </div>
+        
+        
     </template>
     
 </dom-module>
@@ -31,33 +58,99 @@
     Polymer({
         is: 'module-management',
         
-        listeners: {'addModule':'addModule',
-                    'closeAdd' : 'closeAdd',
-                    'deleteModule' : 'deleteModule',
-                    'viewModule' : 'viewModule'
-                    },
-
+        behaviors: [Polymer.NeonAnimationRunnerBehavior],
         
-        addModule: function(){
-            document.getElementById('main-menu').style.display = "none";
-            document.getElementById('add-module').style.display = "inline";
-        },
-        
-        closeAdd: function(){
-            document.getElementById('add-module').style.display = "none";
-            document.getElementById('main-menu').style.display = "inline";
+        properties: {
+            currentModule: Number,
+            
+            animationConfig:{
+                value: function(){
+                    return {
+                        'entryA': { name: 'scale-up-animation',
+                                    node: this.$.add,
+                                },
+                        'entryM': { name: 'scale-up-animation',
+                                    node: this.$.menu,
+                                },        
+                        'entryD': { name: 'scale-up-animation',
+                                    node: this.$.delete,
+                                },
+                        'entryV': { name: 'scale-up-animation',
+                                    node: this.$.view,
+                                },
+                        'exitA': { name: 'fade-out-animation',
+                                    node: this.$.add,
+                                },
+                        'exitD': { name: 'fade-out-animation',
+                                    node: this.$.delete,
+                                },
+                        'exitV': { name: 'fade-out-animation',
+                                    node: this.$.view,
+                                },
+                        'exitM': { name: 'fade-out-animation',
+                                    node: this.$.menu,
+                                },
+                        
+                        
+                    }
+                }
+                
+            }
+            
             
         },
         
-        deleteModule: function(){
-            document.getElementById('main-menu').style.display = "none";
-            document.getElementById('delete-row').style.display = "inline";
+        
+        listeners: {'change-module':'changeModule'},
+        
+        
+        ready: function(){
+            this.currentModule = 0;  
         },
         
-        viewModule: function(){
-            document.getElementById('main-menu').style.display = "none";
-            document.getElementById('view-modules').style.display = "inline";
+        closeModule: function(){
+            console.log(this.currentModule);
+            switch(this.currentModule){
+                case 1:
+                    document.getElementById('add').style.display = "none";
+                    this.playAnimation('exitA');
+                    break;
+                case 2:
+                    document.getElementById('delete').style.display = "none";
+                    this.playAnimation('exitD');
+                    break;
+                case 3:
+                    document.getElementById('view').style.display = "none";
+                    this.playAnimation('exitV');
+                    break;
+                    
+            }
+            this.currentModule = 0;
             
+            document.getElementById('menu').style.display = 'inline';
+            this.playAnimation('entryM');
+        },
+       
+        changeModule: function(e){
+            console.log(e.detail.choice);
+            document.getElementById('menu').style.display = 'none';
+            this.playAnimation('exitM');
+            this.currentModule = e.detail.choice;
+            switch(e.detail.choice){
+                
+                case 1:
+                    document.getElementById('add').style.display = "inline";
+                    this.playAnimation('entryA');
+                    break;
+                case 2:
+                    document.getElementById('delete').style.display = "inline";
+                    this.playAnimation('entryD');
+                    break;
+                case 3:
+                    document.getElementById('view').style.display = "inline";
+                    this.playAnimation('entryV');
+                    break;
+           }
         }
         
     })

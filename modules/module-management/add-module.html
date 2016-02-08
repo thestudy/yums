@@ -26,13 +26,9 @@
             margin: 10% auto;
             margin-left: auto;
             margin-right: auto;
-            width: 60%;
+            width: 50%;
         } 
-        #close-div {
-            width: 5%;
-            height: 20%;
-            float: right;
-        }
+
     
         .main{
             @apply(--paper-font-common-base);
@@ -65,9 +61,7 @@
                     <paper-icon-button  noink icon="file-upload" class="blue" style="width: 200px; height: 200px;">></paper-icon-button>
                 </div>
         </div>
-        <div id="close-div">
-            <paper-icon-button class="red" icon="close"  noink on-click="clickEvent"></paper-icon-button>
-        </div>
+
         
     </template>
     
@@ -77,9 +71,7 @@
     Polymer({
         is: 'add-module',
     
-        clickEvent: function(){
-            this.fire('closeAdd');
-        }
+        
         
     })
     

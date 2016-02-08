@@ -5,7 +5,9 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
-
+<link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 
 
 
@@ -24,6 +26,7 @@
                 margin-right: auto;
                 width: 60%;
             } 
+           
         
             .green{
                 vertical-align:middle;
@@ -37,6 +40,9 @@
             .blue{
                 vertical-align: middle;
                 background-color: var(--paper-blue-500);
+            }
+            .redB{
+                background-color: var(--paper-red-500);
             }
         
     </style>
@@ -61,8 +67,7 @@
 
            
         </div>
-        
-        
+       
     </template>
     
 </dom-module>
@@ -70,18 +75,18 @@
 <script>
     Polymer({
         is: 'main-menu',
-        
+        behaviors: [Polymer.NeonAnimationRunnerBehavior],
         
         addModule: function(){
-            this.fire('addModule');
+            this.fire('change-module', {choice: 1 });
         },
         
         deleteModule: function(){
-            this.fire('deleteModule');
+            this.fire('change-module', {choice: 2});
         },
         
         viewModule: function(){
-            this.fire('viewModule');
+            this.fire('change-module', {choice: 3});
         }
     })
 </script>
