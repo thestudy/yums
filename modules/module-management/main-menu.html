@@ -5,7 +5,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 
@@ -52,15 +52,15 @@
     <template>
         <div id="container">
                 <div style="padding: 30px;">
-                    <paper-icon-button class="green" noink icon ="add" style="width: 200px; height: 200px;" on-click="addModule"></paper-icon-button>
+                    <paper-icon-button class="green" noink icon ="add" style="width: 150px; height: 150px;" on-click="addModule"></paper-icon-button>
                 </div>
                 
                 <div style="padding: 30px;">
-                    <paper-icon-button class="red" noink icon="content-cut" style="width: 200px; height: 200px;" on-click='deleteModule'>></paper-icon-button>
+                    <paper-icon-button class="red" noink icon="content-cut" style="width: 150px; height: 150px;" on-click='deleteModule'>></paper-icon-button>
                 </div>
                 
                 <div style="padding: 30px;">
-                    <paper-icon-button  noink icon="picture-in-picture" class="blue" style="width: 200px; height: 200px;" on-click='viewModule'>></paper-icon-button>
+                    <paper-icon-button  noink icon="picture-in-picture" class="blue" style="width: 150px; height: 150px;" on-click='viewModule'>></paper-icon-button>
                 </div>
                
                 
@@ -75,18 +75,44 @@
 <script>
     Polymer({
         is: 'main-menu',
-        behaviors: [Polymer.NeonAnimationRunnerBehavior],
+        behaviors: [Polymer.NeonAnimatableBehavior],
         
+        properties: {
+            
+            animationConfig: {
+                
+                value: function() {
+                    return{
+                        'entry' : {
+                            name: 'scale-up-animation',
+                            node: this
+                        },
+                        
+                        'exit': {
+                            name: 'fade-out-animation',
+                            node: this
+                        }
+                        
+                    }
+                }
+            }
+            
+        },
+
         addModule: function(){
             this.fire('change-module', {choice: 1 });
+           
         },
         
         deleteModule: function(){
+           
             this.fire('change-module', {choice: 2});
+            
         },
         
         viewModule: function(){
             this.fire('change-module', {choice: 3});
+            
         }
     })
 </script>
