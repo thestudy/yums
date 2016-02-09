@@ -22,6 +22,13 @@
             color: white;
             
         }
+        .purp{
+            --accent-color: var(--paper-indigo-500);
+            --paper-badge-margin-left: 25px;
+            --paper-badge-margin-right: 60px;
+            
+        }
+        
     </style>
     
     <template>
@@ -31,8 +38,9 @@
         </paper-toolbar>
         <iron-collapse id="roles" class="purple" style="width:100%;">
             <div class="purple">
-                <div style="width: 10%;"><paper-item disabled style="color: white;">Modules</paper-item></div>
-                <paper-icon-button icon="apps" class="button" style="width: 60px; height: 60px; float: left;" ></paper-icon-button>
+                <paper-badge for="mods" label="Modules
+                " class='purp' > </paper-badge>
+                <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 70px; height: 70px; float: left;" ></paper-icon-button>
             </div>
         </iron-collapse>
         
