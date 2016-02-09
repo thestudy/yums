@@ -4,31 +4,58 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
-
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <dom-module id="user-menu">
     
     <style>
         #expand {
             margin: 0 auto;
         }
+        
+        .purple{
+            background-color: var(--paper-indigo-500);
+            
+        }
+        .button{
+            color: white;
+            
+        }
     </style>
     
     <template>
         <paper-toolbar id="menu">
             <paper-icon-button id="expand" icon="expand-more" on-tap="expandMenu"></paper-icon-button>
+            <paper-badge for="expand" label="{{notifications}}"> </paper-badge>
         </paper-toolbar>
-        <paper-toolbar class="medium-tall" id="details" hidden>
-            
-        </paper-toolbar>
+        <iron-collapse id="roles" class="purple" style="width:100%;">
+            <div class="purple">
+                <div style="width: 10%;"><paper-item disabled style="color: white;">Modules</paper-item></div>
+                <paper-icon-button icon="apps" class="button" style="width: 60px; height: 60px; float: left;" ></paper-icon-button>
+            </div>
+        </iron-collapse>
+        
     </template>
     
     <script>
         Polymer({
             is: "user-menu",
             
+            properties:{
+                notifications: Number
+            },
+            
+            ready: function(){
+              this.notifications = 4;  
+            },
+            
             expandMenu: function() {
-                this.$.details.hidden = !this.$.details.hidden;
-                this.$.expand.icon = (this.$.expand.icon == "expand-less") ? "expand-more" : "expand-less";
+                 var roles = document.getElementById('roles');
+                var iconButton = Polymer.dom(event).localTarget;
+                iconButton.icon = roles.opened ? 'expand-more'
+                                          : 'expand-less';
+                roles.toggle();
             }
         })
     </script>
