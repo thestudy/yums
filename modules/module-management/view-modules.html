@@ -10,8 +10,8 @@
 <link rel="import" href="table-row.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
-<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
-
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/slide-left-animation.html">
 <dom-module id="view-modules">
     <style>
     
@@ -49,12 +49,12 @@
                 value: function() {
                     return{
                         'entry' : {
-                            name: 'scale-up-animation',
+                            name: 'slide-from-left-animation',
                             node: this
                         },
                         
                         'exit': {
-                            name: 'fade-out-animation',
+                            name: 'slide-left-animation',
                             node: this
                         }
                         
