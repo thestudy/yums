@@ -37,17 +37,19 @@
     
     
     <template>
-        <div id='module'>
-            <main-menu id='menu'></main-menu>
-            <add-module id ="add" style="display: none;"></add-module>
-            <delete-row id='delete' style="display:none;"></delete-row>
-            <view-modules id='view' style="display:none;"></view-modules>
-        </div>
-         <div id='close'>
-            <paper-icon-button class="red" noink icon="close" on-click='closeModule'>></paper-icon-button>
-            
-        </div>
-        
+        <template is="dom-bind" id="app">
+            <neon-animated-pages selected="[[selected]]">
+                    <main-menu id='menu'></main-menu>
+                    <add-module id ="add" ></add-module>
+                    <delete-row id='delete'></delete-row>
+                    <view-modules id='view'></view-modules>
+            </neon-animated-pages>
+            <script>
+                var app = document.querySelector("#app");
+                app.selected = 0;
+            </script>
+        </template>
+        <paper-icon-button style="float: right;" icon='close' class='red' on-click='exitModule'></paper-icon-button>
         
     </template>
     
@@ -63,39 +65,7 @@
         properties: {
             currentModule: Number,
             
-            animationConfig:{
-                value: function(){
-                    return {
-                        'entryA': { name: 'scale-up-animation',
-                                    node: this.$.add,
-                                },
-                        'entryM': { name: 'scale-up-animation',
-                                    node: this.$.menu,
-                                },        
-                        'entryD': { name: 'scale-up-animation',
-                                    node: this.$.delete,
-                                },
-                        'entryV': { name: 'scale-up-animation',
-                                    node: this.$.view,
-                                },
-                        'exitA': { name: 'fade-out-animation',
-                                    node: this.$.add,
-                                },
-                        'exitD': { name: 'fade-out-animation',
-                                    node: this.$.delete,
-                                },
-                        'exitV': { name: 'fade-out-animation',
-                                    node: this.$.view,
-                                },
-                        'exitM': { name: 'fade-out-animation',
-                                    node: this.$.menu,
-                                },
-                        
-                        
-                    }
-                }
-                
-            }
+      
             
             
         },
@@ -108,49 +78,14 @@
             this.currentModule = 0;  
         },
         
-        closeModule: function(){
-            console.log(this.currentModule);
-            switch(this.currentModule){
-                case 1:
-                    document.getElementById('add').style.display = "none";
-                    this.playAnimation('exitA');
-                    break;
-                case 2:
-                    document.getElementById('delete').style.display = "none";
-                    this.playAnimation('exitD');
-                    break;
-                case 3:
-                    document.getElementById('view').style.display = "none";
-                    this.playAnimation('exitV');
-                    break;
-                    
-            }
-            this.currentModule = 0;
-            
-            document.getElementById('menu').style.display = 'inline';
-            this.playAnimation('entryM');
+        exitModule: function(){
+            var app=document.querySelector('#app');
+            app.selected = 0;
         },
        
         changeModule: function(e){
-            console.log(e.detail.choice);
-            document.getElementById('menu').style.display = 'none';
-            this.playAnimation('exitM');
-            this.currentModule = e.detail.choice;
-            switch(e.detail.choice){
-                
-                case 1:
-                    document.getElementById('add').style.display = "inline";
-                    this.playAnimation('entryA');
-                    break;
-                case 2:
-                    document.getElementById('delete').style.display = "inline";
-                    this.playAnimation('entryD');
-                    break;
-                case 3:
-                    document.getElementById('view').style.display = "inline";
-                    this.playAnimation('entryV');
-                    break;
-           }
+            var app=document.querySelector('#app');
+            app.selected = e.detail.choice;
         }
         
     })
