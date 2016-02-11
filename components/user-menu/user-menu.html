@@ -4,12 +4,17 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <dom-module id="user-menu">
     
     <style>
+
+    
+    
         #expand {
             margin: 0 auto;
         }
@@ -23,10 +28,23 @@
             
         }
         .purp{
+            @apply(--paper-font-common-base);
             --accent-color: var(--paper-indigo-500);
             --paper-badge-margin-left: 25px;
             --paper-badge-margin-right: 60px;
-            
+        }
+        
+        paper-item[disabled]{
+            opacity: 1;
+            color: black;
+        }
+        .red{
+            float: right;s
+            @apply(--paper-font-common-base);
+            background-color: var(--paper-red-500);
+        }
+        .green{
+            background-color: var(--paper-blue-500);
         }
         
     </style>
@@ -34,13 +52,21 @@
     <template>
         <paper-toolbar id="menu">
             <paper-icon-button id="expand" icon="expand-more" on-tap="expandMenu"></paper-icon-button>
-            <paper-badge for="expand" label="{{notifications}}"> </paper-badge>
+            <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
+            <paper-button class="red" on-click="logout">LOGOFF</paper-button>
         </paper-toolbar>
         <iron-collapse id="roles" class="purple" style="width:100%;">
             <div class="purple">
-                <paper-badge for="mods" label="Modules
-                " class='purp' > </paper-badge>
-                <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 70px; height: 70px; float: left;" ></paper-icon-button>
+                <paper-badge for="mods" label="Modules    " class='purp' > </paper-badge>
+                <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 100px; height: 100px; float: left;" ></paper-icon-button>
+                <paper-card  class="green" style="height: 90px;">
+                    <div class="card-actions">
+                        <paper-item disabled style="float: left;">NOTIFICATIONS:</paper-item>
+                        <template is="dom-repeat" items="{{notifications}}">
+                            <paper-item style="float: left;" on-click='removeNotification'>{{item}}</paper-item>
+                        </template>
+                    </div>
+                </paper-card>
             </div>
         </iron-collapse>
         
@@ -51,11 +77,27 @@
             is: "user-menu",
             
             properties:{
-                notifications: Number
+                notifications: Array
+            },
+            
+            logout: function(){
+                console.log('logging out')
+                this.fire('log-out');
             },
             
             ready: function(){
-              this.notifications = 4;  
+              this.notifications = ['Need to submit report', 'do schedule', 'etc'];  
+            },
+            
+            removeNotification: function(e){
+                var idx = e.model.index;
+                this.notifications.splice(idx, 1);
+                var temp = this.notifications.slice(0);
+                this.notifications = temp;
+                
+                if(this.notifications.length == 0){
+                    document.getElementById('not').style.display = 'none';
+                }
             },
             
             expandMenu: function() {
@@ -64,6 +106,7 @@
                 iconButton.icon = roles.opened ? 'expand-more'
                                           : 'expand-less';
                 roles.toggle();
+
             }
         })
     </script>
