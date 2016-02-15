@@ -48,7 +48,7 @@
             color: black;
         }
         .red{
-            float: right;s
+            float: right;
             @apply(--paper-font-common-base);
             background-color: var(--paper-red-500);
         }
@@ -70,16 +70,22 @@
                     <paper-badge for="mods" label="Modules" class='purp' > </paper-badge>
                     <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 100px; height: 100px; float: left;" ></paper-icon-button>
                     <paper-card id='notCard' style="height: 9%;">
-                        <div class="card-content">
-                            <template is="dom-repeat" items="{{notifications}}">
+                        
+                            <div class="card-content">
+                                <paper-item disabled style="float: left;"> Notifications</paper-item>
+                                <paper-icon-button id="notificationsMenu" icon="chevron-right" on-tap="expandNotificationsMenu" style="float: left;"></paper-icon-button>
                                 
-                                <paper-card  class="green" style="height: 70%; width: 20%;">
-                                    <div class="card-content"  class="content">
-                                        <paper-item style="float: left; word-wrap: break-word;" on-click='removeNotification'>{{item}}</paper-item>
-                                    </div>
-                                </paper-card>
-                            </template>
-                        </div>
+                                <iron-collapse horizontal id='notificationsCollapse' style="width=50%;">
+                                    <template is="dom-repeat" items="{{notifications}}">
+                                        <paper-card  class="green" style="height: 60%;">
+                                            <div class="card-content"  class="content">
+                                                <paper-item style="float: left; word-wrap: break-word;" on-click='removeNotification'>{{item}}</paper-item>
+                                            </div>
+                                        </paper-card>
+                                    </template>
+                                </iron-collapse>
+                            </div>
+                        
                     </paper-card>
                     <br><br>
                 </div>
@@ -124,6 +130,14 @@
                                           : 'expand-less';
                 roles.toggle();
 
+            },
+            
+            expandNotificationsMenu: function(){
+                var collapse = document.getElementById('notificationsCollapse');
+                var iconButton = Polymer.dom(event).localTarget;
+                iconButton.icon = collapse.opened ? 'chevron-right'
+                                                    : 'chevron-left';
+                collapse.toggle();
             }
         })
     </script>
