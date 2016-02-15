@@ -9,10 +9,15 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <dom-module id="user-menu">
     
     <style>
-
+        #main{
+            word-wrap: break-word;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
     
     
         #expand {
@@ -33,6 +38,10 @@
             --paper-badge-margin-left: 25px;
             --paper-badge-margin-right: 60px;
         }
+        .content{
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
         
         paper-item[disabled]{
             opacity: 1;
@@ -50,25 +59,32 @@
     </style>
     
     <template>
-        <paper-toolbar id="menu">
-            <paper-icon-button id="expand" icon="expand-more" on-tap="expandMenu"></paper-icon-button>
-            <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
-            <paper-button class="red" on-click="logout">LOGOFF</paper-button>
-        </paper-toolbar>
-        <iron-collapse id="roles" class="purple" style="width:100%;">
-            <div class="purple">
-                <paper-badge for="mods" label="Modules    " class='purp' > </paper-badge>
-                <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 100px; height: 100px; float: left;" ></paper-icon-button>
-                <paper-card  class="green" style="height: 90px;">
-                    <div class="card-actions">
-                        <paper-item disabled style="float: left;">NOTIFICATIONS:</paper-item>
-                        <template is="dom-repeat" items="{{notifications}}">
-                            <paper-item style="float: left;" on-click='removeNotification'>{{item}}</paper-item>
-                        </template>
-                    </div>
-                </paper-card>
-            </div>
-        </iron-collapse>
+        <div id='main'>
+            <paper-toolbar id="menu">
+                <paper-icon-button id="expand" icon="expand-more" on-tap="expandMenu"></paper-icon-button>
+                <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
+                <paper-button class="red" on-click="logout">LOGOFF</paper-button>
+            </paper-toolbar>
+            <iron-collapse id="roles" class="purple" style="width:100%; height: 20%;">
+                <div class="purple">
+                    <paper-badge for="mods" label="Modules" class='purp' > </paper-badge>
+                    <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 100px; height: 100px; float: left;" ></paper-icon-button>
+                    <paper-card id='notCard' style="height: 9%;">
+                        <div class="card-content">
+                            <template is="dom-repeat" items="{{notifications}}">
+                                
+                                <paper-card  class="green" style="height: 70%; width: 20%;">
+                                    <div class="card-content"  class="content">
+                                        <paper-item style="float: left; word-wrap: break-word;" on-click='removeNotification'>{{item}}</paper-item>
+                                    </div>
+                                </paper-card>
+                            </template>
+                        </div>
+                    </paper-card>
+                    <br><br>
+                </div>
+            </iron-collapse>
+        </div>
         
     </template>
     
@@ -86,7 +102,7 @@
             },
             
             ready: function(){
-              this.notifications = ['Need to submit report', 'do schedule', 'etc'];  
+              this.notifications = ['Lorem ipsum dolor sit ametitae tincidunt accumsan, massa odio semper ex, tempus m, quis dictum tortor est nec leo. Nam posue', 'etc'];  
             },
             
             removeNotification: function(e){
@@ -97,6 +113,7 @@
                 
                 if(this.notifications.length == 0){
                     document.getElementById('not').style.display = 'none';
+                    document.getElementById('notCard').style.display = 'none';
                 }
             },
             
