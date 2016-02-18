@@ -1,5 +1,6 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
@@ -17,12 +18,6 @@
             word-wrap: break-word;
             text-overflow: ellipsis;
             overflow: hidden;
-        }
-        
-
-    
-        #expand {
-            margin: 0 auto;
         }
         
         .purple{
@@ -65,14 +60,21 @@
     
     <template>
         <div id='main'>
-            <paper-toolbar id="menu">
-                <paper-icon-button id="expand" icon="expand-more" on-tap="expandMenu"></paper-icon-button>
-                <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
-                <paper-button class="red" on-click="logout">LOGOFF</paper-button>
+            <paper-toolbar id="menu" >
+                <div>
+                    <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 60px; height: 60px; float: left;" ></paper-icon-button>
+                    <paper-icon-button id="expand" icon="social:notifications" on-tap="expandMenu" style="width: 60px; height: 60px; float: left;"></paper-icon-button>
+                    <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
+                   
+                </div>
+                <div style="float: right">
+                     <paper-button class="red" on-click="logout" style="float: right;">LOGOFF</paper-button>
+                </div>
+            
             </paper-toolbar>
             <iron-collapse id="roles" class="purple" style="width:100%; height: 20%;">
                 <div class="purple">
-                    <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 110px; height: 110px; float: left;" ></paper-icon-button>
+                   
                     <paper-card id='notCard' style="height: 90px;">
                         
                             <div class="card-content">
@@ -131,10 +133,8 @@
             },
             
             expandMenu: function() {
-                 var roles = document.getElementById('roles');
+                var roles = document.getElementById('roles');
                 var iconButton = Polymer.dom(event).localTarget;
-                iconButton.icon = roles.opened ? 'expand-more'
-                                          : 'expand-less';
                 roles.toggle();
 
             },
@@ -142,8 +142,7 @@
             expandNotificationsMenu: function(){
                 var collapse = document.getElementById('notificationsCollapse');
                 var iconButton = Polymer.dom(event).localTarget;
-                iconButton.icon = collapse.opened ? 'chevron-right'
-                                                    : 'chevron-left';
+
                 collapse.toggle();
             }
         })
