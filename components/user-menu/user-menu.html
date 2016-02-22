@@ -1,34 +1,149 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
-
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <dom-module id="user-menu">
     
     <style>
-        #expand {
-            margin: 0 auto;
+        #main{
+            word-wrap: break-word;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
+        
+        .purple{
+            background-color: var(--paper-indigo-500);
+            
+        }
+        .button{
+            color: white;
+            
+        }
+        .purp{
+            @apply(--paper-font-common-base);
+            --accent-color: var(--paper-indigo-500);
+            --paper-badge-margin-left: 25px;
+            --paper-badge-margin-right: 60px;
+        }
+        .content{
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        
+        paper-item[disabled]{
+            opacity: 1;
+            color: black;
+        }
+        .red{
+            float: right;
+            @apply(--paper-font-common-base);
+            background-color: var(--paper-red-500);
+        }
+        .green{
+            background-color: var(--paper-blue-500);
+            vertical-align: 20px;
+        }
+        .notific{
+            vertical-align: 25px;
+        }
+        
     </style>
     
     <template>
-        <paper-toolbar id="menu">
-            <paper-icon-button id="expand" icon="expand-more" on-tap="expandMenu"></paper-icon-button>
-        </paper-toolbar>
-        <paper-toolbar class="medium-tall" id="details" hidden>
+        <div id='main'>
+            <paper-toolbar id="menu" >
+                <div>
+                    <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 60px; height: 60px; float: left;" ></paper-icon-button>
+                    <paper-icon-button id="expand" icon="social:notifications" on-tap="expandMenu" style="width: 60px; height: 60px; float: left;"></paper-icon-button>
+                    <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
+                   
+                </div>
+                <div style="float: right">
+                     <paper-button class="red" on-click="logout" style="float: right;">LOGOFF</paper-button>
+                </div>
             
-        </paper-toolbar>
+            </paper-toolbar>
+            <iron-collapse id="roles" class="purple" style="width:100%; height: 20%;">
+                <div class="purple">
+                   
+                    <paper-card id='notCard' style="height: 90px;">
+                        
+                            <div class="card-content">
+                                <paper-item disabled style="float: left;"> Notifications</paper-item>
+                                <paper-icon-button id="notificationsMenu" icon="chevron-right" on-tap="expandNotificationsMenu" style="float: left;"></paper-icon-button>
+                                
+                                <iron-collapse horizontal id='notificationsCollapse' style="width=50%;">
+                                    
+                                        <template is="dom-repeat" items="{{notifications}}">
+                                            <paper-card class="green" style="height: 60px; width: 200px;" on-click='removeNotification'>
+                                                <div class="card-content"  class="content">
+                                                    <paper-item  disabled class='notfic' style="float: left;" >{{item}}</paper-item>
+                                                </div>
+                                            </paper-card>
+                                        </template>
+
+                                </iron-collapse>
+                            </div>
+                        
+                    </paper-card>
+                    <br><br>
+                </div>
+            </iron-collapse>
+        </div>
+        
     </template>
     
     <script>
         Polymer({
             is: "user-menu",
             
+            properties:{
+                notifications: Array
+            },
+            
+            logout: function(){
+                console.log('logging out')
+                this.fire('log-out');
+            },
+            
+            ready: function(){
+              this.notifications = ['etc', 'fill out schedule', 'do report', 'lorem ipsum pppppppp ppppp kjjj'];
+                
+            },
+            
+            removeNotification: function(e){
+                var idx = e.model.index;
+                this.notifications.splice(idx, 1);
+                var temp = this.notifications.slice(0);
+                this.notifications = temp;
+                
+                if(this.notifications.length == 0){
+                    document.getElementById('not').style.display = 'none';
+                    document.getElementById('notCard').style.display = 'none';
+                }
+            },
+            
             expandMenu: function() {
-                this.$.details.hidden = !this.$.details.hidden;
-                this.$.expand.icon = (this.$.expand.icon == "expand-less") ? "expand-more" : "expand-less";
+                var roles = document.getElementById('roles');
+                var iconButton = Polymer.dom(event).localTarget;
+                roles.toggle();
+
+            },
+            
+            expandNotificationsMenu: function(){
+                var collapse = document.getElementById('notificationsCollapse');
+                var iconButton = Polymer.dom(event).localTarget;
+
+                collapse.toggle();
             }
         })
     </script>
