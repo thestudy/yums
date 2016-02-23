@@ -11,6 +11,7 @@
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="notification-tile.html">
 <dom-module id="user-menu">
     
     <style>
@@ -76,23 +77,14 @@
                 </div>
             
             </paper-toolbar>
-            <iron-collapse id="roles" class="purple" style="width:100%; height: 20%;">
+            <iron-collapse id="nots" class="purple" style="width:100%; height: 20%;">
                 <div class="purple">
-                            <div >
+                            <div>
                                 <paper-item disabled style="float: left; color: white;"> Notifications</paper-item>
                                 
                                     
                                         <template is="dom-repeat" items="{{notifications}}">
-                                            <paper-card style="width: 300px;" on-click='removeNotification' on-mouseover='expandNotification' on-mouseout='collapseNotification'>
-                                                <div class="card-content"  class="content">
-                                                    <paper-item  disabled class='notfic' style="float: left;" >{{item}}</paper-item>
-                                                    <br>
-                                                    
-                                                </div>
-                                                <iron-collapse id='hey' style="background-color: white;">
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in lobortis lectus, non aliquam tortor. Praesent vitae blandit dolor. Etiam aliquet lobortis laoreet. Integer ut ex eget tortor venenatis feugiat mollis sed neque. Aenean justo nulla, efficitur eu convallis sollicitudin, interdum at augue. Nulla condimentum mollis tristique. Aenean sit amet turpis sapien. Quisque aliquam est mi, non tincidunt eros bibendum ac. </p>
-                                                    </iron-collapse>
-                                            </paper-card>
+                                            <notification-tile on-click='removeNotification' style="vertical-align: top;"></notification-tile>
                                         </template>
     
                             </div>
@@ -136,30 +128,37 @@
                 
                 if(this.notifications.length == 0){
                     document.getElementById('not').style.display = 'none';
-                    document.getElementById('notCard').style.display = 'none';
                 }
             },
             
             expandMenu: function() {
-                var roles = document.getElementById('roles');
-                roles.toggle();
+                var nots = document.getElementById('nots');
+                if(this.notifications.length){
+                    
+                    var collapse = document.getElementById('modules');
+                     nots.toggle();
+                    if(collapse.opened){
+                        collapse.toggle();
+                    }
+                }else if(nots.opened){
+                    nots.toggle();
+                }
 
             },
             
             expandModuleMenu: function(){
+                
                 var collapse = document.getElementById('modules');
+                var nots = document.getElementById('nots');
                 collapse.toggle();
+                if(nots.opened){
+                    nots.toggle();
+                }
+                    
+                
+                
             },
             
-            expandNotification: function(){
-                var collapse = document.getElementById('hey');
-                collapse.toggle();
-            },
-            
-            collapseNotification: function(){
-                var collapse = document.getElementById('hey');
-                collapse.toggle();
-            }
         })
     </script>
     

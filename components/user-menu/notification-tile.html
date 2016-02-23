@@ -1,0 +1,54 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+
+<dom-module id='notification-tile'>
+    <style>
+        .font{
+        @apply(--paper-font-common-base);
+        }
+        .notific{
+            vertical-align: 25px;
+        }
+    </style>
+    <template>
+        <paper-card class="font" style="width: 300px;" heading="Notification" on-mouseover='expandNotification' on-mouseout='collapseNotification'>
+
+            <iron-collapse id='collapse' style="background-color: white;">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris condimentum pellentesquu eget vestibulum interdum, orci augue posuere dui, t.</p>
+            </iron-collapse>
+        </paper-card>
+    </template>
+    
+    <script>
+        Polymer({
+            is: "notification-tile",
+            
+            properties:{
+                notificationsTitle: String
+            },
+            
+            logout: function(){
+                console.log('logging out')
+                this.fire('log-out');
+            },
+            expandNotification: function(){
+                var card = this.querySelector('iron-collapse');
+                card.toggle();
+            },
+            
+            collapseNotification: function(){
+                var card = this.querySelector('iron-collapse');
+                card.toggle();
+            }
+        })
+    </script>
+</dom-module>
