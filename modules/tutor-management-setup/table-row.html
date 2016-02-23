@@ -1,0 +1,92 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+
+
+<dom-module id="table-row">
+    <style>
+    
+        .element{
+            float:left;
+            width: 31.2%;
+        }
+        
+        .green{
+            margin-top:13px;
+            background-color: var(--paper-green-500);
+            color:white;
+            width: 3%;
+        }
+        .red{
+            background-color: var(--paper-red-500);
+            color:white;
+            width: 3%;
+            
+        }
+        
+        
+    </style>
+    
+    
+    
+    
+    <template>
+        <div>
+            <paper-dropdown-menu label="Table Name" class="element">
+                <paper-menu class="dropdown-content">
+                    <template is="dom-repeat" items="{{tableNames}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
+                        
+                </paper-menu>
+            </paper-dropdown-menu>
+                
+            <paper-dropdown-menu label="Column Name" class="element">
+                <paper-menu class="dropdown-content">
+                    <template is="dom-repeat" items="{{colNames}}">
+                        <paper-item>{{item}}</paper-item>
+                    </template>
+                </paper-menu>
+            </paper-dropdown-menu>
+                
+            <paper-input class="element" disabled="{{disabled}}" value="{{viewName}}"></paper-input>
+            
+            <paper-icon-button class="green" on-click="addRow" icon="add"></paper-icon-button>       
+            <paper-icon-button class="red" on-click="deleteRow" icon="clear"></paper-icon-button>
+        </div>
+    </template>
+    
+    <script>
+        Polymer({
+            is: "table-row",
+             
+            properties: {
+                rowId: String,
+                tableNames: Array,
+                colNames: Array,
+                viewName: String,
+                disabled: Boolean
+            },
+            
+            addRow: function(){
+                this.fire('add-row', {id : this.rowId});
+            },
+            
+            deleteRow: function(){
+                if(!this.disabled){
+                    this.fire('delete-row', {id: this.rowId});
+                }
+            }
+            
+        })
+        
+        
+       
+    </script>
+</dom-module>
