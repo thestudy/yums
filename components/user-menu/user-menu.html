@@ -34,11 +34,13 @@
             color: white;
             
         }
-        .purp{
+        #not{
             @apply(--paper-font-common-base);
-            --accent-color: var(--paper-indigo-500);
-            --paper-badge-margin-left: 25px;
-            --paper-badge-margin-right: 60px;
+            --accent-color: var(--paper-red-500);
+            float: left;
+            vertical-align: top;
+            --paper-badge-margin-left: -8px;
+        --paper-badge-margin-bottom: -12px;
         }
         .content{
             text-overflow: ellipsis;
@@ -67,10 +69,12 @@
     <template>
         <div id='main'>
             <paper-toolbar id="menu" style="width: 100%;">
-                <div style="float: left; width: 95%;">
-                    <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 60px; height: 60px;" on-click="expandModuleMenu"></paper-icon-button>
-                    <paper-icon-button id="expand" icon="social:notifications" on-tap="expandMenu" style="width: 45px; height: 45px;"></paper-icon-button>
-                    <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
+                <div style="float: left; width: 93%;  min-width: 94%;">
+                    <paper-icon-button title="Modules" id='mods' icon="apps" class="button" style="width: 55px; height: 55px;" on-click="expandModuleMenu"></paper-icon-button>
+
+                        <paper-icon-button id="expand" icon="social:notifications" on-tap="expandMenu" style="width: 45px; height: 45px;"></paper-icon-button>
+                        <paper-badge id='not' for="expand" label="{{notifications.length}}"> </paper-badge>
+
                 </div>
                 <div style="width: 5%; float: right;">
                      <paper-button class="red" on-click="logout">LOGOFF</paper-button>
