@@ -1,0 +1,74 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+
+<dom-module id="tutor-tile">
+    <style>
+        #image {
+            z-index: 100;
+            position:absolute;
+            width: 200px;
+            height: 200px;
+            left: 3px;
+            top: 3px;
+        }
+        
+       
+        #background {
+            z-index:1;
+            position:absolute;
+            left:0px;
+            top: 0px;
+            width: 86px;
+            height: 86px;
+            background: rgb(103, 218, 255);
+            margin: 0px;
+            
+        }
+
+
+        
+    </style>
+    
+    <template>
+        
+        <div on-click="changeTutorStatus">
+            <paper-card  hidden id="background"></paper-card>
+            <iron-image id="image"src="http://lorempixel.com/80/80/" style="width: 80px; height: 80px;"></iron-image>
+        </div>
+        
+        
+        
+        
+    </template>
+    
+    
+    <script>
+    Polymer({
+        is: "tutor-tile",
+        
+        properties:{
+            imgFilePath: String,
+            isTutoring: Boolean(false),
+            
+            
+        },
+        
+        changeTutorStatus: function(){
+            if(!this.$.background.hidden){
+                this.$.background.hidden = true;
+            }
+            else
+                this.$.background.hidden = false;
+        }
+    })
+    </script>
+    
+</dom-module>
