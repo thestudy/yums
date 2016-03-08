@@ -8,16 +8,22 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../iron-icons/iron-icons.html">
-
+<link rel="import" href="subject-tile.html">
 <dom-module id="tutor-track">
     <style>
-
+        heading{
+            @apply(--paper-font-common-base);
+        }
         
     </style>
     
     <template>
         
         <div>
+            <h1 class='heading'>Tutor Track</h1>
+            <template is='dom-repeat' items='{{subjectList}}'>
+                <subject-tile currentColor="{{item.color}}" subjectName="{{item.name}}"></subject-tile>
+            </template>
             
         </div>
         
@@ -29,6 +35,14 @@
     <script>
     Polymer({
         is: "tutor-track",
+        
+        properties:{
+            subjectList: Array,
+        },
+        
+        ready: function(){
+            this.subjectList = [{color: "red", name: "MA 109"}, {color: "red", name: "MA 111"}, {color: "yellow", name: "MA  213"}, {color: "green", name: "MA 123"}]
+        }
     })
     </script>
     
