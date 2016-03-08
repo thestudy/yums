@@ -1,0 +1,68 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="tutor-tile.html">
+
+<dom-module id="subject-tile">
+    <style>
+        paper-card.green{
+            background-color: var(--paper-green-500);
+        }
+        
+        paper-card.red{
+            background-color: var(--paper-red-500);
+            
+        }
+        paper-card.yellow{
+            background-color: var(--paper-yellow-500);
+            
+        }
+        
+        paper-card{
+            @apply(--paper-font-common-base);
+        }
+        
+    </style>
+    
+    <template>
+        <paper-card elevation='3' heading='{{subjectName}}' class$="{{currentColor}}">
+            <div style='float: left;' class='card-content'>
+                <template is='dom-repeat' items='{{tutorList}}'>
+                    <tutor-tile imgFilePath='{{item.image}}' style='margin= 10px; float: left;'></tutor-tile>
+                </template>
+            </div>
+        </paper-card>
+
+        
+        
+        
+    </template>
+    
+    
+    <script>
+    Polymer({
+        is: "subject-tile",
+        
+        properties: {
+            currentColor: String,
+            subjectName: String,
+            tutorList: Array,
+            numberOfTutors: Number,
+        },
+        
+        
+        ready: function(){
+            this.tutorList = [{image: "http://lorempixel.com/80/80/", name: "John"}, {image: "http://macosrumors.com/wp-content/themes/macosrumors/images/twitter-80x80.png", name: "J"}, {image: "http://erdsoft.net/files/services/2015.10.30.09.13.19_fb_80_80_m.png", name: "Jon"}, {image: "https://thumb-cc.s3.envato.com/files/104371320/icon_80_80.png", name:"Pat"}];
+            this.subjectName = "Math";
+            this.currentColor= "green";
+            
+        }
+    })
+    </script>
+    
+</dom-module>

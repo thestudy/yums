@@ -13,35 +13,41 @@
     <style>
         #image {
             z-index: 100;
-            position:absolute;
+            
             width: 200px;
             height: 200px;
             left: 3px;
             top: 3px;
+            position: absolute;
         }
         
        
         #background {
             z-index:1;
-            position:absolute;
             left:0px;
             top: 0px;
             width: 86px;
             height: 86px;
             background: rgb(103, 218, 255);
+            position: absolute;
             margin: 0px;
             
         }
-
+        #container {
+            height: 86px;
+            width: 86px;
+            position:relative;
+        }
+        
 
         
     </style>
     
     <template>
         
-        <div on-click="changeTutorStatus">
+        <div on-click="changeTutorStatus" id='container'>
             <paper-card  hidden id="background"></paper-card>
-            <iron-image id="image"src="http://lorempixel.com/80/80/" style="width: 80px; height: 80px;"></iron-image>
+            <img id="image" src="http://lorempixel.com/80/80/" style="width: 80px; height: 80px;"></im=]>
         </div>
         
         
