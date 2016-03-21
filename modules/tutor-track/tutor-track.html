@@ -7,23 +7,57 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../iron-icons/iron-icons.html">
 <link rel="import" href="subject-tile.html">
 <dom-module id="tutor-track">
     <style>
-        heading{
+        .heading{
             @apply(--paper-font-common-base);
         }
+        
+        .blue{
+            @apply(--paper-font-common-base);
+            font-size: 16px;
+            background-color: var(--paper-blue-500);
+            color:white;
+            width: 100%;
+            
+        }
+        
+        .center{
+            margin:  0 auto;
+        }
+
+        
         
     </style>
     
     <template>
         
-        <div>
+        <div >
             <h1 class='heading'>Tutor Track</h1>
-            <template is='dom-repeat' items='{{subjectList}}'>
-                <subject-tile currentColor="{{item.color}}" subjectName="{{item.name}}"></subject-tile>
-            </template>
+            <paper-tabs class='blue' selected='0'>
+                <paper-tab>Subjects</paper-tab>
+                <paper-tab>All Tutors</paper-tab>
+            </paper-tabs><br><br>
+            <div class='center'>
+               <!-- <neon-animated-pages>
+                    <neon-animatable>
+                        <template is='dom-repeat' items='{{subjectList}}'>
+                            <subject-tile current-color="{{item.color}}" subject-name="{{item.name}}" style='margin: 20px;'></subject-tile><br><br>
+                        </template>
+                    </neon-animatable>
+                    <neon-animatable> -->
+                    <div style=' width: 60%; text-align: center;'>
+                        <template is='dom-repeat' items='{{tutorList}}'>
+                            <tutor-tile img-file-path="{{item.image}}" tutor-name="{{item.name}}" style='margin: 20px;'></tutor-tile><br><br><br><br>
+                        </template>
+                    </div>
+                <!--
+                    </neon-animatable>
+                </neon-animated-pages> -->
+            </div>
             
         </div>
         
@@ -41,7 +75,7 @@
         },
         
         ready: function(){
-            this.subjectList = [{color: "red", name: "MA 109"}, {color: "red", name: "MA 111"}, {color: "yellow", name: "MA  213"}, {color: "green", name: "MA 123"}]
+            this.tutorList = [{image: "http://lorempixel.com/80/80/", name: "John" }, {image: "http://macosrumors.com/wp-content/themes/macosrumors/images/twitter-80x80.png", name: "J"}, {image: "http://erdsoft.net/files/services/2015.10.30.09.13.19_fb_80_80_m.png", name: "Jon"}, {image: "https://thumb-cc.s3.envato.com/files/104371320/icon_80_80.png", name:"Pat"}];
         }
     })
     </script>
