@@ -10,6 +10,7 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="subject-tile.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="subject-view.html">
 <link rel="import" href="all-view.html">
@@ -38,24 +39,16 @@
     
     <template>
         <h1 class='heading'>Tutor Track</h1>
-        
-        <paper-tabs class='blue' selected='0'>
-            <paper-tab>Subjects</paper-tab>
-            <paper-tab>All Tutors</paper-tab>
-        </paper-tabs><br><br>
-        
-        <template is="dom-bind" id="app"> 
-                
-            <neon-animated-pages selected="[[selected]]">
+
+            <paper-tabs class='blue' selected='{{current}}'  on-iron-select="onTabSelect">
+                <paper-tab>Subjects</paper-tab>
+                <paper-tab>All Tutors</paper-tab>
+            </paper-tabs><br><br>
+            <neon-animated-pages selected="{{current}}">
                 <subject-view id='subject' subject-list="{{subjectList}}"></subject-view>
                 <all-view id='all' tutor-list="{{tutorList}}"></all-view>
             </neon-animated-pages>
-    
-            <script>
-                var app = document.querySelector("#app");
-                app.selected = 0;
-            </script>
-        </template>
+        
             
         
         
@@ -72,12 +65,22 @@
         properties:{
             subjectList: Array,
             tutorList: Array,
+            current: Number
             
         },
         
         ready: function(){
+            this.current = 0;
             this.subjectList = [{name: 'MA 123', color: "red"}, {name: 'MA 123', color: 'green'}];
             this.tutorList = [{image: "http://lorempixel.com/80/80/", name: "John" }, {image: "http://macosrumors.com/wp-content/themes/macosrumors/images/twitter-80x80.png", name: "J"}, {image: "http://erdsoft.net/files/services/2015.10.30.09.13.19_fb_80_80_m.png", name: "Jon"}, {image: "https://thumb-cc.s3.envato.com/files/104371320/icon_80_80.png", name:"Pat"}];
+            
+            
+        },
+        
+        
+        onTabSelect: function(e){
+            console.log(e.target.selected);
+            
         }
     })
     </script>
