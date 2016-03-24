@@ -1,0 +1,119 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="tutor-profile">
+    <style>
+        #user-image {
+            width: 400px;
+            height: 400px;
+            background-color: lightgray;
+        }
+        .iron-selected {
+        }
+        .left{
+            @apply(--paper-font-common-base);
+            float: left;
+            padding: 10px;
+        }
+        
+        .center {
+            margin: auto;
+            padding: 30px;
+        }
+        paper-button.blue{
+            background-color: var(--paper-blue-500);
+            color:white;
+            
+        }
+      
+        paper-input {
+          --paper-input-container-disabled: {
+                opacity: 1;
+             };
+        } 
+        
+        
+         paper-card.yellow{
+             background-color: var(--paper-grey-50);
+             
+         }
+     
+        
+    </style>
+    
+    
+    <template>
+        <div class="center" >
+            <paper-card class="yellow"  >
+            <div class="left">
+                <paper-input label="First Name" value="{{userFirstName}}" disabled></paper-input>
+                <paper-input label="Last Name" value="{{userLastName}}"  disabled></paper-input>
+                <paper-input label="Student ID" value="{{userId}}"disabled></paper-input>
+                <paper-input label="Tutor for:" value="MA 109" disabled></paper-input>
+                <paper-input label="Comment:"></paper-input>
+                <br>
+                <div class="left">
+                    <paper-button id="button" raised noink class="blue"  on-click="clickEvent">Submit Comment</paper-button>
+                
+                </div>
+                
+            </div>
+            
+            <div class="left" >
+                <img src="http://www.5sblaw.com/_images/blank-user.jpg" style="width:150px;height:150px;">
+            </div>
+            </paper-card>
+        </div>
+        
+        <iron-ajax
+                    auto
+                    url="getUserInfo.php"
+                    params="{{ajaxParams}}"
+                    handle-as="json"
+                    last-response="{{userAjaxResults}}"
+                    on-response="updateUserInfo"></iron-ajax>
+    </template>
+    
+    <script>
+        Polymer({
+            is: "tutor-profile",
+            
+            properties: {
+                userId: String,
+                userFirstName: String,
+                userLastName: String,
+                userName: String,
+                ajaxParams: {
+                    type: Object,
+                    computed: "getParams(userId)"
+                },
+                roles: Array
+            },
+            
+            getParams: function(user) {
+                return {
+                    userId: user
+                }
+            },
+    
+            
+            
+            updateUserInfo: function(){
+                this.userFirstName = this.userAjaxResults['userFirstName'];
+                this.userLastName = this.userAjaxResults['userLastName'];
+                this.userName = this.userAjaxResults['userName'];
+                
+            }
+        });
+    </script>
+</dom-module>

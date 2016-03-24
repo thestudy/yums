@@ -1,21 +1,22 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="subject-tile.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
-<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="subject-view.html">
 <link rel="import" href="all-view.html">
+<link rel="import" href="bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
 <dom-module id="tutor-track">
     <style>
+        #all{
+            margin: 0 auto;
+            width: 60%;
+            
+        }
+    
+    
         .heading{
             @apply(--paper-font-common-base);
         }
@@ -38,17 +39,21 @@
     </style>
     
     <template>
-        <h1 class='heading'>Tutor Track</h1>
-
-            <paper-tabs class='blue' selected='{{current}}'  on-iron-select="onTabSelect">
-                <paper-tab>Subjects</paper-tab>
-                <paper-tab>All Tutors</paper-tab>
-            </paper-tabs><br><br>
-            <neon-animated-pages selected="{{current}}">
-                <subject-view id='subject' subject-list="{{subjectList}}"></subject-view>
-                <all-view id='all' tutor-list="{{tutorList}}"></all-view>
-            </neon-animated-pages>
         
+        
+        
+                <h1 class='heading'>Tutor Track</h1>
+                <paper-tabs class='blue' selected="{{current}}"  on-iron-select="onTabSelect">
+                            <paper-tab>Subjects</paper-tab>
+                            <paper-tab>All Tutors</paper-tab>
+                </paper-tabs><br><br>
+         
+                
+                <neon-animated-pages selected='{{current}}'>
+                    <subject-view id='subject' subject-list="{{subjectList}}"></subject-view>
+                    <all-view id='all' tutor-list="{{tutorList}}"></all-view>
+                </neon-animated-pages>
+         
             
         
         
