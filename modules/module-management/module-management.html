@@ -5,9 +5,8 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="all-view.html">
-<link rel="import" href="subject-view.html">
+<link rel="import" href="add-module.html">
+<link rel="import" href="main-menu.html">
 <link rel="import" href="delete-row.html">
 <link rel="import" href="view-modules.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
@@ -17,7 +16,7 @@
 
 
 
-<dom-module id="tutor-track">
+<dom-module id="module-management">
     
     <style>
         #module{
@@ -36,35 +35,23 @@
             vertical-align: middle;
             background-color: var(--paper-red-500);
         }
-        
-           
-        .blue{
-            @apply(--paper-font-common-base);
-            font-size: 16px;
-            background-color: var(--paper-blue-500);
-            color:white;
-            width: 100%;
-            
-        }
     </style>
     
     
     <template>
         <template is="dom-bind" id="app">
-            <paper-tabs class='blue' selected="{{selected}}">
-                <paper-tab>Classes</paper-tab>
-                <paper-tab>All Tutors</paper-tab>
-            </paper-tabs>
             <neon-animated-pages selected="[[selected]]">
-                    <subject-view></subject-view>
-                    <all-view></all-view>
+                    <main-menu id='menu'></main-menu>
+                    <add-module id ="add" ></add-module>
+                    <delete-row id='delete'></delete-row>
+                    <view-modules id='view'></view-modules>
             </neon-animated-pages>
             <script>
                 var app = document.querySelector("#app");
                 app.selected = 0;
             </script>
         </template>
-        
+        <paper-icon-button style="float: right;" icon='close' class='red' on-click='exitModule'></paper-icon-button>
         
     </template>
     
@@ -73,28 +60,35 @@
 
 <script>
     Polymer({
-        is: 'tutor-track',
+        is: 'module-management',
         
         behaviors: [Polymer.NeonAnimationRunnerBehavior],
         
         properties: {
             currentModule: Number,
             
-             subjectList: Array,
-            tutorList: Array,
-            current: Number
+      
+            
             
         },
+        
+        
+        listeners: {'change-module':'changeModule'},
+        
         
         ready: function(){
             this.currentModule = 0;  
-            this.subjectList = [{name: 'MA 123', color: "red"}, {name: 'MA 123', color: 'green'}];
-            this.tutorList = [{image: "http://lorempixel.com/80/80/", name: "John" }, {image: "http://macosrumors.com/wp-content/themes/macosrumors/images/twitter-80x80.png", name: "J"}, {image: "http://erdsoft.net/files/services/2015.10.30.09.13.19_fb_80_80_m.png", name: "Jon"}, {image: "https://thumb-cc.s3.envato.com/files/104371320/icon_80_80.png", name:"Pat"}];
-            
-            
         },
         
+        exitModule: function(){
+            var app=document.querySelector('#app');
+            app.selected = 0;
+        },
+       
+        changeModule: function(e){
+            var app=document.querySelector('#app');
+            app.selected = e.detail.choice;
+        }
         
- 
     })
 </script>

@@ -14,15 +14,21 @@
 
 
 
-<dom-module id="all-view">
+<dom-module id="add-module">
     
     <style>
-        
+        #container > div
+        {
+            display: inline-block;
+           
+        }
         #container
         {
-            margin-top: 15px;
-            margin-left: 5%;
-            width: 100%;
+            text-align: center;
+            margin: 10% auto;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
         } 
 
     
@@ -45,10 +51,17 @@
     
     <template>
         <div id="container">
-            <template is='dom-repeat' items='{{tutorList}}'>
+                <div style="padding: 30px;">
+                    <paper-icon-button class="blue" noink icon ="link" style="width: 150px; height: 150px;" on-click="addModule"></paper-icon-button>
+                </div>
                 
-                <tutor-tile img-file-path="{{item.image}}" tutor-name="{{item.name}}" style='margin: 20px;'></tutor-tile><br><br><br><br>
-            </template>
+                <div style="padding: 30px;">
+                    <paper-icon-button class="blue" noink icon="folder" style="width: 150px; height: 150px;">></paper-icon-button>
+                </div>
+                
+                <div style="padding: 30px;">
+                    <paper-icon-button  noink icon="file-upload" class="blue" style="width: 150px; height: 150px;">></paper-icon-button>
+                </div>
         </div>
 
         
@@ -58,12 +71,11 @@
 
 <script>
     Polymer({
-        is: 'all-view',
+        is: 'add-module',
         
         behaviors: [Polymer.NeonAnimatableBehavior],
         
         properties: {
-            tutorList: Array,
             
             animationConfig: {
                 
@@ -84,10 +96,6 @@
             }
             
         },
-        
-        ready: function(){
-            this.tutorList = [{image: "http://lorempixel.com/80/80/", name: "John" }, {image: "http://macosrumors.com/wp-content/themes/macosrumors/images/twitter-80x80.png", name: "J"}, {image: "http://erdsoft.net/files/services/2015.10.30.09.13.19_fb_80_80_m.png", name: "Jon"}, {image: "https://thumb-cc.s3.envato.com/files/104371320/icon_80_80.png", name:"Pat"}];
-        }
     
         
         

@@ -8,17 +8,23 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-from-left-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/slide-right-animation.html">
-<link rel="import" href="subject-tile.html">
 
 
-<dom-module id='subject-view'>
+
+<dom-module id='main-menu'>
     <style>
-            
+            #container > div
+            {
+                display: inline-block;
+               
+            }
             #container
             {
-                margin-top: 15px;
                 text-align: center;
-                width: 100%;
+                margin: 10% auto;
+                margin-left: auto;
+                margin-right: auto;
+                width: 60%;
             } 
            
         
@@ -45,10 +51,21 @@
     
     <template>
         <div id="container">
-            <template is='dom-repeat' items="{{subjectList}}">
-                <subject-tile current-color="{{item.color}}" subject-name="{{item.name}}" style='margin: 20px;'></subject-tile><br><br>
-            </template>
+                <div style="padding: 30px;">
+                    <paper-icon-button class="green" noink icon ="add" style="width: 150px; height: 150px;" on-click="addModule"></paper-icon-button>
+                </div>
+                
+                <div style="padding: 30px;">
+                    <paper-icon-button class="red" noink icon="content-cut" style="width: 150px; height: 150px;" on-click='deleteModule'>></paper-icon-button>
+                </div>
+                
+                <div style="padding: 30px;">
+                    <paper-icon-button  noink icon="picture-in-picture" class="blue" style="width: 150px; height: 150px;" on-click='viewModule'>></paper-icon-button>
+                </div>
+               
+                
 
+           
         </div>
        
     </template>
@@ -57,12 +74,10 @@
 
 <script>
     Polymer({
-        is: 'subject-view',
+        is: 'main-menu',
         behaviors: [Polymer.NeonAnimatableBehavior],
         
         properties: {
-            
-            subjectList: Array,
             
             animationConfig: {
                 
@@ -82,10 +97,6 @@
                 }
             }
             
-        },
-    
-        ready: function(){
-            this.subjectList = [{name: 'MA 123', color: "red"}, {name: 'MA 123', color: 'green'}];
         },
 
         addModule: function(){
