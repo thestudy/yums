@@ -12,9 +12,10 @@
         <div class="horizontal layout">
             <template is="dom-repeat" id="daylist" items="{{calendar}}" as="day">
                 <div class="vertical layout">
-                    <span>{{day.day}}</span>
+                    <span style="-webkit-user-select: none;">{{day.day}}</span>
                     <template is="dom-repeat" items="{{day.values}}" as="block">
-                        <span>{{block}}</span>
+                        <!--<span>{{block}}</span>-->
+                        <calendar-block block-id="{{block.value}}" color="{{block.color}}"></calendar-block>
                     </template>
                 </div>
             </template>
@@ -37,6 +38,17 @@
                 minuteMax: Number,
                 blockInterval: Number,
                 calendar: Array
+            },
+            
+            listeners: {
+                'select-begin': 'selectBegin',
+                'select-continue': 'selectContinue',
+                'select-end': 'selectEnd'
+            },
+            
+            selectBegin: function(e) {
+              console.log(e.detail.blockId);
+              
             },
             
             updateCalendar: function() {
@@ -65,11 +77,15 @@
                     
                     
                     while (this.getTime(hour, min) < this.getTime(hourMax, minuteMax)) {
-                        day.values.push(this.getTime(hour, min));
+                        var t1 = {};
+                        t1.value = this.getDayNumber(day.day) + '_' +  this.getTime(hour, min);
+                        t1.selected = false;
+                        t1.color = "red";
+                        day.values.push(t1);
+                        // day.values.push(this.getTime(hour, min));
                         var t = this.nextBlock(hour, min, blockInterval);
                         hour = t.hour;
                         min = t.min;
-                        console.log(this.getTime(hour, min));
                     }
                     
                     calendar.push(day);
@@ -95,6 +111,25 @@
                     case 6:
                         return "Saturday";
                 }
+            },
+            
+            getDayNumber: function(nameDay) {
+                switch (nameDay) {
+                    case "Sunday":
+                        return 0;
+                    case "Monday": 
+                        return 1;
+                    case "Tuesday":
+                        return 2;
+                    case "Wednesday":
+                        return 3;
+                    case "Thursday":
+                        return 4;
+                    case "Friday":
+                        return 5;
+                    case "Saturday":
+                        return 6;
+                }  
             },
             
             nextBlock: function(hour, minute, blockInterval) {
