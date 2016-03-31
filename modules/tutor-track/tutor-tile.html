@@ -50,7 +50,7 @@
             <img id="image" src="{{imgFilePath}}" style="width: 80px; height: 80px;"></img>
         </div>
         
-        <paper-item disabled> {{tutorName}}</paper-item>
+        <paper-item disabled > {{tutorName}}</paper-item>
         
         
     </template>
@@ -64,6 +64,7 @@
         properties:{
             tutorName: String,
             imgFilePath: String,
+            tutorID: Number,
             isTutoring: Boolean(false),
             
             
@@ -76,6 +77,12 @@
             }
             else
                 this.$.background.hidden = false;
+        },
+        
+        showTutorInformation: function(){
+            event.stopPropagation();
+            console.log("Show information");
+            this.fire("show-information", {id: this.tutorID});
         }
     })
     </script>

@@ -26,10 +26,6 @@
             padding: 10px;
         }
         
-        .center {
-            margin: auto;
-            padding: 30px;
-        }
         paper-button.blue{
             background-color: var(--paper-blue-500);
             color:white;
@@ -53,7 +49,6 @@
     
     
     <template>
-        <div class="center" >
             <paper-card class="yellow"  >
             <div class="left">
                 <paper-input label="First Name" value="{{userFirstName}}" disabled></paper-input>
@@ -64,7 +59,7 @@
                 <br>
                 <div class="left">
                     <paper-button id="button" raised noink class="blue"  on-click="clickEvent">Submit Comment</paper-button>
-                
+                    <paper-icon-button on-click="minimizeProfile" icon="clear"></paper-icon-button>
                 </div>
                 
             </div>
@@ -73,11 +68,9 @@
                 <img src="http://www.5sblaw.com/_images/blank-user.jpg" style="width:150px;height:150px;">
             </div>
             </paper-card>
-        </div>
         
         <iron-ajax
                     auto
-                    url="getUserInfo.php"
                     params="{{ajaxParams}}"
                     handle-as="json"
                     last-response="{{userAjaxResults}}"
@@ -105,7 +98,10 @@
                     userId: user
                 }
             },
-    
+            
+            minimizeProfile: function(){
+              this.hidden = true; 
+            },
             
             
             updateUserInfo: function(){

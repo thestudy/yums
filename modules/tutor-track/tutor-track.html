@@ -8,12 +8,11 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="all-view.html">
 <link rel="import" href="subject-view.html">
-<link rel="import" href="delete-row.html">
-<link rel="import" href="view-modules.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
+
 
 
 
@@ -23,7 +22,29 @@
         #module{
             float: left;
             width: 95%;
-        }    
+        }
+        
+        #background {
+            z-index:1;
+            left:0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            margin: 0px;
+            
+        }
+        
+        
+        #popup {
+            z-index:10;
+            width: 30%;
+            height: 40%;
+            position: relative;
+            margin:  10% auto; 
+            
+            
+        }
     
          #close
             {
@@ -50,20 +71,25 @@
     
     
     <template>
-        <template is="dom-bind" id="app">
-            <paper-tabs class='blue' selected="{{selected}}">
-                <paper-tab>Classes</paper-tab>
-                <paper-tab>All Tutors</paper-tab>
-            </paper-tabs>
-            <neon-animated-pages selected="[[selected]]">
-                    <subject-view></subject-view>
-                    <all-view></all-view>
-            </neon-animated-pages>
-            <script>
-                var app = document.querySelector("#app");
-                app.selected = 0;
-            </script>
-        </template>
+        <div id='background'>
+            <template is="dom-bind" id="app">
+                <paper-tabs class='blue' selected="{{selected}}">
+                    <paper-tab>Classes</paper-tab>
+                    <paper-tab>All Tutors</paper-tab>
+                </paper-tabs>
+                <neon-animated-pages selected="[[selected]]">
+                        <subject-view></subject-view>
+                        <all-view></all-view>
+                </neon-animated-pages>
+                <script>
+                    var app = document.querySelector("#app");
+                    app.selected = 0;
+                </script>
+            </template>
+        </div>
+        <div id='popup'>
+            <tutor-profile hidden  id='prof'></tutor-profile>
+        </div>
         
         
     </template>
@@ -86,14 +112,23 @@
             
         },
         
+        listeners: {
+            'show-information' : 'showTutorInformation'
+        },
+        
         ready: function(){
             this.currentModule = 0;  
-            this.subjectList = [{name: 'MA 123', color: "red"}, {name: 'MA 123', color: 'green'}];
+            this.subjectList = [{name: 'MA 123', color: "red"}, {name: 'MA 213', color: 'green'}];
             this.tutorList = [{image: "http://lorempixel.com/80/80/", name: "John" }, {image: "http://macosrumors.com/wp-content/themes/macosrumors/images/twitter-80x80.png", name: "J"}, {image: "http://erdsoft.net/files/services/2015.10.30.09.13.19_fb_80_80_m.png", name: "Jon"}, {image: "https://thumb-cc.s3.envato.com/files/104371320/icon_80_80.png", name:"Pat"}];
             
             
         },
         
+        showTutorInformation : function(e){
+            var profile = document.querySelector('tutor-profile');
+            profile.userId = e.detail.tutorID;
+            profile.hidden = false;
+        }
         
  
     })
