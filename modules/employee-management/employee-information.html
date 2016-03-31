@@ -2,6 +2,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <dom-module id="employee-information">
     <style>
@@ -13,42 +20,76 @@
         .iron-selected {
         }
         .left{
+            @apply(--paper-font-common-base);
             float: left;
-            padding: 50px;
+            padding: 10px;
         }
         
         .center {
             margin: auto;
-            width: 70%;
-
+            padding: 30px;
         }
         paper-button.blue{
             background-color: var(--paper-blue-500);
             color:white;
             
         }
+        paper-button[toggles][active]{
+            background: var(--paper-red-500);
+            
+        }
+        paper-input {
+          --paper-input-container-disabled: {
+                opacity: 1;
+             };
+        } 
+        
+        
+         paper-card.yellow{
+             background-color: var(--paper-grey-50);
+             
+         }
+     
+        
 
     </style>
     
+    
     <template>
         <div class="center" >
+            <paper-card class="yellow"  >
             <div class="left">
-                <paper-input label="First Name" placeholder="{{userFirstName}}" disabled></paper-input>
-                <paper-input label="Last Name" placeholder="{{userLastName}}"  disabled></paper-input>
-                <paper-input label="Student ID" placeholder="{{userId}}"disabled></paper-input>
-                <paper-input label="Username" placeholder="{{userName}}" disabled></paper-input>
+                <paper-input label="First Name" value="{{userFirstName}}" disabled></paper-input>
+                <paper-input label="Last Name" value="{{userLastName}}"  disabled></paper-input>
+                <paper-input label="Student ID" value="{{userId}}"disabled></paper-input>
+                <paper-input label="Username" value="{{userName}}" disabled></paper-input>
+                <paper-card style="width: 100%;">
+                    <div class="card-actions">
+                        <paper-item style="float: left;">Roles</paper-item>
+                        <paper-icon-button id="arrow" icon="expand-less" title="roles" on-click="_toggle" style="float:right;"></paper-icon-button><br>
+                        <iron-collapse id="roles" style="width:100%;">
+                            <template is='dom-repeat' items="{{roles}}">
+                                <paper-checkbox disabled>{{item}}</paper-checkbox><br>
+                            </template>
+                        </iron-collapse>
+                                
+                    </div>
                 
-                <div>
-                    <paper-button id="button" raised noink class="blue" float="left" on-click="clickEvent">edit</paper-button>
+            
+                
+                </paper-card>
+                <br>
+                <div class="left">
+                    <paper-button id="button" raised noink class="blue"  on-click="clickEvent" toggles>edit</paper-button>
                 
                 </div>
                 
             </div>
             
             <div class="left" >
-                <img src="http://lorempixel.com/600/400" style="width:600px;height:400px;">
+                <img src="http://www.5sblaw.com/_images/blank-user.jpg" style="width:150px;height:150px;">
             </div>
-            
+            </paper-card>
         </div>
         
         <iron-ajax
@@ -72,13 +113,28 @@
                 ajaxParams: {
                     type: Object,
                     computed: "getParams(userId)"
-                }
+                },
+                roles: Array
             },
             
             getParams: function(user) {
                 return {
                     userId: user
                 }
+            },
+            
+            _toggle: function(){
+                var roles = document.getElementById('roles');
+                var iconButton = Polymer.dom(event).localTarget;
+                iconButton.icon = roles.opened ? 'expand-less'
+                                          : 'expand-more';
+                roles.toggle();
+                
+            },
+            
+            ready: function(){
+                this.roles = ['tutor', 'spc', 'supervisor', 'desk', 'admin'];
+                
             },
             
             clickEvent: function(){
@@ -90,14 +146,41 @@
                     for(i = 0; i < inputs.length; i++){
                         inputs[i].disabled = true;
                     }
+                    inputs = this.querySelectorAll("paper-checkbox");
+                    for(i = 0; i < inputs.length; i++){
+                        inputs[i].disabled = true;
+                    }
+                    var roles = document.getElementById('roles');
                     
+                    
+                    if(roles.opened){
+                        
+                        var button = document.getElementById('arrow');
+                        button.icon = 'expand-less';
+                        roles.toggle();
+                        
+                        
+                    }
                 }
                 else{
                     this.$.button.innerHTML="save";
+                    
                     var inputs = this.querySelectorAll("paper-input");
                     var i;
                     for(i = 0; i < inputs.length; i++){
                         inputs[i].disabled = false;
+                    }
+                    inputs = this.querySelectorAll("paper-checkbox");
+                    for(i = 0; i < inputs.length; i++){
+                        inputs[i].disabled = false;
+                    }
+                    var roles = document.getElementById('roles');
+                    
+                    if(!roles.opened){
+                        
+                        var button = document.getElementById('arrow');
+                        button.icon = 'expand-more';
+                        roles.toggle();
                     }
                 }
                 

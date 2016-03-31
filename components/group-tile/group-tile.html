@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
 <dom-module id="group-tile">
     <style>
@@ -10,6 +11,10 @@
             height: 200px;
             width: 100%;
             margin: 5px;
+            @apply(--paper-font-common-base);
+        }
+        #font{
+            @apply(--paper-font-common-base);
         }
         
         iron-image {
@@ -31,13 +36,13 @@
             on-response="updateGroupInfo"
             last-response="{{ajaxGroupInfo}}"></iron-ajax>
             
-        <paper-material raised id="outerbox" on-click="clickAction">
-            <iron-image src="{{fileName}}"></iron-image>
-            <div style="overflow: hidden">
+        <paper-card elevation="3" id="outerbox" header="{{groupName}}" style="float: left;" on-click="clickAction" background-color="{{bgColor}}">
+           <iron-image src="http://www.uky.edu/AE/sites/www.uky.edu.AE/files/studylogo.png"></iron-image>
+            <div style="overflow: hidden" id='font' class='card-content'>
                 <div>{{groupName}}</div>
                 <div id="groupdesc"><p>{{groupDesc}}</p></div>
             </div>
-        </paper-material>
+        </paper-card>
     </template>
     
     <script>
