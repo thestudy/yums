@@ -43,6 +43,10 @@
              background-color: var(--paper-grey-50);
              
          }
+         
+         .fixed-width{
+             width: 60%;
+         }
      
         
     </style>
@@ -51,11 +55,11 @@
     <template>
             <paper-card class="yellow" elevation='5' >
             <div class="left">
-                <paper-input label="First Name" value="{{userFirstName}}" disabled></paper-input>
+                <paper-input label="First Name" value="{{userFirstName}}" disabled classs='fixed-width'></paper-input>
                 <paper-input label="Last Name" value="{{userLastName}}"  disabled></paper-input>
                 <paper-input label="Student ID" value="{{userId}}"disabled></paper-input>
                 <paper-input label="Tutor for:" value="MA 109" disabled></paper-input>
-                <paper-input label="Comment:"></paper-input>
+                <paper-input id='comment' label="Comment:"></paper-input>
                 <br>
                 <div class="left">
                     <paper-button id="button" raised noink class="blue"  on-click="clickEvent">Submit Comment</paper-button>
@@ -103,6 +107,11 @@
               this.hidden = true; 
             },
             
+            clickEvent: function(){
+                var comment = document.getElementById('comment');
+                this.fire('sendComment', {comm: comment.value});
+                comment.value = "";  
+            },
             
             updateUserInfo: function(){
                 this.userFirstName = this.userAjaxResults['userFirstName'];
