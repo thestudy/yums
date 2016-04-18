@@ -18,5 +18,11 @@
             document.querySelector("#login").hidden = true;
             document.querySelector("#main").hidden = false;
         });
+        
+        document.addEventListener('logout', function(e){
+           console.log("Logout");
+           document.querySelector("#main").hidden = true;
+           document.querySelector("#login").hidden = false;
+        });
     </script>
 </html>

@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 include '../../DBConfig/config.php';
 
-$userId = $_GET['userId'];
+$userId = $_SESSION['userId'];
 $UserFirstNameColumnName = "";
 $UserLastNameColumnName = "";
 
