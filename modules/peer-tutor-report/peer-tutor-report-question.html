@@ -13,9 +13,9 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="peer-tutor-report-question.html">
+<link rel="import" href="paper-tags.html">
 
-<dom-module id="peer-tutor-report">
+<dom-module id="peer-tutor-report-question">
     <style>
     
         .center{
@@ -47,13 +47,34 @@
     </style>
     
     <template>
-            <peer-tutor-report-question></peer-tutor-report-question>
+        <paper-card style='margin: 15px; width: 90%;'>
+            <div class="center">
+                <paper-textarea label="Question" style="width: 30%; float: left; margin: 10px;"></paper-textarea>
+                <paper-input type="date" label="Due" always-float-label style="width: 150px; float: left; margin: 10px;"></paper-input>
+                <paper-checkbox style='float: left; margin-top: 40px;'></paper-checkbox>
+                <paper-dropdown-menu style='float: left; margin: 10px;' label='Role'>
+                    <paper-listbox class='dropdown-content'>
+                            <paper-item>Tutor</paper-item>
+                            <paper-item>SPC</paper-item>
+                            <paper-item>Desk Worker</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-checkbox style='float: left; margin-top: 40px;'></paper-checkbox>
+                <paper-tags style='float: left;'></paper-tags>
+                <paper-icon-button icon="add" class="blue"></paper-icon-button>
+                <paper-icon-button icon="clear" class="red"></paper-icon-button>
+                
+            </div>
+        </paper-card>
+        
+        
+        
     </template>
     
     
     <script>
     Polymer({
-        is: "peer-tutor-report",
+        is: "peer-tutor-report-question",
         
         properties:{
             roles: Array,
