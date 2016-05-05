@@ -61,7 +61,7 @@
                 </paper-dropdown-menu>
                 <paper-checkbox style='float: left; margin-top: 40px;'></paper-checkbox>
                 <paper-tags style='float: left;'></paper-tags>
-                <paper-icon-button icon="add" class="blue"></paper-icon-button>
+                <paper-icon-button icon="add" on-click='addRow' class="blue"></paper-icon-button>
                 <paper-icon-button icon="clear" class="red"></paper-icon-button>
                 
             </div>
@@ -83,6 +83,10 @@
         
         ready: function(){
             this.roles = ['Tutor', 'SPC', 'desk worker'];  
+        },
+        
+        addRow: function(){
+            
         }
     })
     </script>
