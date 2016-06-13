@@ -1,0 +1,143 @@
+<!--evan_h & lulahogg-->
+<!--schedule-colorSelector.html-->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<script src="../../bower_components/jscolor/jscolor.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="highlight-radio-label.html">
+
+
+<dom-module id="schedule-color-selector">
+    <style>
+        .text-block {
+            width: 300px;
+            float:left;
+            margin:5px;
+        }
+        .buttons {
+            margin-top:22px;
+            float: right;
+            background: linear-gradient(lightgray,white);
+        }
+        
+        #totalInfo{
+            min-width: 1200;
+            padding-top:40px;
+            /*padding-left: 20px;*/
+        }
+        
+        /*ADD TEXT BOX*/
+        #add-box {
+            float: left;
+            margin: 5px;
+            width: 680px;
+            padding-left: 30px;
+            background: url(banner3.png) repeat-x;
+        }
+         /*ADD TEXT BOX TITLE*/
+        .add-box-title {
+            width: 100%;
+            text-align: center;
+            padding-top: 18px;
+        }
+        
+        .mydate.v-datefield-parseerror .v-textfield{
+            background: red;
+        }
+        
+        
+    </style>
+    <template>
+        <div id="totalInfo">
+            
+            
+        <paper-material id="add-box">
+                        
+            <div class="add-box-title">
+                <b>Add Specification</b>
+            </div>
+            
+<!-- input text -->
+            <paper-input label="add new text" char-counter maxlength="40" id="text" class="text-block" value="{{startText}}"></paper-input>
+            
+<!-- color picker -->
+            
+            Highlight Color:
+            
+            <input id="color" class="jscolor"></input>
+            
+            
+<!-- add remove text buttons -->
+            <paper-button raised class="buttons" on-click="addText">+</paper-button>
+    
+            </div>
+            
+        </paper-material>
+        
+        
+        <br> <br> <br> <br> <br> <br> <br> <br>
+        
+        <template is="dom-repeat" items={{labels}}>
+            <highlight-radio-label label-i-d="{{index}}" label="{{item.label}}" highlight-color="{{item.color}}"></highlight-radio-button>
+        </template>
+
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "schedule-color-selector",
+            
+            properties: {
+                labels: {
+                    type: Array,
+                    notify: true
+                },
+                color_value: String
+                
+                
+            },
+            
+            listeners: {
+                'remove-label' : 'removeLabel'
+            },
+            
+            removeLabel: function(e) {
+                this.splice('labels', e.detail.labelID, 1);
+                console.log("removed a label: " + e.detail.labelID);
+            },
+            
+            computeName: function(label) {
+                return label.replace(/\s/g, '').toLowerCase();
+            },
+            
+            ready: function() {
+            },
+
+            addText: function() {
+                
+                if(this.startText === ''){
+                    document.getElementById("text").style.outline = "3px solid red";
+                }
+                else{
+                    console.log("add");
+                    console.log("Text added: ", this.startText);
+                    
+                    console.log("Color picked: ", this.$.color.value);
+                    
+                    document.getElementById("text").style.outline = "";
+                    
+                    //array mutation
+                    this.splice('labels', this.labels.length, 0, {"label" : this.startText, "color": this.$.color.value});
+                    
+                    this.startText = "";
+                }
+
+            },
+  
+        });
+    </script>
+    
+</dom-module>

@@ -1,0 +1,190 @@
+<!--evan_h & lulahogg-->
+<!--schedule-grid.html-->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="schedule-column.html">
+<link rel="import" href="highlight-radio-label.html">
+
+<dom-module id="schedule-grid">
+    <style>
+        .container {
+            background-color: #5f7682;
+            padding:25px;
+            float:left;
+        }
+        .time-label {
+            height:21px;
+            /*margin-top: 5px;*/
+            text-align: right;
+            border-style: none solid none none;
+            border-width: thin;
+            padding-right: 2px;
+
+        }
+        
+        .time-label-column-container {
+            width: 60px;
+            background-color: white;
+            float:left;
+        }
+        .time-label-pad {
+            width:59px;
+            height:9px;
+            background-color: white;
+            border-width: thin;
+            border-style: none solid none none;
+        }
+        .schedule-item {
+            position: absolute;
+            width:79px;
+            height: 389px;
+            top:210px;
+            left:99px;
+            z-index:2;
+            background: rgba(80,200,200,0.85);
+        }
+        .radio-container {
+            float: left;
+            background: white url(banner3.png) repeat-x;
+            margin-left: 20px;
+            width:150px;
+            /*height:300px;*/
+        }
+        .radio-title {
+            padding-top: 18px;
+            text-align: center;
+        }
+        .selector-radio {
+            width:calc(100% - 10px);
+            margin:10px 5px 10px 5px;
+            transition-property: background-color;
+            transition-duration: 1s;
+        }
+        /*keeps aligment*/
+        #totalInfo{
+            min-width: 1080px;
+        }
+    
+ 
+        
+        
+    </style>
+    <template>
+        
+        <!-- div contains the following infomation for aligment on page -->
+        <div id="totalInfo">
+        
+        <paper-material elevation=0 class="container" on-mouseover="endSelection">
+            
+            <template is="dom-repeat" items="{{calendar}}" as="column" index-as="colNum">
+                <schedule-column col-num="{{colNum}}" day="{{column.day}}" blocks="{{column.blocks}}" available-colors="{{availableColors}}"></schedule-column>
+            </template>
+            
+            <paper-material elevation=0 class="radio-container">
+                <paper-material elevation=0 class="radio-title">
+                    Highlight Type
+                </paper-material>
+                
+                <paper-radio-group on-iron-select="updateSelected" id="selector" selected="nopreference">
+                    <template is="dom-repeat" items="{{availableColors}}">
+                        <paper-radio-button name="{{computeName(item.label)}}">{{item.label}}</paper-radio-button>
+                    </template>
+                </paper-radio-group>
+                
+            </paper-material>
+             
+        </paper-material>
+        
+        
+        
+        </div>
+    </template>
+    <script>
+    /*global Polymer*/
+        Polymer({
+            is: "schedule-grid",
+            
+            properties: {
+                calendar: Array,
+                availableColors: Array,
+                defaultColors: Array,
+                selectedLabel: String,
+                selecting: Boolean
+            },
+            
+            listeners: {
+                "mouseup": "endSelection",
+                "column-mouse-down" : "startSelection",
+                "column-mouse-over": "continueSelection"
+            },
+            
+            
+            startSelection: function(e) {
+                this.selecting = true;
+                
+                //Deep copy into local (temporary) array
+                
+                
+                var newArray = [];
+                for (var i = 0; i < this.calendar[e.detail.colNum].blocks.length; i++) {
+                    newArray.push(this.calendar[e.detail.colNum].blocks[i]);
+                }
+                //Modify here
+                newArray[e.detail.rowNum] = this.getIndexByLabel(this.selectedLabel);
+                //set will update value and notify.  First argument calculates 'path'
+                this.set('calendar.' + String(e.detail.colNum) + '.blocks', newArray);
+            },
+            
+            
+            continueSelection: function(e) {
+                
+                if (this.selecting) {
+                    //Deep copy into local (temporary) array
+                    var newArray = [];
+                    for (var i = 0; i < this.calendar[e.detail.colNum].blocks.length; i++) {
+                        newArray.push(this.calendar[e.detail.colNum].blocks[i]);
+                    }
+                    //Modify here
+                    newArray[e.detail.rowNum] = this.getIndexByLabel(this.selectedLabel);
+                    //set will update value and notify.  First argument calculates 'path'
+                    this.set('calendar.' + String(e.detail.colNum) + '.blocks', newArray);
+                }
+                
+            },
+            
+            
+            
+            endSelection: function(e) {
+                this.selecting = false;
+            },
+            
+            computeName: function(label) {
+                return label.replace(/\s/g, '').toLowerCase();
+            },
+            
+            updateSelected: function(e) {
+                this.selectedLabel = this.$.selector.selected;
+            },
+            
+            getIndexByLabel: function(label) {
+                for (var i = 0; i < this.availableColors.length; i++) {
+                    if (this.availableColors[i].label.replace(/\s/g, '').toLowerCase() === label.replace(/\s/g, '').toLowerCase()) return i;
+                }
+                //Should probably put a fail case here
+            },
+            
+            ready: function() {
+                
+            },
+            
+            arrayItem: function(change, index, path) {
+                return this.get(path, change.base[index]);
+            }
+            
+            });
+    </script>
+</dom-module>

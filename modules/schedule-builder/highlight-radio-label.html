@@ -1,0 +1,98 @@
+<!--evan_h & lulahogg-->
+<!--highlight-radio-label.html-->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="highlight-radio-label">
+    <style>
+        #container {
+            float: left;
+            height: 60px;
+            width: 200px;
+            background-color: white;
+            padding:5px;
+        }
+        #swatch {
+            width: 30px;
+            height: 30px;
+            float:right;
+            margin-right:22px;
+            
+            position:relative;
+            top:50%;
+            transform: translateY(-50%);
+        }
+        
+        .label {
+            float: left;
+            width: 60%;
+            position:relative;
+            top:50%;
+            transform: translateY(-50%);
+        }
+        
+        .remove {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+        
+    </style>
+    <template>
+        
+        <paper-material id="container" on-mouseover="showX" on-mouseout="hideX">
+            <div class="label">{{label}}</div>
+            <paper-material id="swatch"></paper-material>
+            <paper-icon-button icon="close" title="close" class="remove" on-click="removeLabel" hidden={{hiddenX}}></paper-icon-button>
+            <!--<paper-material class="remove" on-click="removeLabel">-</paper-material>-->
+        
+        </paper-material>
+        
+        
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "highlight-radio-label",
+            properties: {
+                name: String,
+                label: String,
+                highlightColor: String,
+                labelID: Number,
+                hiddenX: {
+                    type: Boolean, 
+                    value: true
+                }
+            },
+            
+            ready: function() {
+                this.hiddenX = true;
+                this.name = this.label.replace(/\s/g, '').toLowerCase();
+                this.$.swatch.style.backgroundColor = this.highlightColor;
+            },
+            
+            hideX: function() {
+                this.hiddenX = true;
+            },
+            
+            showX: function() {
+                this.hiddenX = false;
+            },
+            
+            removeLabel: function() {
+                this.fire('remove-label', {labelID: this.labelID});
+            }
+            
+            
+            
+        });
+    </script>
+    
+</dom-module>

@@ -1,0 +1,42 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="schedule-order.html">
+<link rel="import" href="schedule-color-selector.html">
+<link rel="import" href="schedule-grid.html">
+<link rel="import" href="schedule-times.html">
+
+<dom-module id="availability-request-setup">
+    <style>
+        
+    </style>
+    
+    <template>
+        <schedule-order calendar="{{calendar}}"></schedule-order>
+        <br> <br> <br> <br> <br> <br> <br> <br>
+        <schedule-color-selector labels="{{availableColors}}"></schedule-color-selector>
+        <br> <br> <br> <br>
+        <schedule-times></schedule-times>
+        <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
+        <schedule-grid available-colors="[[availableColors]]" calendar="{{calendar}}"></schedule-grid>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "availability-request-setup",
+           
+           properties: {
+               availableColors: Array,
+               calendar: Array
+           },
+           
+           ready: function() {
+               this.availableColors = [
+                    {"label" : "Closed", "color" : "white"},
+                    {"label" : "Prefer not to work", "color" : "yellow"},
+                    {"label" : "Cannot work", "color" : "red"},
+                    {"label" : "Prefer to work", "color" : "green"}
+                    ];
+           }
+        });
+    </script>
+</dom-module>

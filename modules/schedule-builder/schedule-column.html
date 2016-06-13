@@ -1,0 +1,92 @@
+<!--evan_h & lulahogg-->
+<!--schedule-column.html-->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="schedule-cell.html">
+
+<dom-module id="schedule-column">
+    <style>
+        .column {
+            /*padding-top: 20px;*/
+            
+            width: 80px;
+            /*margin:10px;*/
+            background-color: gray;
+            float:left;
+        }
+        .column-container {
+            width: 80px;
+            float:left;
+        }
+        .cell {
+            height: 80px;
+            background-color: lightgray;
+        }
+        .column-label {
+            width:79px;
+            text-align:center;
+            background-color: white;
+            border-width: thin;
+            border-style: none solid solid none;
+        }
+    </style>
+    <template>
+        <paper-material elevation=0 class="column-container">
+            <paper-material elevation=0 class="column-label">
+                {{day}}
+            </paper-material>
+            <!--<paper-material elevation=0 class="column-label">-->
+            <!--    {{date}}-->
+            <!--</paper-material>-->
+            <paper-material elevation=0 class="column">
+                <!--dom-repeat-->
+                <template is="dom-repeat" items="{{blocks}}" as="cell" index-as="cellNum">
+                    <!--                                                vv Don't Ask vv            -->
+                    <!--<schedule-cell row-num="{{cellNum}}" color="[[getColor(availableColors.*, cell, 'color')]]"></schedule-cell>-->
+                    <schedule-cell row-num = "{{cellNum}}" available-colors = "{{availableColors}}" color-index = "{{cell}}"></schedule-cell>
+                </template>
+            </paper-material>
+        </paper-material>
+    </template>
+    <script>
+    
+    /*global Polymer*/
+        Polymer({
+            is: "schedule-column",
+            
+            properties: {
+                colNum: Number,
+                day: String,
+                availableColors: Array
+            },
+            
+            listeners: {
+                "cell-mouse-down": "columnMouseDown",
+                "cell-mouse-over": "columnMouseOver"
+            },
+            
+            columnMouseDown: function(e) {
+                this.fire("column-mouse-down", {rowNum: e.detail.rowNum, colNum: this.colNum});
+            },
+            
+            columnMouseOver: function(e) {
+                this.fire("column-mouse-over", {rowNum: e.detail.rowNum, colNum: this.colNum});
+            },
+            
+            // debug: function() {
+            //     console.log(this.blocks);
+            //     console.log(this.availableColors[0].color);
+            // },
+            
+            //spaghetti
+            getColor: function(change, index, path) {
+                return this.get(path, change.base[index]);
+            }
+            
+            
+            });
+    </script>
+</dom-module>
