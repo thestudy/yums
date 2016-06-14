@@ -7,12 +7,17 @@
         #block {
             width: 100px;
             height: 20px;
-            margin: 0pc;
+            margin: 0px;
+            -webkit-user-select: none;
+        }
+        
+        .blockColor {
+            background-color: var(color);
         }
     </style>
     
     <template>
-        <paper-material id="block" elevation="0" on-mouseover="mouseOver" on-mouseout="mouseOut" on-mousedown="mouseDown" on-mouseup="mouseUp" on-click="mouseClick"></paper-material>
+        <paper-material id="block" class="blockColor" elevation="0" on-mouseover="mouseOver" on-mouseout="mouseOut" on-mousedown="mouseDown" on-mouseup="mouseUp" on-click="mouseClick"><span>{{blockId}}</span></paper-material>
     </template>
     
     <script>
@@ -20,7 +25,9 @@
            is: "calendar-block",
            
            properties: {
-               blockId: String
+               blockId: String,
+               selected: Boolean,
+               color: String
            },
            
            mouseOver: function() {
@@ -33,11 +40,21 @@
            },
            
            mouseDown: function() {
+               console.log("mousedown");
                this.fire("select-begin", {blockId: this.blockId});
            },
            
            mouseUp: function() {
                this.fire("select-end", {blockId: this.blockId});
+           },
+           
+           mouseClick: function() {
+             console.log("mousclick");  
+           },
+           
+           getColor: function(selected, selectedColor, permColor) {
+               this.$.block.style.backgroundColor = "green";
+               return (selected) ? selectedColor : permColor;
            }
         });
     </script>

@@ -1,0 +1,82 @@
+<!--evan_h & lulahogg-->
+<!--schedule-cell.html-->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<dom-module id="schedule-cell">
+    <style>
+        .cell {
+            height: 20px;
+            background-color: white;
+            transition: background-color .1s;
+            
+            
+            /*top right bottom left*/
+            border-width: thin;
+            border-style: none solid solid none;
+        }
+        
+        
+    </style>
+    <template>
+        <paper-material animated elevation=0 class="cell" id="cell">
+
+        </paper-material>
+        
+        
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "schedule-cell",
+            
+            
+            properties: {
+                rowNum: Number,
+                availableColors: {
+                    type: Array,
+                    observer: "changeColor"
+                },
+                colorIndex: {
+                    type: Number,
+                    observer: "changeColor"
+                }
+                // color: {
+                //     type: String,
+                //     observer: "changeColor"
+                // }
+            },
+            
+            listeners: {
+                "mousedown": "cellMouseDown",
+                "mouseover": "cellMouseOver"
+            },
+            
+            ready: function(e) {
+                //this.selecting = false;
+            },
+            
+            changeColor: function() {
+                //locate the element to change color of (which cell)
+                console.log("changing color");
+                if (this.availableColors) {
+                    this.$.cell.style.backgroundColor = this.availableColors[this.colorIndex].color;
+                }
+            },
+            
+            cellMouseDown: function() {
+                this.changeColor();
+                this.fire("cell-mouse-down", {rowNum: this.rowNum});
+            },
+            
+            cellMouseOver: function() {
+                this.changeColor();
+                this.fire("cell-mouse-over", {rowNum: this.rowNum});
+            }
+            
+        });
+    </script>
+    
+</dom-module>

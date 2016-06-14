@@ -1,0 +1,546 @@
+<!--lulahogg & evan_h -->
+<!--schedule-order.html-->
+
+<!-- to install calander: $ bower install --save vaadin-date-picker -->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!--Paper buttons -->
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<!--Calander Date Picker-->
+<link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+
+
+<dom-module id="schedule-order">
+    <style>
+      
+        /* START HOUR */
+        #start-hour{
+            width: calc(50% - 10px);
+            float: left;
+            /*margin: top right bottom left*/
+            margin: 5px 0px 10px 10px;
+        }
+        /*START MINUTE*/
+        #start-minute{
+            width: calc(50% - 10px);
+            float: left;
+            /*margin: top right bottom left*/
+            margin: 5px 10px 10px 0px;
+        }
+        /*TIME BOX*/
+        .time-box {
+            float:left;
+            margin: 5px;
+            width:200px;
+            background: url(banner3.png) repeat-x;
+
+        }
+        /*TIME BOX TITLE*/
+        .time-box-title {
+            text-align:center;
+            padding-top:18px;
+            width:100%;
+        }
+        /*END HOUR*/
+        #end-hour{
+            width: calc(50% - 10px);
+            float: left;
+            /*margin: top right bottom left*/
+            margin: 5px 0px 10px 10px;
+        }
+        /*END MINUTE*/
+        #end-minute{
+            width: calc(50% - 10px);
+            float: left;
+            /*margin: top right bottom left*/
+            margin: 5px 10px 10px 0px;
+        }
+        /*INTERVAL TIME*/
+        #interval-time{
+            width: calc(100% - 20px);
+            float: left;
+            margin: 5px 10px 10px 10px;
+        }
+        /*INTERVAL TIME BOX*/
+        #interval-time-box {
+            float: left;
+            margin: 5px;
+            width: 140px;
+            background: url(banner3.png) repeat-x;
+        }
+        /*INTERVAL TIME BOX TITLE*/
+        .interval-time-box-title {
+            width: 100%;
+            text-align: center;
+            padding-top: 18px;
+        }
+        /*START DATE*/
+        #start-date{
+            width: 140px;
+            float: left;
+            margin: 11px;
+        }
+        /*END DATE*/
+        #end-date{
+            width: 140px;
+            float: left;
+            margin: 11px;
+            outline-offset: 5px;
+        }
+        
+        /* Exit button (Go Back) */
+        #button-exit {
+            color: black;
+            float: right;
+            top: 5px;
+            background: linear-gradient(lightgray,white);
+               
+        }
+        /* Submit button */
+        #button-submit {
+            color: black;
+            /*right: 2px;*/
+            top: 40px;
+            float: left;
+            left: 15px;
+            background: linear-gradient(lightgray,white);
+            
+        }
+        /*Used for paper material*/
+        #paper-block {
+            top: 40px;
+            margin: 2px;
+        }
+        /*Used for information inside startTime*/
+        #startTime-information {
+            width: 80px;
+            max-height: 300px;
+        }
+        /*Used for information inside startTimeMinute*/
+        #startTimeMinute-information {
+            width: 80px;
+            max-height: 300px;
+        }
+        /*Used for information inside endTime*/
+        #endTime-information {
+            width: 80px;
+            max-height: 300px;
+        }
+        /*Used for information inside endTimeMinute*/
+        #endTimeMinute-information {
+            width: 80px;
+            max-height: 300px;
+        }
+        /*Used for information inside intervalTime*/
+        #intervalTime-information {
+            width: 80px;
+            max-height: 300px;
+        }
+        
+        .mydate.v-datefield-parseerror .v-textfield{
+            background: red;
+        }
+        
+       /*sets minute interval, start and end time above start and end date*/
+       /* #topOfPage{*/
+            /*width: 700px;*/
+       /*     position: relative;*/
+           
+       /* }*/
+        /*sets start and end date below minute interval, start and end time*/
+       /* #bottomOfPage{*/
+       /*     width: 500;*/
+       /*     padding-left: 65px;*/
+       /*     position: relative;*/
+ 
+        /*}*/
+        
+        /*keeps aligment*/
+        #totalInfo{
+            min-width: 1200px;
+        }
+
+
+    </style>
+  
+
+   
+    <template>
+        <!--div contains: topOfPage div, bottomOfPage div, Go Back, Submit button-->
+        <div id="totalInfo">
+
+            <paper-material elevation="1" id="paper-block"> 
+
+<!-- Exit button -->
+
+                <!-- Exit button -->
+                <paper-button raised id="button-exit">Go Back</paper-button>
+                
+<!-- Choose Time Intervals -->
+            
+                <div id="topOfPage">
+                    <paper-material id="interval-time-box">
+                        
+                        <div class="interval-time-box-title">
+                            <b>Minute Interval</b>
+                        </div>
+                        
+                        <!-- Dropdown menu for Minute Interval -->
+                        <paper-dropdown-menu label="MM", id ="interval-time">
+                            
+                            <!-- content in the dropdown menu for Minute Interval -->
+                            <paper-listbox class="dropdown-content", id="intervalTime-information" selected="{{intervalSelected}}" on-click="intervalTime">
+                                
+                                <!-- Minute Intervals in Dropdown -->
+                                <template is="dom-repeat" items="{{intervals}}">
+                                    <paper-item>{{item}}</paper-item>
+                                </template>
+            
+                              </paper-listbox>
+                              
+                        </paper-dropdown-menu>
+                    
+                    </paper-material>
+            
+<!-- Start and End times (hours and minutes) -->
+            <!-- sets above start end date -->
+            
+                    <!--container for start time-->
+                    <paper-material class="time-box" elevation=1>
+                        <!--title for start time box-->
+                        <div class="time-box-title">
+                            <b>Start Time</b>
+                        </div>
+                        
+                        <!-- Start hour -->
+                        <paper-dropdown-menu label="HH", id ="start-hour">
+                            
+                            <!-- content in the dropdown menu -->
+                            <paper-listbox class="dropdown-content" id="startTime-information" selected="{{startSelected}}" on-click="startTimeHour" >
+                                
+                                <!-- START TIMES IN DROPDOWN -->
+                                <template is="dom-repeat" items="{{startHour}}" >
+                                  
+                                    <paper-item>{{item}}</paper-item>
+                                   
+                                </template>
+                           
+                              </paper-listbox>
+                              
+                        </paper-dropdown-menu>
+                        
+                        <!-- Start minute -->
+                        <paper-dropdown-menu disabled label="MM", id ="start-minute">
+                            
+                            <!-- content in the dropdown menu -->
+                            <paper-listbox class="dropdown-content" id="startTimeMinute-information" selected="{{startMinuteSelected}}" on-click="startTimeMinute" >
+                                
+                                <!-- START TIMES IN DROPDOWN -->
+                                <template is="dom-repeat" items="{{startMinute}}" >
+                                  
+                                    <paper-item>{{item}}</paper-item>
+                                   
+                                </template>
+                           
+                              </paper-listbox>
+                              
+                        </paper-dropdown-menu>
+                    </paper-material>
+                    
+                    
+                    <!--container for end time-->
+                    <paper-material class="time-box" elevation=1>
+                        <!--title for end time box-->
+                        <div class="time-box-title">
+                            <b>End Time</b>
+                        </div>
+                        
+                        <!-- End hour -->
+                        <paper-dropdown-menu label="HH", id ="end-hour">
+                            
+                            <!-- content in the dropdown menu -->
+                            <paper-listbox class="dropdown-content" id="endTime-information" selected="{{endSelected}}" on-click="endTimeHour">
+                                
+                                <!-- END TIMES IN DROPDOWN -->
+                                <template is="dom-repeat" items="{{endHour}}">
+                                    <paper-item>{{item}}</paper-item>
+                                </template>
+            
+                              </paper-listbox>
+                              
+                        </paper-dropdown-menu>
+                        
+                        <!-- End minute -->
+                        <paper-dropdown-menu disabled label="MM", id ="end-minute">
+                            
+                            <!-- content in the dropdown menu -->
+                            <paper-listbox class="dropdown-content" id="endTimeMinute-information" selected="{{endMinuteSelected}}" on-click="endTimeMinute">
+                                
+                                <!-- END TIMES IN DROPDOWN -->
+                                <template is="dom-repeat" items="{{endMinute}}">
+                                    <paper-item>{{item}}</paper-item>
+                                </template>
+            
+                              </paper-listbox>
+                              
+                        </paper-dropdown-menu>
+                    </paper-material>
+                </div>
+
+
+            
+<!-- Start and End Date -->
+                <!-- sets below minute interval, start and end time -->
+                <div id="bottomOfPage">
+                    <!--container for start date-->
+                    <paper-material class="time-box" elevation=1>
+                        <!--title for start date box-->
+                        <div class="time-box-title">
+                            <b>Start Date</b>
+                        </div>
+                
+                          <!-- Start date picker -->
+                        <vaadin-date-picker label="Pick Start Date"  value="{{startValue}}" id ="start-date" on-click="startDate">
+                        </vaadin-date-picker>
+                    </paper-material>
+                    
+                    <!--container for end date-->
+                    <paper-material class="time-box" elevation=1>
+                        <!--title for end date box-->
+                        <div class="time-box-title">
+                            <b>End Date</b>
+                        </div>
+                    
+                    <!-- End date picker -->
+                    
+                    <vaadin-date-picker disabled label="Pick End Date" value="{{endValue}}"  id="end-date" on-click="endDate">
+                    </vaadin-date-picker>
+                    </paper-material>
+                </div>
+                
+            
+<!-- Submit button -->
+                <!-- Submit -->
+                <paper-button raised id="button-submit" on-click="calculateSchedule">Submit</paper-button> 
+                </paper-material>
+        </div>
+
+
+        
+    </template>
+    
+    
+    <script>
+        /*global Polymer*/
+        Polymer({
+           is: "schedule-order",
+           
+           properties: {
+               // START HOUR
+               startHour: Array,
+               startSelected: String,
+               
+               // START MINUTE
+               startMinute: Array,
+               startMinuteSelected: String,
+               
+               // END HOUR
+               endHour: Array,
+               endSelected: String,
+               
+               // END MINUTE
+               endMinute: Array,
+               endMinuteSelected: String,
+               
+               // INTERVALS
+               intervals: Array,
+               intervalSelected: String,
+               
+               //calendar object to be manipulated
+               calendar: {
+                   type: Array,
+                   notify: true
+               }
+               
+               
+           },
+           
+    
+// Start hour, End hour, Interval selection hard-coded 
+           ready: function() {
+               
+               
+                //[SERVER ACCESS]
+                this.startHour = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
+
+                this.endHour = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
+
+                this.intervals = ["05", "10", "15", "20", "30", "60"];
+
+           },
+// Start End Hour output 
+            // Start time hour position in array output to console
+            startTimeHour: function() {
+                //console.clear();
+                console.log(this.startSelected);
+            },
+
+            // End time hour position in array output to console
+            endTimeHour: function() {
+                //console.clear();
+                console.log(this.endSelected);
+            },
+
+            
+// Interval Time Update
+            intervalTime: function(e) {
+
+                // Switch between time intervals for minutes (updates)
+                switch(this.intervalSelected) {
+                   case 0:
+                        this.startMinute = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+                        this.endMinute = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+                        break;
+                    case 1:
+                        this.startMinute = ["00", "10", "20", "30", "40", "50"];
+                        this.endMinute = ["00", "10", "20", "30", "40", "50"];
+                        break;
+                    case 2:
+                        this.startMinute = ["00", "15", "30", "45"];
+                        this.endMinute = ["00", "15", "30", "45"];
+                        break;
+                    case 3:
+                        this.startMinute = ["00", "20", "40"];
+                        this.endMinute = ["00", "20", "40"];
+                        break;
+                    case 4:
+                        this.startMinute = ["00", "30"];
+                        this.endMinute = ["00", "30"];
+                        break;
+                    case 5:
+                        this.startMinute = ["00"];
+                        this.endMinute = ["00"];
+                        break;
+                
+               }
+               
+               
+
+               //ACTIVATE MINUTE DROPDOWNS
+               this.querySelector("#start-minute").disabled = false;
+               this.querySelector("#end-minute").disabled = false;
+               
+            },
+            
+// Start time minutes position in array output to console
+            startTimeMinute: function() {
+                
+                console.log("Start Time Minute:", this.startMinuteSelected);
+                   
+            },
+            
+// End time minutes position in array output to console
+            endTimeMinute: function() {
+                
+                console.log("End Time Minute:", this.endMinuteSelected);
+                   
+            },
+               
+               
+// Start End Date Picker Output Value               
+            //Start Date picker value output to console
+            startDate: function() {
+               
+                if(this.startValue == ""){
+                    this.querySelector("#end-date").disabled = true;
+                }
+                else{
+                    console.log("Start Date:", this.startValue);
+                    this.querySelector("#end-date").disabled = false;
+                    this.endValue = "";
+                }
+            },
+            
+            //End Date picker value output to console
+            endDate: function() {
+                //console.clear();
+                if(this.endValue == ""){
+                    
+                }
+                else if(this.endValue < this.startValue){
+                    console.log("End Date Not Valid");
+                    this.endValue = "";
+                    document.getElementById("end-date").style.outline = "3px solid red";
+
+                } 
+                else{
+                    console.log("End Date:", this.endValue);
+                    document.getElementById("end-date").style.outline = "";
+                }
+                
+            },
+
+            calculateSchedule: function() {
+                this.calendar = [];
+                
+                //For now we assume standard 7 days/per week, theoretically we can add more options in later
+                this.calendar = [];
+                var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+                
+                for (var day = 0; day < days.length; day++) {
+                    
+                    var newDay = {};
+                    newDay.day = days[day];
+                    newDay.blocks = [];
+                    var tempHour = this.startSelected;
+                    var tempMinute = this.startMinute[this.startMinuteSelected];
+                    var tempInterval = this.intervals[this.intervalSelected];
+                    
+                    while (!this.endReached(tempHour, tempMinute, this.endHour[this.endSelected], this.endMinute[this.endMinuteSelected])) {
+                        newDay.blocks.push(0);
+                        var newTime = this.increaseTimeByInterval(tempHour, tempMinute, tempInterval);
+                        tempHour = newTime.hour;
+                        tempMinute = newTime.minute;
+                    }
+                    this.push("calendar", newDay);
+                }
+            },
+            
+            increaseTimeByInterval: function(hour, minute, interval) {
+                hour = Number(hour);
+                minute = Number(minute);
+                interval = Number(interval);
+                
+                minute += interval;
+                if (minute >= 60) {
+                    minute -= 60;
+                    hour++;
+                }
+                
+                return {
+                    hour: hour,
+                    minute: minute
+                };
+            },
+            
+            endReached: function(currentHour, currentMinute, endHour, endMinute) {
+                if (Number(currentHour) < Number(endHour)) return false;
+                else if (Number(currentHour) > Number(endHour)) return true;
+                else if (Number(currentMinute) < Number(endMinute)) return false;
+                else return true;
+            }
+           
+        });
+    </script>
+ </dom-module>

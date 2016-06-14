@@ -1,0 +1,87 @@
+<!-- availability-request-submit -->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="schedule-grid.html">
+
+<dom-module id="availability-request-submit">
+    
+    <style>
+    
+    
+    #totalInfo{
+            min-width: 700px;
+            padding-top:40px;
+        }
+    
+    .minHours{
+        width: 300px;
+        float:left;
+        padding-top:20px;
+
+    }
+        
+    .maxHours{
+        width: 300px;
+
+    }
+    
+    /*ADD TEXT BOX*/
+    #add-limits {
+        float: left;            
+        margin: 5px;
+        width: 750px;
+        padding-left: 30px;
+        background: url(banner3.png) repeat-x;
+    }
+     /*ADD TEXT BOX TITLE*/
+    .add-limits-title {
+        width: 100%;
+        text-align: center;
+        padding-top: 18px;
+    }
+        
+        
+    </style>
+    
+    <template>
+        
+        <div id="totalInfo">
+            
+            
+        <paper-material id="add-availability">
+                        
+            <div class="add-availability-title">
+                <b>Add Availability</b>
+            </div>
+            
+            
+<!-- slider 1 -->
+            
+            <div>Min Hours</div>
+            <paper-slider class="minHours" value="50" min="18" max="100" editable></paper-slider>
+            
+            
+<!-- slider 2 -->
+            
+            <div>Max Hours</div>
+            <paper-slider class="maxHours" value="50" min="20" max="100" editable></paper-slider>
+            
+            
+            
+        
+            
+        </paper-material>
+        </div>    
+        
+            
+    </template>
+    
+    <script>
+        Polymer({
+           is: "availability-request-submit" 
+        });
+    </script>
+    
+</dom-module>

@@ -1,0 +1,158 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="calendar-block.html">
+
+<dom-module id="calendar-view">
+    
+    <style>
+    </style>
+    
+    <template>
+        <div class="horizontal layout">
+            <template is="dom-repeat" id="daylist" items="{{calendar}}" as="day">
+                <div class="vertical layout">
+                    <span style="-webkit-user-select: none;">{{day.day}}</span>
+                    <template is="dom-repeat" items="{{day.values}}" as="block">
+                        <!--<span>{{block}}</span>-->
+                        <calendar-block block-id="{{block.value}}" color="{{block.color}}"></calendar-block>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+    
+    <script>
+        Polymer({
+            is: "calendar-view",
+            
+            properties: {
+                selectorColor: String,
+                selectedColor: String,
+                view: Boolean,
+                dayMin: String,
+                dayMax: String,
+                hourMin: Number,
+                minuteMin: Number,
+                hourMax: Number,
+                minuteMax: Number,
+                blockInterval: Number,
+                calendar: Array
+            },
+            
+            listeners: {
+                'select-begin': 'selectBegin',
+                'select-continue': 'selectContinue',
+                'select-end': 'selectEnd'
+            },
+            
+            selectBegin: function(e) {
+              console.log(e.detail.blockId);
+              
+            },
+            
+            updateCalendar: function() {
+                console.log("Updating");
+                this.dayMin = "0";
+                this.hourMin = 14;
+                this.minuteMin = 15;
+                this.hourMax = 22;
+                this.minuteMax = 0;
+                this.blockInterval = 30;
+                this.dayMax = "6";
+                this.calendar = this.getCalendar(this.dayMin, this.dayMax, this.hourMin, this.hourMax, this.minuteMin, this.minuteMax, this.blockInterval);
+            },
+            
+            getCalendar: function(dayMin, dayMax, hourMin, hourMax, minuteMin, minuteMax, blockInterval) {
+                var calendar = [];
+                
+                var i;
+                for (i = Number(dayMin); i <= Number(dayMax); i++) {
+                    var day = {};
+                    day.day = this.getDayName(i);
+                    day.values = [];
+                    
+                    var hour = hourMin;
+                    var min = minuteMin;
+                    
+                    
+                    while (this.getTime(hour, min) < this.getTime(hourMax, minuteMax)) {
+                        var t1 = {};
+                        t1.value = this.getDayNumber(day.day) + '_' +  this.getTime(hour, min);
+                        t1.selected = false;
+                        t1.color = "red";
+                        day.values.push(t1);
+                        // day.values.push(this.getTime(hour, min));
+                        var t = this.nextBlock(hour, min, blockInterval);
+                        hour = t.hour;
+                        min = t.min;
+                    }
+                    
+                    calendar.push(day);
+                }
+                
+                return calendar;
+            },
+            
+            getDayName: function(numDay) {
+                switch (Number(numDay)) {
+                    case 0:
+                        return "Sunday";
+                    case 1:
+                        return "Monday";
+                    case 2:
+                        return "Tuesday";
+                    case 3:
+                        return "Wednesday";
+                    case 4:
+                        return "Thursday";
+                    case 5:
+                        return "Friday";
+                    case 6:
+                        return "Saturday";
+                }
+            },
+            
+            getDayNumber: function(nameDay) {
+                switch (nameDay) {
+                    case "Sunday":
+                        return 0;
+                    case "Monday": 
+                        return 1;
+                    case "Tuesday":
+                        return 2;
+                    case "Wednesday":
+                        return 3;
+                    case "Thursday":
+                        return 4;
+                    case "Friday":
+                        return 5;
+                    case "Saturday":
+                        return 6;
+                }  
+            },
+            
+            nextBlock: function(hour, minute, blockInterval) {
+                minute += blockInterval;
+                if (minute >= 60) {
+                   hour++;
+                   minute -= 60;
+                }
+               
+               return {
+                   hour: hour,
+                   min: minute
+               };
+            },
+            
+            getTime: function(hour, minute) {
+                
+               var hourt = (hour < 10) ? "0" + String(hour) : String(hour);
+               var minutet = (minute < 10) ? "0" + String(minute) : String(minute);
+               
+               return hourt + ":" + minutet;
+            }
+        });
+    </script>
+    
+</dom-module>

@@ -1,0 +1,139 @@
+<!--evan_h & lulahogg-->
+<!--schedule-colorSelector.html-->
+
+<!-- jscolor -> need to download from sight and add to bower folder for it to work corectly --> 
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<script src="../../bower_components/jscolor/jscolor.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+
+
+
+
+
+
+<dom-module id="schedule-times">
+    <style>
+        .text-block {
+            width: 300px;
+            float:left;
+            margin:5px;
+        }
+        .buttons {
+            margin-top:22px;
+            float:right;
+            background: linear-gradient(lightgray,white);
+        }
+        
+        #totalInfo{
+            min-width: 900px;
+            padding-top:40px;
+        }
+        
+        #lowText{
+            width: 50px;
+            float: left;
+            padding-left: 20px;
+        }
+        
+        #highText{
+            width: 50px;
+            float: left;
+            padding-left: 20px;
+        }
+        
+        /*ADD TEXT BOX*/
+        #add-limits {
+            float: left;
+            margin: 5px;
+            width: 750px;
+            padding-left: 30px;
+            background: url(banner3.png) repeat-x;
+        }
+         /*ADD TEXT BOX TITLE*/
+        .add-limits-title {
+            width: 100%;
+            text-align: center;
+            padding-top: 18px;
+        }
+        
+        .mydate.v-datefield-parseerror .v-textfield{
+            background: red;
+        }
+        
+        .percentage {
+            width: 300px;
+            float:left;
+            padding-top: 17px;
+        }
+        
+        
+    </style>
+    <template>
+        <div id="totalInfo">
+            
+            
+        <paper-material id="add-limits">
+                        
+            <div class="add-limits-title">
+                <b>Add Limits</b>
+            </div>
+            
+<!-- slider -->
+            
+            <div>Percentage</div>
+            <paper-slider class="percentage" value="23" max="100" editable></paper-slider>
+            
+            
+            
+<!-- input text -->
+            <paper-input label="MIN" char-counter maxlength="3" id="lowText" class="text-block" value="{{lowText}}" ></paper-input>
+            <paper-input label="MAX" char-counter maxlength="3" id="highText" class="text-block" value="{{highText}}" ></paper-input>
+            
+            
+            
+<!-- dropdown list -->
+            <paper-dropdown-menu>
+                <paper-checkbox>Checkbox</paper-checkbox>
+                <paper-checkbox checked>Checkbox</paper-checkbox>
+                <paper-checkbox disabled>Disabled</paper-checkbox>
+            </paper-dropdown-menu>
+            
+            
+            
+
+            
+            
+<!-- add remove text buttons -->
+            <paper-button raised class="buttons" on-click="addText">+</paper-button>
+    
+            </div>
+            
+        </paper-material>
+        
+
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "schedule-times",
+            
+            properties: {
+               
+                
+                
+            },
+
+
+     
+        });
+    </script>
+    
+</dom-module>

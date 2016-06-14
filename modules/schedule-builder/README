@@ -1,0 +1,6 @@
+files:
+    ScheduleGrid.php:       The php file that runs the <schedule-order> and <schedule-grid> modules.
+    schedule-order.html:    A module that shows start & end times, to eventually be used as parameters for the schedule-grid.
+    schedule-grid.html:     A module that displays a graphical interface: cells in a grid that can be dragged to change color.
+    schedule-column.html:   A repeatable module representing a column of the schedule-grid.
+    schedule-cell.html:     A repeatable module representing a cell of a schedule-column.
