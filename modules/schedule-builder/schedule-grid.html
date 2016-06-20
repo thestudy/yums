@@ -1,4 +1,4 @@
-<!--evan_h & lulahogg-->
+<!--evan_h & lulahogg & melhuishj-->
 <!--schedule-grid.html-->
 
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
@@ -6,7 +6,10 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 <link rel="import" href="schedule-column.html">
+<link rel="import" href="schedule-cell.html">
 <link rel="import" href="highlight-radio-label.html">
 
 <dom-module id="schedule-grid">
@@ -31,13 +34,6 @@
             background-color: white;
             float:left;
         }
-        .time-label-pad {
-            width:59px;
-            height:9px;
-            background-color: white;
-            border-width: thin;
-            border-style: none solid none none;
-        }
         .schedule-item {
             position: absolute;
             width:79px;
@@ -51,7 +47,7 @@
             float: left;
             background: white url(banner3.png) repeat-x;
             margin-left: 20px;
-            width:150px;
+            width:250px;
             /*height:300px;*/
         }
         .radio-title {
@@ -68,9 +64,43 @@
         #totalInfo{
             min-width: 1080px;
         }
-    
- 
         
+        .sideColor {
+            width: 5px;
+            height: 36px;
+            float: right;
+            padding: 0px;
+            background-color: red;
+        }
+        
+        paper-radio-button {
+            float: left;
+        }
+        
+        #times {
+            float: left;
+        }
+        
+        .timeSpan {
+            height: 21px;
+            width: 50px;
+            text-align: right;
+            background-color: white;
+            
+            /*top right bottom left*/
+            border-width: thin;
+            border-style: none solid none none;
+        }
+        .timeHeader {
+            height: 9px;
+            width: 50px;
+            text-align: center;
+            background-color: white;
+            
+            /*top right bottom left*/
+            border-width: thin;
+            border-style: none solid solid none;
+        }
         
     </style>
     <template>
@@ -78,7 +108,14 @@
         <!-- div contains the following infomation for aligment on page -->
         <div id="totalInfo">
         
-        <paper-material elevation=0 class="container" on-mouseover="endSelection">
+        <paper-material elevation=0 class="container">
+            <div id="times">
+                <paper-material class="timeHeader" elevation=0></paper-material>
+                <template is="dom-repeat" items="{{times}}">
+                    <paper-material class="timeSpan" elevation=0>{{item}}</paper-material>
+                    <!--<schedule-cell>{{item}}</schedule-cell>-->
+                </template>
+            </div>
             
             <template is="dom-repeat" items="{{calendar}}" as="column" index-as="colNum">
                 <schedule-column col-num="{{colNum}}" day="{{column.day}}" blocks="{{column.blocks}}" available-colors="{{availableColors}}"></schedule-column>
@@ -89,9 +126,9 @@
                     Highlight Type
                 </paper-material>
                 
-                <paper-radio-group on-iron-select="updateSelected" id="selector" selected="nopreference">
-                    <template is="dom-repeat" items="{{availableColors}}">
-                        <paper-radio-button name="{{computeName(item.label)}}">{{item.label}}</paper-radio-button>
+                <paper-radio-group on-iron-select="updateSelected" id="selector" selected="cannotwork">
+                    <template is="dom-repeat" items="{{availableColors}}" filter="shouldShow">
+                        <paper-radio-button name="{{computeName(item.label)}}">{{item.label}}</paper-radio-button><div id="{{computeName(item.label)}}sideColor" class="sideColor"></div>
                     </template>
                 </paper-radio-group>
                 
@@ -109,11 +146,33 @@
             is: "schedule-grid",
             
             properties: {
-                calendar: Array,
-                availableColors: Array,
+                calendar: {
+                    type: Array,
+                    notify: true
+                },
+                blockInterval: {
+                    type: Number
+                },
+                startHour: Number,
+                startMinute: Number,
+                availableColors: {
+                    type: Array
+                },
                 defaultColors: Array,
                 selectedLabel: String,
-                selecting: Boolean
+                selecting: Boolean,
+                selectableOn: {
+                    type: Boolean,
+                    value: false
+                },
+                editable: {
+                    type: Boolean,
+                    value: false
+                },
+                times: {
+                    type: Array,
+                    value: []
+                }
             },
             
             listeners: {
@@ -122,38 +181,22 @@
                 "column-mouse-over": "continueSelection"
             },
             
+            observers: [
+                "updateTimes(startHour, startMinute, blockInterval)"
+            ],
+            
             
             startSelection: function(e) {
                 this.selecting = true;
-                
-                //Deep copy into local (temporary) array
-                
-                
-                var newArray = [];
-                for (var i = 0; i < this.calendar[e.detail.colNum].blocks.length; i++) {
-                    newArray.push(this.calendar[e.detail.colNum].blocks[i]);
-                }
-                //Modify here
-                newArray[e.detail.rowNum] = this.getIndexByLabel(this.selectedLabel);
-                //set will update value and notify.  First argument calculates 'path'
-                this.set('calendar.' + String(e.detail.colNum) + '.blocks', newArray);
+                this.changeValue(e.detail.rowNum, e.detail.colNum);
             },
             
             
             continueSelection: function(e) {
                 
                 if (this.selecting) {
-                    //Deep copy into local (temporary) array
-                    var newArray = [];
-                    for (var i = 0; i < this.calendar[e.detail.colNum].blocks.length; i++) {
-                        newArray.push(this.calendar[e.detail.colNum].blocks[i]);
-                    }
-                    //Modify here
-                    newArray[e.detail.rowNum] = this.getIndexByLabel(this.selectedLabel);
-                    //set will update value and notify.  First argument calculates 'path'
-                    this.set('calendar.' + String(e.detail.colNum) + '.blocks', newArray);
+                    this.changeValue(e.detail.rowNum, e.detail.colNum);
                 }
-                
             },
             
             
@@ -162,28 +205,93 @@
                 this.selecting = false;
             },
             
+            changeValue: function(row, column) {
+                
+                if (this.selectableOn || this.availableColors[this.calendar[column].blocks[row]].selectable)
+                //Deep copy into local (temporary) array
+                var newArray = [];
+                for (var i = 0; i < this.calendar[column].blocks.length; i++) {
+                    newArray.push(this.calendar[column].blocks[i]);
+                }
+                //Modify here
+                newArray[row] = this.getIndexByLabel(this.selectedLabel);
+                //set will update value and notify.  First argument calculates 'path'
+                this.set('calendar.' + String(column) + '.blocks', newArray);
+                this.fire("calendar-change");
+            },
+            
             computeName: function(label) {
                 return label.replace(/\s/g, '').toLowerCase();
             },
             
             updateSelected: function(e) {
+                this.$$('#' + this.selectedLabel + "sideColor").style.width = "5px";
+                this.$$('#' + this.$.selector.selected + "sideColor").style.width = "10px";
                 this.selectedLabel = this.$.selector.selected;
+                this.updateSideColors();
             },
             
             getIndexByLabel: function(label) {
                 for (var i = 0; i < this.availableColors.length; i++) {
                     if (this.availableColors[i].label.replace(/\s/g, '').toLowerCase() === label.replace(/\s/g, '').toLowerCase()) return i;
                 }
+                console.log("failed");
                 //Should probably put a fail case here
             },
             
             ready: function() {
-                
+                this.selectedLabel = "cannotwork";
+                this.time = [];
+            },
+            
+            updateSideColors: function() {
+                if (this.$$(".sideColor")) {
+                for (var i = 0; i < this.availableColors.length; i++) {
+                    console.log('#' + this.computeName(this.availableColors[i].label) + "sideColor");
+                    if (this.$$('#' + this.computeName(this.availableColors[i].label) + "sideColor")) {
+                        this.$$('#' + this.computeName(this.availableColors[i].label) + "sideColor").style.backgroundColor = this.availableColors[i].color;
+                    }
+                }}
             },
             
             arrayItem: function(change, index, path) {
                 return this.get(path, change.base[index]);
-            }
+            },
+            
+            shouldShow: function(item) {
+                return item.selectable || this.selectableOn;
+            },
+            
+            updateTimes: function(hour, minute, interval) {
+                console.log("updating calendar");
+                this.splice("times", 0, this.times.length);
+                
+                
+                for (var i = 0; i <= this.calendar[0].blocks.length; i++) {
+                    console.log(((String(hour).length - 1) ? "" : "0") + String(hour) + ":" + ((String(minute).length - 1) ? "" : "0") + String(minute));
+                    this.push("times", ((String(hour).length - 1) ? "" : "0") + String(hour) + ":" + ((String(minute).length - 1) ? "" : "0") + String(minute));
+                    var t = this.increaseTimeByInterval(hour, minute, interval);
+                    hour = t.hour;
+                    minute = t.minute;
+                }
+            },
+            
+            increaseTimeByInterval: function(hour, minute, interval) {
+                    hour = Number(hour);
+                    minute = Number(minute);
+                    interval = Number(interval);
+                    
+                    minute += interval;
+                    if (minute >= 60) {
+                        minute -= 60;
+                        hour++;
+                    }
+                    
+                    return {
+                        hour: hour,
+                        minute: minute
+                    };
+                }
             
             });
     </script>

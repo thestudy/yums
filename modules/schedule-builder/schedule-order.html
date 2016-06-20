@@ -98,6 +98,13 @@
             margin: 11px;
             outline-offset: 5px;
         }
+        /*DUE DATE*/
+        #due-date{
+            width: 140px;
+            float: left;
+            margin: 11px;
+            outline-offset: 5px;
+        }
         
         /* Exit button (Go Back) */
         #button-exit {
@@ -152,23 +159,10 @@
             background: red;
         }
         
-       /*sets minute interval, start and end time above start and end date*/
-       /* #topOfPage{*/
-            /*width: 700px;*/
-       /*     position: relative;*/
-           
-       /* }*/
-        /*sets start and end date below minute interval, start and end time*/
-       /* #bottomOfPage{*/
-       /*     width: 500;*/
-       /*     padding-left: 65px;*/
-       /*     position: relative;*/
- 
-        /*}*/
         
         /*keeps aligment*/
         #totalInfo{
-            min-width: 1200px;
+            min-width: 1400px;
         }
 
 
@@ -230,7 +224,7 @@
                             <paper-listbox class="dropdown-content" id="startTime-information" selected="{{startSelected}}" on-click="startTimeHour" >
                                 
                                 <!-- START TIMES IN DROPDOWN -->
-                                <template is="dom-repeat" items="{{startHour}}" >
+                                <template is="dom-repeat" items="{{startHours}}" >
                                   
                                     <paper-item>{{item}}</paper-item>
                                    
@@ -244,10 +238,10 @@
                         <paper-dropdown-menu disabled label="MM", id ="start-minute">
                             
                             <!-- content in the dropdown menu -->
-                            <paper-listbox class="dropdown-content" id="startTimeMinute-information" selected="{{startMinuteSelected}}" on-click="startTimeMinute" >
+                            <paper-listbox class="dropdown-content" id="startTimeMinute-information" selected="{{startMinutesSelected}}" on-click="startTimeMinute" >
                                 
                                 <!-- START TIMES IN DROPDOWN -->
-                                <template is="dom-repeat" items="{{startMinute}}" >
+                                <template is="dom-repeat" items="{{startMinutes}}" >
                                   
                                     <paper-item>{{item}}</paper-item>
                                    
@@ -311,7 +305,7 @@
                         </div>
                 
                           <!-- Start date picker -->
-                        <vaadin-date-picker label="Pick Start Date"  value="{{startValue}}" id ="start-date" on-click="startDate">
+                        <vaadin-date-picker label="Pick Start Date"  value="{{startDate}}" id ="start-date" on-click="updateStartDate">
                         </vaadin-date-picker>
                     </paper-material>
                     
@@ -324,15 +318,30 @@
                     
                     <!-- End date picker -->
                     
-                    <vaadin-date-picker disabled label="Pick End Date" value="{{endValue}}"  id="end-date" on-click="endDate">
+                    <vaadin-date-picker disabled label="Pick End Date" value="{{endDate}}"  id="end-date" on-click="updateEndDate">
                     </vaadin-date-picker>
+                    
+                    </paper-material>
+                    
+                    <!--container for end date-->
+                    <paper-material class="time-box" elevation=1>
+                        <!--title for end date box-->
+                        <div class="time-box-title">
+                            <b>Due Date</b>
+                        </div>
+                    
+                    <!-- End date picker -->
+                    
+                    <vaadin-date-picker label="Pick Due Date" value="{{dueDate}}"  id="due-date" on-click="updateDueDate">
+                    </vaadin-date-picker>
+                    
                     </paper-material>
                 </div>
                 
             
 <!-- Submit button -->
                 <!-- Submit -->
-                <paper-button raised id="button-submit" on-click="calculateSchedule">Submit</paper-button> 
+                <paper-button raised id="button-submit" on-click="calculateSchedule">Update</paper-button> 
                 </paper-material>
         </div>
 
@@ -348,12 +357,22 @@
            
            properties: {
                // START HOUR
-               startHour: Array,
+               startHours: Array,
                startSelected: String,
+               startHour: {
+                   type: Number,
+                   notify: true,
+                   computed: "setExternalValue(startHours, startSelected)"
+               },
                
                // START MINUTE
-               startMinute: Array,
-               startMinuteSelected: String,
+               startMinutes: Array,
+               startMinutesSelected: String,
+               startMinute: {
+                   type: Number,
+                   notify: true,
+                   computed: "setExternalValue(startMinutes, startMinutesSelected)"
+               },
                
                // END HOUR
                endHour: Array,
@@ -366,10 +385,30 @@
                // INTERVALS
                intervals: Array,
                intervalSelected: String,
+               blockInterval: {
+                   type: Number,
+                   notify: true,
+                   computed: "setExternalValue(intervals, intervalSelected)"
+               },
                
                //calendar object to be manipulated
                calendar: {
                    type: Array,
+                   notify: true
+               },
+               
+               startDate: {
+                   type: String,
+                   notify: true
+               },
+               
+               endDate: {
+                   type: String,
+                   notify: true
+               },
+               
+               dueDate: {
+                   type: String,
                    notify: true
                }
                
@@ -382,7 +421,7 @@
                
                
                 //[SERVER ACCESS]
-                this.startHour = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
+                this.startHours = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
 
                 this.endHour = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
 
@@ -409,27 +448,27 @@
                 // Switch between time intervals for minutes (updates)
                 switch(this.intervalSelected) {
                    case 0:
-                        this.startMinute = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+                        this.startMinutes = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
                         this.endMinute = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
                         break;
                     case 1:
-                        this.startMinute = ["00", "10", "20", "30", "40", "50"];
+                        this.startMinutes = ["00", "10", "20", "30", "40", "50"];
                         this.endMinute = ["00", "10", "20", "30", "40", "50"];
                         break;
                     case 2:
-                        this.startMinute = ["00", "15", "30", "45"];
+                        this.startMinutes = ["00", "15", "30", "45"];
                         this.endMinute = ["00", "15", "30", "45"];
                         break;
                     case 3:
-                        this.startMinute = ["00", "20", "40"];
+                        this.startMinutes = ["00", "20", "40"];
                         this.endMinute = ["00", "20", "40"];
                         break;
                     case 4:
-                        this.startMinute = ["00", "30"];
+                        this.startMinutes = ["00", "30"];
                         this.endMinute = ["00", "30"];
                         break;
                     case 5:
-                        this.startMinute = ["00"];
+                        this.startMinutes = ["00"];
                         this.endMinute = ["00"];
                         break;
                 
@@ -446,7 +485,7 @@
 // Start time minutes position in array output to console
             startTimeMinute: function() {
                 
-                console.log("Start Time Minute:", this.startMinuteSelected);
+                console.log("Start Time Minute:", this.startMinutesSelected);
                    
             },
             
@@ -460,35 +499,39 @@
                
 // Start End Date Picker Output Value               
             //Start Date picker value output to console
-            startDate: function() {
+            updateStartDate: function() {
                
-                if(this.startValue == ""){
+                if(this.startDate == ""){
                     this.querySelector("#end-date").disabled = true;
                 }
                 else{
-                    console.log("Start Date:", this.startValue);
+                    console.log("Start Date:", this.startDate);
                     this.querySelector("#end-date").disabled = false;
-                    this.endValue = "";
+                    this.endDate = "";
                 }
             },
             
             //End Date picker value output to console
-            endDate: function() {
+            updateEndDate: function() {
                 //console.clear();
-                if(this.endValue == ""){
+                if(this.endDate == ""){
                     
                 }
-                else if(this.endValue < this.startValue){
+                else if(this.endDate < this.startDate){
                     console.log("End Date Not Valid");
-                    this.endValue = "";
+                    this.endDate = "";
                     document.getElementById("end-date").style.outline = "3px solid red";
 
                 } 
                 else{
-                    console.log("End Date:", this.endValue);
+                    console.log("End Date:", this.endDate);
                     document.getElementById("end-date").style.outline = "";
                 }
                 
+            },
+            
+            updateDueDate: function() {
+                this.dueDate = this.$.dueDate.value;
             },
 
             calculateSchedule: function() {
@@ -504,7 +547,7 @@
                     newDay.day = days[day];
                     newDay.blocks = [];
                     var tempHour = this.startSelected;
-                    var tempMinute = this.startMinute[this.startMinuteSelected];
+                    var tempMinute = this.startMinutes[this.startMinutesSelected];
                     var tempInterval = this.intervals[this.intervalSelected];
                     
                     while (!this.endReached(tempHour, tempMinute, this.endHour[this.endSelected], this.endMinute[this.endMinuteSelected])) {
@@ -515,6 +558,7 @@
                     }
                     this.push("calendar", newDay);
                 }
+                this.fire("calendar-update", {blockInterval: this.blockInterval, startHour: this.startHour, startMinute: this.startMinute});
             },
             
             increaseTimeByInterval: function(hour, minute, interval) {
@@ -539,6 +583,11 @@
                 else if (Number(currentHour) > Number(endHour)) return true;
                 else if (Number(currentMinute) < Number(endMinute)) return false;
                 else return true;
+            },
+            
+            setExternalValue: function(selections, index) {
+                console.log("External Value: " + selections[index]);
+                return Number(selections[index]);
             }
            
         });

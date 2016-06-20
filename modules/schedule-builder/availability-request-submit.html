@@ -9,16 +9,17 @@
     
     <style>
     
-    
+    .text-block {
+            width: 300px;
+            float:left;
+            margin:5px;
+        }
     #totalInfo{
             min-width: 700px;
-            padding-top:40px;
         }
     
     .minHours{
         width: 300px;
-        float:left;
-        padding-top:20px;
 
     }
         
@@ -28,19 +29,23 @@
     }
     
     /*ADD TEXT BOX*/
-    #add-limits {
+    #add-availability {
         float: left;            
         margin: 5px;
         width: 750px;
         padding-left: 30px;
         background: url(banner3.png) repeat-x;
     }
+    
      /*ADD TEXT BOX TITLE*/
-    .add-limits-title {
+    .add-availability-title {
         width: 100%;
         text-align: center;
         padding-top: 18px;
+        padding-bottom: 20px;
     }
+    
+
         
         
     </style>
@@ -53,34 +58,136 @@
         <paper-material id="add-availability">
                         
             <div class="add-availability-title">
-                <b>Add Availability</b>
+                <b>Select Working Hours</b>
             </div>
             
             
 <!-- slider 1 -->
             
             <div>Min Hours</div>
-            <paper-slider class="minHours" value="50" min="18" max="100" editable></paper-slider>
-            
+            <paper-slider id="lowHours" min="{{minimumHours}}" max="{{maximumHours}}" value="{{lowHours}}" editable on-click="updateSlidersLow"></paper-slider>
             
 <!-- slider 2 -->
             
             <div>Max Hours</div>
-            <paper-slider class="maxHours" value="50" min="20" max="100" editable></paper-slider>
-            
-            
-            
-        
+            <paper-slider id="highHours" min="{{minimumHours}}" max="{{maximumHours}}" value="{{highHours}}" editable on-click="updateSlidersHigh"></paper-slider>
             
         </paper-material>
+        
+        
         </div>    
         
+        <br> <br> <br> <br> <br> <br> <br> <br> 
+        <br> <br> <br> <br> <br> <br> <br> <br> 
+        Hours available to work: <span>{{hoursAvailable}}</span><br>
+        Remaining Hours Needed: <span>{{hoursNeeded}}</span>
+        
+        <schedule-grid calendar="{{calendar}}" available-colors="{{availableColors}}"></schedule-grid>
             
     </template>
     
     <script>
         Polymer({
-           is: "availability-request-submit" 
+           is: "availability-request-submit",
+           
+            properties: {
+                minimumHours: Number,
+                maximumHours: Number,
+                lowHours: Number,
+                highHours: Number,
+                hoursAvailable: {
+                    type: Number,
+                    value: 0
+                },
+                hoursNeeded: {
+                    type: Number,
+                    computed: "updateHoursNeeded(hoursAvailable, highHours)"
+                },
+                calendar: {
+                    type: Array,
+                    observer: "updateHoursAvailable"
+                },
+                availableColors: Array
+            },
+            
+            listeners: {
+                "calendar-change": "updateHoursAvailable"
+            },
+            
+            ready: function() {
+                
+                this.minimumHours = 6;
+                this.maximumHours = 20;
+                this.interval = 60;
+                this.percentOver = 50;
+                this.calendar = [
+                    {"day": "Monday", "blocks": [0,3,3,3,3,0]},
+                    {"day": "Tuesday", "blocks": [0,3,3,3,3,0]},
+                    {"day": "Wednesday", "blocks": [0,3,3,3,3,0]},
+                    {"day": "Thursday", "blocks": [0,3,3,3,3,0]},
+                    {"day": "Friday", "blocks": [0,3,3,3,3,0]}
+                    ];
+                    
+                this.availableColors = [
+                    {"label" : "Closed", "color" : "white", "available": false, "selectable": false},
+                    {"label" : "Prefer not to work", "color" : "yellow", "available": true, "selectable": true},
+                    {"label" : "Cannot work", "color" : "red", "available": false, "selectable": true},
+                    {"label" : "Prefer to work", "color" : "green", "available": true, "selectable": true}
+                    ];
+                this.updateHoursAvailable();
+            },
+            
+            minHours: function() {
+                
+                console.log("min: ", this.totalMinHours);
+                
+            },
+            
+            maxHours: function() {
+              
+              this.minMaxHours = this.totalMinHours;
+              
+              console.log("max: ", this.totalMaxHours);
+              
+            },
+            
+            updateSlidersLow: function() {
+                if (this.lowHours > this.highHours) {
+                    this.highHours = this.lowHours;
+                }
+            },
+            
+            updateSlidersHigh: function() {
+                if (this.highHours < this.lowHours) {
+                    this.lowHours = this.highHours;
+                }
+            },
+            
+            updateHoursAvailable: function() {
+                this.hoursAvailable = 0;
+                for (var day = 0; day < this.calendar.length; day++) {
+                    for (var block = 0; block < this.calendar[day].blocks.length; block++) {
+                        if (this.countAsAvailable(this.calendar[day].blocks[block])) this.addAvailableHours();
+                    }
+                }
+            },
+            
+            countAsAvailable: function(type) {
+                if (this.availableColors) {
+                    return this.availableColors[type].available;
+                }
+                return false;
+            },
+            
+            addAvailableHours: function() {
+                this.hoursAvailable += this.interval / 60;
+            },
+            
+            updateHoursNeeded: function(hoursAvailable, highHours) { 
+                var t = highHours * (1 + this.percentOver / 100) - hoursAvailable;
+                return (t < 0) ? 0 : t;
+            }
+           
         });
     </script>
     

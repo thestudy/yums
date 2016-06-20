@@ -1,5 +1,8 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+
 <link rel="import" href="schedule-order.html">
 <link rel="import" href="schedule-color-selector.html">
 <link rel="import" href="schedule-grid.html">
@@ -11,13 +14,17 @@
     </style>
     
     <template>
-        <schedule-order calendar="{{calendar}}"></schedule-order>
-        <br> <br> <br> <br> <br> <br> <br> <br>
-        <schedule-color-selector labels="{{availableColors}}"></schedule-color-selector>
-        <br> <br> <br> <br>
+        <paper-input label = "Name of this request" value="{{requestName}}"></paper-input><br>
+        <schedule-order calendar="{{calendar}}" start-date="{{startDate}}" end-date="{{endDate}}" due-date="{{due-date}}" block-interval="{{blockInterval}}" start-minute="{{startMinute}}" start-hour"{{startHour}}"></schedule-order>
+        <br> <br> <br> <br> <br> <br> <br>
         <schedule-times></schedule-times>
-        <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-        <schedule-grid available-colors="[[availableColors]]" calendar="{{calendar}}"></schedule-grid>
+        <br> <br> <br> <br> <br> <br>
+        <br> <br> <br>
+        <schedule-color-selector labels="{{availableColors}}"></schedule-color-selector>
+        <br> <br> <br> <br> <br> <br>
+        
+        <schedule-grid available-colors="[[availableColors]]" calendar="{{calendar}}" editable selectable-on block-interval="[[blockInterval]]" start-hour="[[startHour]]" start-minute="[[startMinute]]"></schedule-grid>
+        <paper-button on-click="submit">Submit</paper-button>
     </template>
     
     <script>
@@ -26,16 +33,75 @@
            
            properties: {
                availableColors: Array,
-               calendar: Array
+               calendar: Array,
+               blockInterval: {
+                   type: Number,
+                   observer: "debug"
+               },
+               startMinute: Number,
+               startHour: Number,
+               startDate: String,
+               endDate: String,
+               dueDate: String,
+               requestName: String
+           },
+           
+           listeners: {
+               "label-delete": "updateCalendar",
+              "calendar-update": "updateTimes"
            },
            
            ready: function() {
                this.availableColors = [
-                    {"label" : "Closed", "color" : "white"},
-                    {"label" : "Prefer not to work", "color" : "yellow"},
-                    {"label" : "Cannot work", "color" : "red"},
-                    {"label" : "Prefer to work", "color" : "green"}
+                    {"label" : "Closed", "color" : "white", "available": false, "selectable": false},
+                    {"label" : "Prefer not to work", "color" : "yellow", "available": true, "selectable": true},
+                    {"label" : "Cannot work", "color" : "red", "available": false, "selectable": true},
+                    {"label" : "Prefer to work", "color" : "green", "available": true, "selectable": true}
                     ];
+           },
+           
+           updateCalendar: function(e) {
+               for (var day = 0; day < this.calendar.length; day++) {
+                   for (var i = 0;i < this.calendar[day].blocks.length; i++) {
+                       if (this.calendar[day].blocks[i] == e.detail.changeIndex) this.changeValue(day, i, 0);
+                       else if (this.calendar[day].blocks[i] > e.detail.changeIndex) this.changeValue(day, i, this.calendar[day].blocks[i] - 1);
+                   }
+               }
+           },
+           
+           changeValue: function(column, row, value) {
+               //Deep copy into local (temporary) array
+                var newArray = [];
+                for (var i = 0; i < this.calendar[column].blocks.length; i++) {
+                    newArray.push(this.calendar[column].blocks[i]);
+                }
+                //Modify here
+                newArray[row] = value;
+                //set will update value and notify.  First argument calculates 'path'
+                this.set('calendar.' + String(column) + '.blocks', newArray);
+           },
+           
+           submit: function() {
+               if (!this.requestName) alert("Missing Request Name");
+               else if (!this.blockInterval) alert("Missing Interval Duration");
+            //   else if (!this.startHour) alert("Missing Start Time");
+            //   else if (!this.startMinute) alert("Missing Start Time");
+              else if (!this.startDate) alert("Missing Start Date");
+               else if (!this.endDate) alert("Missing End Date");
+               else if (!this.dueDate) alert("Missing Due Date");
+               else if (!this.availableColors) alert("Missing Colors");
+               else if (!this.calendar) alert("Missing Calendar");
+           },
+           
+           debug: function() {
+               
+               console.log("Block Interval: " + this.blockInterval);
+           },
+           
+           updateTimes: function(e) {
+               this.blockInterval = e.detail.blockInterval;
+               this.startHour = e.detail.startHour;
+               this.startMinute = e.detail.startMinute;
            }
         });
     </script>

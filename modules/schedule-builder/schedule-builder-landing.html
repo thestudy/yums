@@ -1,0 +1,41 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="availability-request-setup.html">
+<link rel="import" href="availability-request-submit.html">
+
+<dom-module id="schedule-builder-landing">
+    
+    <style>
+        
+    </style>
+    
+    <template>
+        <iron-pages id="selector" attr-for-selected="id" selected="LandingPage">
+            <div id="LandingPage">
+                <paper-button on-click="changeTo" data-to="AvailabilityRequestSetup">Availability Request Setup</paper-button>
+                <paper-button on-click="changeTo" data-to="AvailabilityRequestSubmit">Availability Request Submit</paper-button>
+                
+            </div>
+            <div id="AvailabilityRequestSetup">
+                <availability-request-setup></availability-request-setup>
+            </div>
+            <div id="AvailabilityRequestSubmit">
+                <availability-request-submit></availability-request-submit>
+            </div>
+        </iron-pages>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "schedule-builder-landing",
+           
+           changeTo: function(e) {
+               this.$.selector.selected = e.target.attributes["data-to"].value;
+           }
+        });
+    </script>
+    
+</dom-module>

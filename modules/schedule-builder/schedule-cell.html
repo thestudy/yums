@@ -21,7 +21,7 @@
         
     </style>
     <template>
-        <paper-material animated elevation=0 class="cell" id="cell">
+        <paper-material elevation=0 class="cell" id="cell">
 
         </paper-material>
         
@@ -60,7 +60,6 @@
             
             changeColor: function() {
                 //locate the element to change color of (which cell)
-                console.log("changing color");
                 if (this.availableColors) {
                     this.$.cell.style.backgroundColor = this.availableColors[this.colorIndex].color;
                 }

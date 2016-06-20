@@ -32,6 +32,11 @@
             border-width: thin;
             border-style: none solid solid none;
         }
+        .timeHeader {
+            height: 11px;
+            width: 80px;
+            background-color: white;
+        }
     </style>
     <template>
         <paper-material elevation=0 class="column-container">
@@ -48,6 +53,7 @@
                     <!--<schedule-cell row-num="{{cellNum}}" color="[[getColor(availableColors.*, cell, 'color')]]"></schedule-cell>-->
                     <schedule-cell row-num = "{{cellNum}}" available-colors = "{{availableColors}}" color-index = "{{cell}}"></schedule-cell>
                 </template>
+                <paper-material class="timeHeader" elevation=0></paper-material>
             </paper-material>
         </paper-material>
     </template>
