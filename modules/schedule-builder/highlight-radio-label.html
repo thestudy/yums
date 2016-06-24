@@ -4,7 +4,7 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
@@ -13,7 +13,7 @@
         #container {
             float: left;
             height: 60px;
-            width: 200px;
+            width: 250px;
             background-color: white;
             padding:5px;
         }
@@ -27,13 +27,28 @@
             top:50%;
             transform: translateY(-50%);
         }
+        #togglesDiv {
+            position:relative;
+            top:50%;
+            float:right;
+            transform: translateY(-50%);
+            width: 75px;
+        }
+        #editableToggle {
+            font-size:50%;
+        }
+        #availableToggle {
+            font-size:50%;
+        }
+
         
         .label {
             float: left;
-            width: 60%;
+            width: 48%;
             position:relative;
             top:50%;
             transform: translateY(-50%);
+            word-wrap: break-word;
         }
         
         .remove {
@@ -51,8 +66,10 @@
             <div class="label">{{label}}</div>
             <paper-material id="swatch"></paper-material>
             <paper-icon-button icon="close" title="close" class="remove" on-click="removeLabel" hidden={{hiddenX}}></paper-icon-button>
-            <!--<paper-material class="remove" on-click="removeLabel">-</paper-material>-->
-        
+            <paper-material elevation=0 id="togglesDiv">
+                <paper-checkbox id="editableToggle" checked={{editable}}>Editable?</paper-checkbox>
+                <paper-checkbox id="availableToggle" checked={{available}}>Available?</paper-checkbox>
+            </paper-material>
         </paper-material>
         
         
@@ -62,6 +79,14 @@
         Polymer({
             is: "highlight-radio-label",
             properties: {
+                editable: {
+                    type: Boolean,
+                    notify: true
+                },
+                available: {
+                    type: Boolean,
+                    notify: true
+                },
                 name: String,
                 label: String,
                 highlightColor: String,

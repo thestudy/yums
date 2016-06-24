@@ -1,0 +1,62 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="availability-request-setup.html">
+<link rel="import" href="availability-request-submit.html">
+<link rel="import" href="request-submit-selector.html">
+<link rel="import" href="availability-review.html">
+
+<dom-module id="schedule-builder-landing">
+    
+    <style include="iron-flex iron-flex-alignment"></style>
+    <style>
+        .selector {
+            height: 15%;
+            min-height: 50px;
+            width: 15%;
+            min-width: 150px;
+            background-color: cyan;
+        }
+    </style>
+    
+    <template>
+        <iron-pages id="selector" attr-for-selected="id" selected="LandingPage">
+            <div id="LandingPage" class="layout horizontal wrap">
+                <paper-button raised on-click="changeTo" data-to="AvailabilityRequestSetup" class="selector">Availability Request Setup</paper-button>
+                <paper-button raised on-click="changeTo" data-to="AvailabilityRequestSubmit" class="selector">Availability Request Form</paper-button>
+                <paper-button raised on-click="changeTo" data-to="AvailabilityRequestReview" class="selector">Review Submissions</paper-button>
+            </div>
+            <div id="AvailabilityRequestSetup">
+                <availability-request-setup></availability-request-setup>
+            </div>
+            <div id="AvailabilityRequestSubmit">
+                <request-submit-selector></request-submit-selector>
+            </div>
+            <div id="AvailabilityRequestReview">
+                <availability-review></availability-review>
+            </div>
+        </iron-pages>
+    </template>
+    
+    <script>
+        Polymer({
+           is: "schedule-builder-landing",
+           
+           listeners: {
+               'return': 'return'
+           },
+           
+           changeTo: function(e) {
+               this.$.selector.selected = e.target.attributes["data-to"].value;
+           },
+           
+           return: function() {
+               this.$.selector.selected = "LandingPage";
+           }
+        });
+    </script>
+    
+</dom-module>

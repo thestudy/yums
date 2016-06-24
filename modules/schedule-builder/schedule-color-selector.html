@@ -13,7 +13,7 @@
 <dom-module id="schedule-color-selector">
     <style>
         .text-block {
-            width: 300px;
+            width: 45%;
             float:left;
             margin:5px;
         }
@@ -33,8 +33,7 @@
         #add-box {
             float: left;
             margin: 5px;
-            width: 680px;
-            padding-left: 30px;
+            width: 720px;
             background: url(banner3.png) repeat-x;
         }
          /*ADD TEXT BOX TITLE*/
@@ -46,6 +45,19 @@
         
         .mydate.v-datefield-parseerror .v-textfield{
             background: red;
+        }
+        
+        .labels-container {
+            float: left;
+            width: 330px;
+            height: 800px;
+            overflow: auto;
+        }
+        .colorContainer {
+            width:40%;
+            float:left;
+            margin-top: 35px;
+            margin-left: 5px;
         }
         
         
@@ -61,13 +73,14 @@
             </div>
             
 <!-- input text -->
-            <paper-input label="add new text" char-counter maxlength="40" id="text" class="text-block" value="{{startText}}"></paper-input>
+            <paper-input label="Add new label" char-counter maxlength="40" id="text" class="text-block" value="{{startText}}"></paper-input>
             
 <!-- color picker -->
             
-            Highlight Color:
-            
-            <input id="color" class="jscolor"></input>
+            <div class="colorContainer">
+                Highlight Color:
+                <input id="color" class="jscolor"></input>
+            </div>
             
             
 <!-- add remove text buttons -->
@@ -79,10 +92,16 @@
         
         
         <br> <br> <br> <br> <br> <br> <br> <br>
-        
-        <template is="dom-repeat" items={{labels}}>
-            <highlight-radio-label label-i-d="{{index}}" label="{{item.label}}" highlight-color="{{item.color}}"></highlight-radio-button>
-        </template>
+        <!--<paper-material class="labels-container">-->
+            <!--<paper-radio-group id="labelSelector" selected="nopreference">-->
+                <template is="dom-repeat" items={{labels}}>
+                    <!--<paper-radio-button name={{computeName(item.label)}} on-click="updateSelected">-->
+                        <highlight-radio-label label-i-d="{{index}}" label="{{item.label}}" highlight-color="{{item.color}}" editable="{{item.selectable}}" available="{{item.available}}"></highlight-radio-button>
+                    <!--</paper-radio-button>-->
+                    <br>
+                </template>
+            <!--</paper-radio-group>-->
+        <!--</paper-material>-->
 
     </template>
     <script>
@@ -95,8 +114,12 @@
                     type: Array,
                     notify: true
                 },
-                color_value: String
+                color_value: String,
                 
+                selectedLabel: {
+                    type: String,
+                    notify: true
+                }
                 
             },
             
@@ -104,9 +127,20 @@
                 'remove-label' : 'removeLabel'
             },
             
+            updateSelected: function() {
+                this.selectedLabel = this.$.labelSelector.selected;
+            },
+            
+            getIndexByLabel: function(label) {
+                for (var i = 0; i < this.labels.length; i++) {
+                    if (this.labels[i].label.replace(/\s/g, '').toLowerCase() === label.replace(/\s/g, '').toLowerCase()) return i;
+                }
+                //Should probably put a fail case here
+            },
+            
             removeLabel: function(e) {
                 this.splice('labels', e.detail.labelID, 1);
-                console.log("removed a label: " + e.detail.labelID);
+                this.fire("label-delete", {changeIndex: e.detail.labelID});
             },
             
             computeName: function(label) {
@@ -122,15 +156,17 @@
                     document.getElementById("text").style.outline = "3px solid red";
                 }
                 else{
-                    console.log("add");
-                    console.log("Text added: ", this.startText);
-                    
-                    console.log("Color picked: ", this.$.color.value);
                     
                     document.getElementById("text").style.outline = "";
                     
+                    var newColor = {};
+                    newColor.label = this.startText;
+                    newColor.color = this.$.color.value;
+                    newColor.available = true;
+                    newColor.selectable = true;
                     //array mutation
-                    this.splice('labels', this.labels.length, 0, {"label" : this.startText, "color": this.$.color.value});
+                    this.push('labels', newColor);
+                    // this.splice('labels', this.labels.length, 0, {"label" : this.startText, "color": this.$.color.value});
                     
                     this.startText = "";
                 }

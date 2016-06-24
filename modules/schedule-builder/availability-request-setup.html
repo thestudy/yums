@@ -1,5 +1,9 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
 <link rel="import" href="schedule-order.html">
 <link rel="import" href="schedule-color-selector.html">
 <link rel="import" href="schedule-grid.html">
@@ -11,31 +15,163 @@
     </style>
     
     <template>
-        <schedule-order calendar="{{calendar}}"></schedule-order>
-        <br> <br> <br> <br> <br> <br> <br> <br>
+        <paper-input label = "Name of this request" value="{{requestName}}"></paper-input><br>
+        <schedule-order calendar="{{calendar}}" start-date="{{startDate}}" end-date="{{endDate}}" due-date="{{dueDate}}" block-interval="{{blockInterval}}" start-minute="{{startMinute}}" start-hour="{{startHour}}"></schedule-order>
+        <br> <br> <br> <br> <br> <br> <br>
+        <schedule-times minimum-hours="{{minimumHours}}" maximum-hours="{{maximumHours}}" percent-over="{{percentOver}}"></schedule-times>
+        <br> <br> <br> <br> <br> <br>
+        <br> <br> <br>
         <schedule-color-selector labels="{{availableColors}}"></schedule-color-selector>
-        <br> <br> <br> <br>
-        <schedule-times></schedule-times>
-        <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-        <schedule-grid available-colors="[[availableColors]]" calendar="{{calendar}}"></schedule-grid>
+        <br> <br> <br> <br> <br> <br>
+        
+        <schedule-grid available-colors="[[availableColors]]" calendar="{{calendar}}" editable selectable-on block-interval="[[blockInterval]]" start-hour="[[startHour]]" start-minute="[[startMinute]]"></schedule-grid>
+        <paper-button on-click="submit">Submit</paper-button>
+        
+        <!-- Iron Ajax request to store information -->
+        <iron-ajax
+            id="createAvailabilityAjax"
+            url="createAvailability.php"
+            handle-as="json"
+            on-response="availabilitySent"
+            params="{{createAvailabilityAjaxParams}}"
+            last-response="createAvailabilityAjaxResponse"></iron-ajax>
     </template>
+    
+    
     
     <script>
         Polymer({
-           is: "availability-request-setup",
+            is: "availability-request-setup",
            
-           properties: {
-               availableColors: Array,
-               calendar: Array
+            properties: {
+                availableColors: {
+                    type: Array
+                },
+                calendar: Array,
+                blockInterval: {
+                   type: Number
+                },
+                startMinute: {
+                    type: Number
+                },
+                startHour: {
+                    type: Number
+                },
+                startDate: {
+                    type: String
+                },
+                endDate: {
+                    type: String
+                },
+                dueDate: {
+                    type: String
+                },
+                requestName: {
+                    type: String
+                },
+                minimumHours: {
+                    type: String
+                },
+                maximumHours: {
+                    type: Number
+                },
+                percentOver: {
+                    type: Number
+                },
+                createAvailabilityAjaxParams: {
+                    type: Object,
+                    computed: "getAjaxParams(availableColors, calendar.*, blockInterval, startMinute, startHour, startDate, endDate, dueDate, requestName, minimumHours, maximumHours, percentOver)"
+                }
+           },
+           
+           listeners: {
+                "label-delete": "updateCalendar"
+           },
+           
+           availabilitySent: function() {
+               alert("Request Submitted");
+               this.fire("return");
            },
            
            ready: function() {
                this.availableColors = [
-                    {"label" : "Closed", "color" : "white"},
-                    {"label" : "Prefer not to work", "color" : "yellow"},
-                    {"label" : "Cannot work", "color" : "red"},
-                    {"label" : "Prefer to work", "color" : "green"}
+                    {"label" : "Closed", "color" : "white", "available": false, "selectable": false},
+                    {"label" : "Prefer not to work", "color" : "yellow", "available": true, "selectable": true},
+                    {"label" : "Cannot work", "color" : "red", "available": false, "selectable": true},
+                    {"label" : "Prefer to work", "color" : "green", "available": true, "selectable": true}
                     ];
+           },
+           
+           updateCalendar: function(e) {
+               for (var day = 0; day < this.calendar.length; day++) {
+                   for (var i = 0;i < this.calendar[day].blocks.length; i++) {
+                       if (this.calendar[day].blocks[i] == e.detail.changeIndex) this.changeValue(day, i, 0);
+                       else if (this.calendar[day].blocks[i] > e.detail.changeIndex)
+                            this.changeValue(day, i, this.calendar[day].blocks[i] - 1);
+                   }
+               }
+           },
+           
+           changeValue: function(column, row, value) {
+               //Deep copy into local (temporary) array
+                var newArray = [];
+                for (var i = 0; i < this.calendar[column].blocks.length; i++) {
+                    newArray.push(this.calendar[column].blocks[i]);
+                }
+                //Modify here
+                newArray[row] = value;
+                //set will update value and notify.  First argument calculates 'path'
+                this.set('calendar.' + String(column) + '.blocks', newArray);
+           },
+           
+           getAjaxParams: function(availableColors, calendar, blockInterval, startMinute, startHour, startDate, endDate, dueDate, requestName, minimumHours, maximumHours, percentOver) {
+               return {
+                   requestName: requestName,
+                   blockInterval: blockInterval,
+                   startHour: startHour,
+                   startMinute: startMinute,
+                   startDate: startDate,
+                   endDate: endDate,
+                   dueDate: dueDate,
+                   minimumHours: minimumHours,
+                   maximumHours: maximumHours,
+                   percentOver: percentOver,
+                   availableColors: JSON.stringify(availableColors),
+                   calendar: JSON.stringify(this.calendar)
+               };
+           },
+           
+           submit: function() {
+                if (this.requestName === undefined || this.requestName === "") {
+                    alert("Missing Request Name");
+                    return;
+                } else if (this.blockInterval === undefined) {
+                    alert("Missing Interval Duration");
+                    return;
+                } else if (this.startHour === undefined) {
+                    alert("Missing Start Time (Hour)");
+                    return;
+                } else if (this.startMinute === undefined) {
+                    alert("Missing Start Time (Minute)");
+                    return;
+                } else if (this.startDate === undefined || this.startDate === "") {
+                    alert("Missing Start Date");
+                    return;
+                } else if (this.endDate === undefined || this.endDate === "") {
+                    alert("Missing End Date");
+                    return;
+                } else if (this.dueDate === undefined || this.dueDate === "") {
+                    alert("Missing Due Date");
+                    return;
+                } else if (this.availableColors === undefined) {
+                    alert("Missing Colors");
+                    return;
+                } else if (this.calendar === undefined) {
+                    alert("Missing Calendar");
+                    return;
+                }
+                
+                this.$.createAvailabilityAjax.generateRequest();
            }
         });
     </script>

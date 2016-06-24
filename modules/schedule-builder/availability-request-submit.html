@@ -3,22 +3,25 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
 <link rel="import" href="schedule-grid.html">
 
 <dom-module id="availability-request-submit">
     
     <style>
     
-    
+    .text-block {
+            width: 300px;
+            float:left;
+            margin:5px;
+        }
     #totalInfo{
             min-width: 700px;
-            padding-top:40px;
         }
     
     .minHours{
         width: 300px;
-        float:left;
-        padding-top:20px;
 
     }
         
@@ -28,24 +31,37 @@
     }
     
     /*ADD TEXT BOX*/
-    #add-limits {
+    #add-availability {
         float: left;            
         margin: 5px;
         width: 750px;
         padding-left: 30px;
         background: url(banner3.png) repeat-x;
     }
+    
      /*ADD TEXT BOX TITLE*/
-    .add-limits-title {
+    .add-availability-title {
         width: 100%;
         text-align: center;
         padding-top: 18px;
+        padding-bottom: 20px;
     }
+    
+
         
         
     </style>
     
     <template>
+        
+        <iron-ajax
+            id="getRequestDataAjax"
+            url="getAvailabilityRequests.php"
+            handle-as="json"
+            params="{{getRequestDataAjaxParams}}"
+            last-response="{{getRequestDataAjaxResponse}}"
+            on-response="requestDataAjaxReceived">
+        </iron-ajax>
         
         <div id="totalInfo">
             
@@ -53,34 +69,218 @@
         <paper-material id="add-availability">
                         
             <div class="add-availability-title">
-                <b>Add Availability</b>
+                <b>Select Working Hours</b>
             </div>
             
             
 <!-- slider 1 -->
             
             <div>Min Hours</div>
-            <paper-slider class="minHours" value="50" min="18" max="100" editable></paper-slider>
-            
+            <paper-slider id="lowHours" min="{{minimumHours}}" max="{{maximumHours}}" value="{{lowHours}}" editable on-click="updateSlidersLow"></paper-slider>
             
 <!-- slider 2 -->
             
             <div>Max Hours</div>
-            <paper-slider class="maxHours" value="50" min="20" max="100" editable></paper-slider>
-            
-            
-            
-        
+            <paper-slider id="highHours" min="{{minimumHours}}" max="{{maximumHours}}" value="{{highHours}}" editable on-click="updateSlidersHigh"></paper-slider>
             
         </paper-material>
+        
+        
         </div>    
         
-            
+        <br> <br> <br> <br> <br> <br> <br> <br> 
+        <br> <br> <br> <br> <br> <br> <br> <br> 
+        Hours available to work: <span>{{hoursAvailable}}</span><br>
+        Remaining Hours Needed: <span>{{hoursNeeded}}</span>
+        
+        <schedule-grid calendar="{{calendar}}" available-colors="[[availableColors]]" start-hour="[[startHour]]" start-minute="[[startMinute]]" block-interval="[[blockInterval]]"></schedule-grid>
+        
+        <paper-button on-click="submit">Submit</paper-button>
+        <iron-ajax
+            id="requestSubmitAjax"
+            url="submitAvailability.php"
+            params="{{requestSubmitAjaxParams(lowHours, highHours, calendar.*)}}"
+            on-response="submitted"
+            handle-as="json">
+        </iron-ajax>
+        
+        <!-- Remove for production -->
+        <iron-ajax
+            id="registerId"
+            url="sessionId.php"
+            handle-as="json">
+        </iron-ajax>
+        
     </template>
     
     <script>
         Polymer({
-           is: "availability-request-submit" 
+           is: "availability-request-submit",
+           
+            properties: {
+                availabilityId: {
+                    type: Number
+                },
+                getRequestDataAjaxParams: {
+                    type: Object,
+                    computed: "getDataParams(availabilityId)",
+                    observer: "generateRequestDataAjax"
+                },
+                minimumHours: {
+                    type: Number,
+                    computed: "getFromResponse('minimum_hours', getRequestDataAjaxResponse)"
+                },
+                maximumHours: {
+                    type: Number,
+                    computed: "getFromResponse('maximum_hours', getRequestDataAjaxResponse)"
+                },
+                startHour: {
+                    type: Number,
+                    computed: "getFromResponse('start_hour', getRequestDataAjaxResponse)"
+                },
+                startMinute: {
+                    type: Number,
+                    computed: "getFromResponse('start_minute', getRequestDataAjaxResponse)"
+                },
+                blockInterval: {
+                    type: Number,
+                    computed: "getFromResponse('block_interval', getRequestDataAjaxResponse)"
+                },
+                percentOver: {
+                    type: Number,
+                    computed: "getFromResponse('percent_over', getRequestDataAjaxResponse)"
+                },
+                calendar: {
+                    type: Array,
+                    computed: "parseFromResponse('calendar', getRequestDataAjaxResponse)",
+                    observer: "spliceCalendar"
+                },
+                availableColors: {
+                    type: Array,
+                    computed: "parseFromResponse('available_colors', getRequestDataAjaxResponse)"
+                },
+                lowHours: Number,
+                highHours: {
+                    type: Number
+                },
+                hoursAvailable: {
+                    type: Number,
+                    computed: "updateHoursAvailable(calendar.*, availableColors)"
+                },
+                hoursNeeded: {
+                    type: Number,
+                    computed: "updateHoursNeeded(hoursAvailable, highHours, percentOver)"
+                }
+            },
+            
+            listeners: {
+                "calendar-change": "updateHoursAvailable"
+            },
+            
+            submitted: function() {
+                alert("Request submitted");
+                this.fire("request-submitted");
+            },
+            
+            spliceCalendar: function() {
+                this.push('calendar', {});
+                this.pop('calendar');
+            },
+            
+            getFromResponse: function(name, response) {
+                return response[name];
+            },
+            
+            parseFromResponse: function(name, response) {
+                return JSON.parse(response[name]);
+            },
+            
+            generateRequestDataAjax: function(notUsed) {
+                if (this.getRequestDataAjaxParams !== undefined) {
+                    this.$.getRequestDataAjax.generateRequest();
+                }
+            },
+            
+            getDataParams: function(id) {
+                return {
+                    selectedRequestId: id
+                };
+            },
+            
+            requestDataAjaxReceived: function() {
+                
+            },
+            
+            minHours: function() {
+                
+                console.log("min: ", this.totalMinHours);
+                
+            },
+            
+            maxHours: function() {
+              
+              this.minMaxHours = this.totalMinHours;
+              
+              console.log("max: ", this.totalMaxHours);
+              
+            },
+            
+            updateSlidersLow: function() {
+                if (this.lowHours > this.highHours) {
+                    this.highHours = this.lowHours;
+                }
+            },
+            
+            updateSlidersHigh: function() {
+                if (this.highHours < this.lowHours) {
+                    this.lowHours = this.highHours;
+                }
+            },
+            
+            updateHoursAvailable: function(notUsed, alsoNotUsed) {
+                var tempHours = 0;
+                for (var day = 0; day < this.calendar.length; day++) {
+                    for (var block = 0; block < this.calendar[day].blocks.length; block++) {
+                        if (this.countAsAvailable(this.calendar[day].blocks[block])) tempHours += this.addAvailableHours();
+                    }
+                }
+                return tempHours;
+            },
+            
+            countAsAvailable: function(type) {
+                if (this.availableColors) {
+                    return this.availableColors[type].available;
+                }
+                return false;
+            },
+            
+            addAvailableHours: function() {
+                return this.blockInterval / 60;
+            },
+            
+            updateHoursNeeded: function(hoursAvailable, highHours, percentOver) { 
+                var t = highHours * (1 + percentOver / 100) - hoursAvailable;
+                return (t < 0) ? 0 : t;
+            },
+            
+            requestSubmitAjaxParams: function(lowHours, highHours, calendar) {
+                return {
+                    availabilityId: this.availabilityId,
+                    hoursLow: this.lowHours,
+                    hoursHigh: this.highHours,
+                    calendar: JSON.stringify(this.calendar)
+                };
+            },
+            
+            submit: function() {
+                if (this.hoursNeeded === 0) {
+                    var id = prompt("Please enter your student ID without the 9:", "");
+                    this.$.registerId.params = {id: id};
+                    this.$.registerId.generateRequest();
+                    this.$.requestSubmitAjax.generateRequest();
+                }
+            }
+           
         });
     </script>
     
