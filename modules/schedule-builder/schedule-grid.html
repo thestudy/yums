@@ -153,13 +153,15 @@
                 blockInterval: {
                     type: Number
                 },
-                startHour: Number,
-                startMinute: Number,
+                startHour: {
+                    type: Number
+                },
+                startMinute: {
+                    type: Number
+                },
                 availableColors: {
                     type: Array
                 },
-                defaultColors: Array,
-                selectedLabel: String,
                 selecting: Boolean,
                 selectableOn: {
                     type: Boolean,
@@ -171,7 +173,8 @@
                 },
                 times: {
                     type: Array,
-                    value: []
+                    value: [],
+                    computed: "updateTimes(startHour, startMinute, blockInterval, calendar, calendar.splices)"
                 }
             },
             
@@ -180,11 +183,6 @@
                 "column-mouse-down" : "startSelection",
                 "column-mouse-over": "continueSelection"
             },
-            
-            observers: [
-                "updateTimes(startHour, startMinute, blockInterval)"
-            ],
-            
             
             startSelection: function(e) {
                 this.selecting = true;
@@ -207,7 +205,7 @@
             
             changeValue: function(row, column) {
                 
-                if (this.selectableOn || this.availableColors[this.calendar[column].blocks[row]].selectable)
+                if (this.selectableOn || this.availableColors[this.calendar[column].blocks[row]].selectable) {
                 //Deep copy into local (temporary) array
                 var newArray = [];
                 for (var i = 0; i < this.calendar[column].blocks.length; i++) {
@@ -217,7 +215,8 @@
                 newArray[row] = this.getIndexByLabel(this.selectedLabel);
                 //set will update value and notify.  First argument calculates 'path'
                 this.set('calendar.' + String(column) + '.blocks', newArray);
-                this.fire("calendar-change");
+                // this.fire("calendar-change");
+                }
             },
             
             computeName: function(label) {
@@ -247,7 +246,6 @@
             updateSideColors: function() {
                 if (this.$$(".sideColor")) {
                 for (var i = 0; i < this.availableColors.length; i++) {
-                    console.log('#' + this.computeName(this.availableColors[i].label) + "sideColor");
                     if (this.$$('#' + this.computeName(this.availableColors[i].label) + "sideColor")) {
                         this.$$('#' + this.computeName(this.availableColors[i].label) + "sideColor").style.backgroundColor = this.availableColors[i].color;
                     }
@@ -262,18 +260,17 @@
                 return item.selectable || this.selectableOn;
             },
             
-            updateTimes: function(hour, minute, interval) {
-                console.log("updating calendar");
-                this.splice("times", 0, this.times.length);
+            updateTimes: function(hour, minute, interval, calendar) {
                 
+                var timesTemp = [];
                 
                 for (var i = 0; i <= this.calendar[0].blocks.length; i++) {
-                    console.log(((String(hour).length - 1) ? "" : "0") + String(hour) + ":" + ((String(minute).length - 1) ? "" : "0") + String(minute));
-                    this.push("times", ((String(hour).length - 1) ? "" : "0") + String(hour) + ":" + ((String(minute).length - 1) ? "" : "0") + String(minute));
+                    timesTemp.push(((String(hour).length - 1) ? "" : "0") + String(hour) + ":" + ((String(minute).length - 1) ? "" : "0") + String(minute));
                     var t = this.increaseTimeByInterval(hour, minute, interval);
                     hour = t.hour;
                     minute = t.minute;
                 }
+                return timesTemp;
             },
             
             increaseTimeByInterval: function(hour, minute, interval) {

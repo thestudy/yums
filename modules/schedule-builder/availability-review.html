@@ -1,0 +1,72 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="availability-review">
+    
+    <style include="iron-flex iron-flex-alignment"></style>
+    <style>
+        
+    </style>
+    
+    <template>
+        <iron-ajax
+            auto
+            id="getRequestsAjax"
+            url="getAvailabilityRequests.php"
+            handle-as="json"
+            last-response="{{getRequestsAjaxResponse}}">
+        </iron-ajax>
+        <div class="layout vertical">
+            <template is="dom-repeat" items="{{getRequestsAjaxResponse}}">
+                <paper-button data-id$="{{item.id}}" on-click="selectRequest">{{item.request_name}}</paper-button>
+            </template>
+        </div>
+        
+        <iron-ajax
+            auto
+            id="getSubmissionsAjax"
+            url="getAvailabilitySubmissions.php"
+            handle-as="json"
+            params="{{submissionListAjaxParams(selectedRequest)}}"
+            on-response="response"
+            last-response="{{getSubmissionsAjaxResponse}}">
+        </iron-ajax>
+        <div >
+            <template is="dom-repeat" items="{{getSubmissionsAjaxResponse}}">
+                <paper-button on-click="toggle" data-id$="{{item.user_id}}">{{item.user_id}}</paper-button>
+                <iron-collapse id="collapse{{item.user_id}}">
+                    <div>Completed</div>
+                </iron-collapse>
+            </template>
+        </div>
+    </template>
+    
+    <script>
+        Polymer({
+            is: "availability-review",
+            
+            selectRequest: function(e) {
+                this.selectedRequest = e.target.attributes['data-id'].value;
+            },
+            
+            submissionListAjaxParams: function(id) {
+                return {
+                    requestId: id
+                };
+            },
+            
+            response: function() {
+                console.log(this.getSubmissionsAjaxResponse);
+            },
+            
+            toggle: function(e) {
+                this.$$("#collapse" + e.target.attributes["data-id"].value).toggle();
+            }
+        });
+    </script>
+    
+</dom-module>

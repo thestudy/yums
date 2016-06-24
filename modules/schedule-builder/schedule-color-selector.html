@@ -129,7 +129,6 @@
             
             updateSelected: function() {
                 this.selectedLabel = this.$.labelSelector.selected;
-                console.log(this.selectedLabel);
             },
             
             getIndexByLabel: function(label) {
@@ -141,7 +140,6 @@
             
             removeLabel: function(e) {
                 this.splice('labels', e.detail.labelID, 1);
-                console.log("removed a label: " + e.detail.labelID);
                 this.fire("label-delete", {changeIndex: e.detail.labelID});
             },
             
@@ -158,15 +156,17 @@
                     document.getElementById("text").style.outline = "3px solid red";
                 }
                 else{
-                    console.log("add");
-                    console.log("Text added: ", this.startText);
-                    
-                    console.log("Color picked: ", this.$.color.value);
                     
                     document.getElementById("text").style.outline = "";
                     
+                    var newColor = {};
+                    newColor.label = this.startText;
+                    newColor.color = this.$.color.value;
+                    newColor.available = true;
+                    newColor.selectable = true;
                     //array mutation
-                    this.splice('labels', this.labels.length, 0, {"label" : this.startText, "color": this.$.color.value});
+                    this.push('labels', newColor);
+                    // this.splice('labels', this.labels.length, 0, {"label" : this.startText, "color": this.$.color.value});
                     
                     this.startText = "";
                 }

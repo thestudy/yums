@@ -3,6 +3,8 @@
 <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
 <link rel="import" href="schedule-grid.html">
 
 <dom-module id="availability-request-submit">
@@ -52,6 +54,15 @@
     
     <template>
         
+        <iron-ajax
+            id="getRequestDataAjax"
+            url="getAvailabilityRequests.php"
+            handle-as="json"
+            params="{{getRequestDataAjaxParams}}"
+            last-response="{{getRequestDataAjaxResponse}}"
+            on-response="requestDataAjaxReceived">
+        </iron-ajax>
+        
         <div id="totalInfo">
             
             
@@ -82,8 +93,24 @@
         Hours available to work: <span>{{hoursAvailable}}</span><br>
         Remaining Hours Needed: <span>{{hoursNeeded}}</span>
         
-        <schedule-grid calendar="{{calendar}}" available-colors="{{availableColors}}"></schedule-grid>
-            
+        <schedule-grid calendar="{{calendar}}" available-colors="[[availableColors]]" start-hour="[[startHour]]" start-minute="[[startMinute]]" block-interval="[[blockInterval]]"></schedule-grid>
+        
+        <paper-button on-click="submit">Submit</paper-button>
+        <iron-ajax
+            id="requestSubmitAjax"
+            url="submitAvailability.php"
+            params="{{requestSubmitAjaxParams(lowHours, highHours, calendar.*)}}"
+            on-response="submitted"
+            handle-as="json">
+        </iron-ajax>
+        
+        <!-- Remove for production -->
+        <iron-ajax
+            id="registerId"
+            url="sessionId.php"
+            handle-as="json">
+        </iron-ajax>
+        
     </template>
     
     <script>
@@ -91,50 +118,97 @@
            is: "availability-request-submit",
            
             properties: {
-                minimumHours: Number,
-                maximumHours: Number,
-                lowHours: Number,
-                highHours: Number,
-                hoursAvailable: {
-                    type: Number,
-                    value: 0
+                availabilityId: {
+                    type: Number
                 },
-                hoursNeeded: {
+                getRequestDataAjaxParams: {
+                    type: Object,
+                    computed: "getDataParams(availabilityId)",
+                    observer: "generateRequestDataAjax"
+                },
+                minimumHours: {
                     type: Number,
-                    computed: "updateHoursNeeded(hoursAvailable, highHours)"
+                    computed: "getFromResponse('minimum_hours', getRequestDataAjaxResponse)"
+                },
+                maximumHours: {
+                    type: Number,
+                    computed: "getFromResponse('maximum_hours', getRequestDataAjaxResponse)"
+                },
+                startHour: {
+                    type: Number,
+                    computed: "getFromResponse('start_hour', getRequestDataAjaxResponse)"
+                },
+                startMinute: {
+                    type: Number,
+                    computed: "getFromResponse('start_minute', getRequestDataAjaxResponse)"
+                },
+                blockInterval: {
+                    type: Number,
+                    computed: "getFromResponse('block_interval', getRequestDataAjaxResponse)"
+                },
+                percentOver: {
+                    type: Number,
+                    computed: "getFromResponse('percent_over', getRequestDataAjaxResponse)"
                 },
                 calendar: {
                     type: Array,
-                    observer: "updateHoursAvailable"
+                    computed: "parseFromResponse('calendar', getRequestDataAjaxResponse)",
+                    observer: "spliceCalendar"
                 },
-                availableColors: Array
+                availableColors: {
+                    type: Array,
+                    computed: "parseFromResponse('available_colors', getRequestDataAjaxResponse)"
+                },
+                lowHours: Number,
+                highHours: {
+                    type: Number
+                },
+                hoursAvailable: {
+                    type: Number,
+                    computed: "updateHoursAvailable(calendar.*, availableColors)"
+                },
+                hoursNeeded: {
+                    type: Number,
+                    computed: "updateHoursNeeded(hoursAvailable, highHours, percentOver)"
+                }
             },
             
             listeners: {
                 "calendar-change": "updateHoursAvailable"
             },
             
-            ready: function() {
+            submitted: function() {
+                alert("Request submitted");
+                this.fire("request-submitted");
+            },
+            
+            spliceCalendar: function() {
+                this.push('calendar', {});
+                this.pop('calendar');
+            },
+            
+            getFromResponse: function(name, response) {
+                return response[name];
+            },
+            
+            parseFromResponse: function(name, response) {
+                return JSON.parse(response[name]);
+            },
+            
+            generateRequestDataAjax: function(notUsed) {
+                if (this.getRequestDataAjaxParams !== undefined) {
+                    this.$.getRequestDataAjax.generateRequest();
+                }
+            },
+            
+            getDataParams: function(id) {
+                return {
+                    selectedRequestId: id
+                };
+            },
+            
+            requestDataAjaxReceived: function() {
                 
-                this.minimumHours = 6;
-                this.maximumHours = 20;
-                this.interval = 60;
-                this.percentOver = 50;
-                this.calendar = [
-                    {"day": "Monday", "blocks": [0,3,3,3,3,0]},
-                    {"day": "Tuesday", "blocks": [0,3,3,3,3,0]},
-                    {"day": "Wednesday", "blocks": [0,3,3,3,3,0]},
-                    {"day": "Thursday", "blocks": [0,3,3,3,3,0]},
-                    {"day": "Friday", "blocks": [0,3,3,3,3,0]}
-                    ];
-                    
-                this.availableColors = [
-                    {"label" : "Closed", "color" : "white", "available": false, "selectable": false},
-                    {"label" : "Prefer not to work", "color" : "yellow", "available": true, "selectable": true},
-                    {"label" : "Cannot work", "color" : "red", "available": false, "selectable": true},
-                    {"label" : "Prefer to work", "color" : "green", "available": true, "selectable": true}
-                    ];
-                this.updateHoursAvailable();
             },
             
             minHours: function() {
@@ -163,13 +237,14 @@
                 }
             },
             
-            updateHoursAvailable: function() {
-                this.hoursAvailable = 0;
+            updateHoursAvailable: function(notUsed, alsoNotUsed) {
+                var tempHours = 0;
                 for (var day = 0; day < this.calendar.length; day++) {
                     for (var block = 0; block < this.calendar[day].blocks.length; block++) {
-                        if (this.countAsAvailable(this.calendar[day].blocks[block])) this.addAvailableHours();
+                        if (this.countAsAvailable(this.calendar[day].blocks[block])) tempHours += this.addAvailableHours();
                     }
                 }
+                return tempHours;
             },
             
             countAsAvailable: function(type) {
@@ -180,12 +255,30 @@
             },
             
             addAvailableHours: function() {
-                this.hoursAvailable += this.interval / 60;
+                return this.blockInterval / 60;
             },
             
-            updateHoursNeeded: function(hoursAvailable, highHours) { 
-                var t = highHours * (1 + this.percentOver / 100) - hoursAvailable;
+            updateHoursNeeded: function(hoursAvailable, highHours, percentOver) { 
+                var t = highHours * (1 + percentOver / 100) - hoursAvailable;
                 return (t < 0) ? 0 : t;
+            },
+            
+            requestSubmitAjaxParams: function(lowHours, highHours, calendar) {
+                return {
+                    availabilityId: this.availabilityId,
+                    hoursLow: this.lowHours,
+                    hoursHigh: this.highHours,
+                    calendar: JSON.stringify(this.calendar)
+                };
+            },
+            
+            submit: function() {
+                if (this.hoursNeeded === 0) {
+                    var id = prompt("Please enter your student ID without the 9:", "");
+                    this.$.registerId.params = {id: id};
+                    this.$.registerId.generateRequest();
+                    this.$.requestSubmitAjax.generateRequest();
+                }
             }
            
         });

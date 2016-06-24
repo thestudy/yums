@@ -89,13 +89,13 @@
 <!-- slider -->
             
             <div>Percentage</div>
-            <paper-slider class="percentage" value="23" max="100" editable></paper-slider>
+            <paper-slider class="percentage" value="{{percentOver}}" max="100" editable></paper-slider>
             
             
             
 <!-- input text -->
-            <paper-input label="MIN" char-counter maxlength="3" id="lowText" class="text-block" value="{{lowText}}" ></paper-input>
-            <paper-input label="MAX" char-counter maxlength="3" id="highText" class="text-block" value="{{highText}}" ></paper-input>
+            <paper-input label="MIN" char-counter maxlength="3" id="lowText" class="text-block" value="{{minimumHours}}" ></paper-input>
+            <paper-input label="MAX" char-counter maxlength="3" id="highText" class="text-block" value="{{maximumHours}}" ></paper-input>
             
     
             </div>
@@ -110,9 +110,18 @@
             is: "schedule-times",
             
             properties: {
-               
-                
-                
+               minimumHours: {
+                   type: Number,
+                   notify: true
+               },
+               maximumHours: {
+                   type: Number,
+                   notify: true
+               },
+               percentOver: {
+                   type: Number,
+                   notify: true
+               }
             },
 
 

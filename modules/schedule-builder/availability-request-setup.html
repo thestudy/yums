@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="schedule-order.html">
 <link rel="import" href="schedule-color-selector.html">
@@ -15,9 +16,9 @@
     
     <template>
         <paper-input label = "Name of this request" value="{{requestName}}"></paper-input><br>
-        <schedule-order calendar="{{calendar}}" start-date="{{startDate}}" end-date="{{endDate}}" due-date="{{due-date}}" block-interval="{{blockInterval}}" start-minute="{{startMinute}}" start-hour"{{startHour}}"></schedule-order>
+        <schedule-order calendar="{{calendar}}" start-date="{{startDate}}" end-date="{{endDate}}" due-date="{{dueDate}}" block-interval="{{blockInterval}}" start-minute="{{startMinute}}" start-hour="{{startHour}}"></schedule-order>
         <br> <br> <br> <br> <br> <br> <br>
-        <schedule-times></schedule-times>
+        <schedule-times minimum-hours="{{minimumHours}}" maximum-hours="{{maximumHours}}" percent-over="{{percentOver}}"></schedule-times>
         <br> <br> <br> <br> <br> <br>
         <br> <br> <br>
         <schedule-color-selector labels="{{availableColors}}"></schedule-color-selector>
@@ -25,30 +26,71 @@
         
         <schedule-grid available-colors="[[availableColors]]" calendar="{{calendar}}" editable selectable-on block-interval="[[blockInterval]]" start-hour="[[startHour]]" start-minute="[[startMinute]]"></schedule-grid>
         <paper-button on-click="submit">Submit</paper-button>
+        
+        <!-- Iron Ajax request to store information -->
+        <iron-ajax
+            id="createAvailabilityAjax"
+            url="createAvailability.php"
+            handle-as="json"
+            on-response="availabilitySent"
+            params="{{createAvailabilityAjaxParams}}"
+            last-response="createAvailabilityAjaxResponse"></iron-ajax>
     </template>
+    
+    
     
     <script>
         Polymer({
-           is: "availability-request-setup",
+            is: "availability-request-setup",
            
-           properties: {
-               availableColors: Array,
-               calendar: Array,
-               blockInterval: {
-                   type: Number,
-                   observer: "debug"
-               },
-               startMinute: Number,
-               startHour: Number,
-               startDate: String,
-               endDate: String,
-               dueDate: String,
-               requestName: String
+            properties: {
+                availableColors: {
+                    type: Array
+                },
+                calendar: Array,
+                blockInterval: {
+                   type: Number
+                },
+                startMinute: {
+                    type: Number
+                },
+                startHour: {
+                    type: Number
+                },
+                startDate: {
+                    type: String
+                },
+                endDate: {
+                    type: String
+                },
+                dueDate: {
+                    type: String
+                },
+                requestName: {
+                    type: String
+                },
+                minimumHours: {
+                    type: String
+                },
+                maximumHours: {
+                    type: Number
+                },
+                percentOver: {
+                    type: Number
+                },
+                createAvailabilityAjaxParams: {
+                    type: Object,
+                    computed: "getAjaxParams(availableColors, calendar.*, blockInterval, startMinute, startHour, startDate, endDate, dueDate, requestName, minimumHours, maximumHours, percentOver)"
+                }
            },
            
            listeners: {
-               "label-delete": "updateCalendar",
-              "calendar-update": "updateTimes"
+                "label-delete": "updateCalendar"
+           },
+           
+           availabilitySent: function() {
+               alert("Request Submitted");
+               this.fire("return");
            },
            
            ready: function() {
@@ -64,7 +106,8 @@
                for (var day = 0; day < this.calendar.length; day++) {
                    for (var i = 0;i < this.calendar[day].blocks.length; i++) {
                        if (this.calendar[day].blocks[i] == e.detail.changeIndex) this.changeValue(day, i, 0);
-                       else if (this.calendar[day].blocks[i] > e.detail.changeIndex) this.changeValue(day, i, this.calendar[day].blocks[i] - 1);
+                       else if (this.calendar[day].blocks[i] > e.detail.changeIndex)
+                            this.changeValue(day, i, this.calendar[day].blocks[i] - 1);
                    }
                }
            },
@@ -81,27 +124,54 @@
                 this.set('calendar.' + String(column) + '.blocks', newArray);
            },
            
+           getAjaxParams: function(availableColors, calendar, blockInterval, startMinute, startHour, startDate, endDate, dueDate, requestName, minimumHours, maximumHours, percentOver) {
+               return {
+                   requestName: requestName,
+                   blockInterval: blockInterval,
+                   startHour: startHour,
+                   startMinute: startMinute,
+                   startDate: startDate,
+                   endDate: endDate,
+                   dueDate: dueDate,
+                   minimumHours: minimumHours,
+                   maximumHours: maximumHours,
+                   percentOver: percentOver,
+                   availableColors: JSON.stringify(availableColors),
+                   calendar: JSON.stringify(this.calendar)
+               };
+           },
+           
            submit: function() {
-               if (!this.requestName) alert("Missing Request Name");
-               else if (!this.blockInterval) alert("Missing Interval Duration");
-            //   else if (!this.startHour) alert("Missing Start Time");
-            //   else if (!this.startMinute) alert("Missing Start Time");
-              else if (!this.startDate) alert("Missing Start Date");
-               else if (!this.endDate) alert("Missing End Date");
-               else if (!this.dueDate) alert("Missing Due Date");
-               else if (!this.availableColors) alert("Missing Colors");
-               else if (!this.calendar) alert("Missing Calendar");
-           },
-           
-           debug: function() {
-               
-               console.log("Block Interval: " + this.blockInterval);
-           },
-           
-           updateTimes: function(e) {
-               this.blockInterval = e.detail.blockInterval;
-               this.startHour = e.detail.startHour;
-               this.startMinute = e.detail.startMinute;
+                if (this.requestName === undefined || this.requestName === "") {
+                    alert("Missing Request Name");
+                    return;
+                } else if (this.blockInterval === undefined) {
+                    alert("Missing Interval Duration");
+                    return;
+                } else if (this.startHour === undefined) {
+                    alert("Missing Start Time (Hour)");
+                    return;
+                } else if (this.startMinute === undefined) {
+                    alert("Missing Start Time (Minute)");
+                    return;
+                } else if (this.startDate === undefined || this.startDate === "") {
+                    alert("Missing Start Date");
+                    return;
+                } else if (this.endDate === undefined || this.endDate === "") {
+                    alert("Missing End Date");
+                    return;
+                } else if (this.dueDate === undefined || this.dueDate === "") {
+                    alert("Missing Due Date");
+                    return;
+                } else if (this.availableColors === undefined) {
+                    alert("Missing Colors");
+                    return;
+                } else if (this.calendar === undefined) {
+                    alert("Missing Calendar");
+                    return;
+                }
+                
+                this.$.createAvailabilityAjax.generateRequest();
            }
         });
     </script>

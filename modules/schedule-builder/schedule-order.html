@@ -79,6 +79,7 @@
             width: 140px;
             background: url(banner3.png) repeat-x;
         }
+        
         /*INTERVAL TIME BOX TITLE*/
         .interval-time-box-title {
             width: 100%;
@@ -174,12 +175,7 @@
         <!--div contains: topOfPage div, bottomOfPage div, Go Back, Submit button-->
         <div id="totalInfo">
 
-            <paper-material elevation="1" id="paper-block"> 
-
-<!-- Exit button -->
-
-                <!-- Exit button -->
-                <paper-button raised id="button-exit">Go Back</paper-button>
+            <paper-material elevation="1" id="paper-block">
                 
 <!-- Choose Time Intervals -->
             
@@ -221,7 +217,7 @@
                         <paper-dropdown-menu label="HH", id ="start-hour">
                             
                             <!-- content in the dropdown menu -->
-                            <paper-listbox class="dropdown-content" id="startTime-information" selected="{{startSelected}}" on-click="startTimeHour" >
+                            <paper-listbox class="dropdown-content" id="startTime-information" selected="{{startHoursSelected}}" on-click="startTimeHour" >
                                 
                                 <!-- START TIMES IN DROPDOWN -->
                                 <template is="dom-repeat" items="{{startHours}}" >
@@ -264,10 +260,10 @@
                         <paper-dropdown-menu label="HH", id ="end-hour">
                             
                             <!-- content in the dropdown menu -->
-                            <paper-listbox class="dropdown-content" id="endTime-information" selected="{{endSelected}}" on-click="endTimeHour">
+                            <paper-listbox class="dropdown-content" id="endTime-information" selected="{{endHoursSelected}}" on-click="endTimeHour">
                                 
                                 <!-- END TIMES IN DROPDOWN -->
-                                <template is="dom-repeat" items="{{endHour}}">
+                                <template is="dom-repeat" items="{{endHours}}">
                                     <paper-item>{{item}}</paper-item>
                                 </template>
             
@@ -279,10 +275,10 @@
                         <paper-dropdown-menu disabled label="MM", id ="end-minute">
                             
                             <!-- content in the dropdown menu -->
-                            <paper-listbox class="dropdown-content" id="endTimeMinute-information" selected="{{endMinuteSelected}}" on-click="endTimeMinute">
+                            <paper-listbox class="dropdown-content" id="endTimeMinute-information" selected="{{endMinutesSelected}}" on-click="endTimeMinute">
                                 
                                 <!-- END TIMES IN DROPDOWN -->
-                                <template is="dom-repeat" items="{{endMinute}}">
+                                <template is="dom-repeat" items="{{endMinutes}}">
                                     <paper-item>{{item}}</paper-item>
                                 </template>
             
@@ -335,14 +331,8 @@
                     <vaadin-date-picker label="Pick Due Date" value="{{dueDate}}"  id="due-date" on-click="updateDueDate">
                     </vaadin-date-picker>
                     
-                    </paper-material>
-                </div>
-                
-            
-<!-- Submit button -->
-                <!-- Submit -->
-                <paper-button raised id="button-submit" on-click="calculateSchedule">Update</paper-button> 
                 </paper-material>
+            </div>
         </div>
 
 
@@ -358,11 +348,11 @@
            properties: {
                // START HOUR
                startHours: Array,
-               startSelected: String,
+               startHoursSelected: String,
                startHour: {
                    type: Number,
                    notify: true,
-                   computed: "setExternalValue(startHours, startSelected)"
+                   computed: "setExternalValue(startHours, startHoursSelected)"
                },
                
                // START MINUTE
@@ -375,12 +365,22 @@
                },
                
                // END HOUR
-               endHour: Array,
-               endSelected: String,
+               endHours: Array,
+               endHoursSelected: String,
+               endHour: {
+                   type: Number,
+                   notify: true,
+                   computed: "setExternalValue(endHours, endHoursSelected)"
+               },
                
                // END MINUTE
-               endMinute: Array,
-               endMinuteSelected: String,
+               endMinutes: Array,
+               endMinutesSelected: String,
+               endMinute: {
+                   type: Number,
+                   notify: true,
+                   computed: "setExternalValue(endMinutes, endMinutesSelected)"
+               },
                
                // INTERVALS
                intervals: Array,
@@ -423,7 +423,7 @@
                 //[SERVER ACCESS]
                 this.startHours = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
 
-                this.endHour = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
+                this.endHours = ["00", "01", "02", "03", "04", "05", "06", "07", "08","09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"];
 
                 this.intervals = ["05", "10", "15", "20", "30", "60"];
 
@@ -431,14 +431,16 @@
 // Start End Hour output 
             // Start time hour position in array output to console
             startTimeHour: function() {
-                //console.clear();
-                console.log(this.startSelected);
+                
+                //attempt to calculate schedule
+               this.calculateSchedule();
             },
 
             // End time hour position in array output to console
             endTimeHour: function() {
-                //console.clear();
-                console.log(this.endSelected);
+                
+                //attempt to calculate schedule
+               this.calculateSchedule();
             },
 
             
@@ -449,27 +451,27 @@
                 switch(this.intervalSelected) {
                    case 0:
                         this.startMinutes = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
-                        this.endMinute = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
+                        this.endMinutes = ["00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"];
                         break;
                     case 1:
                         this.startMinutes = ["00", "10", "20", "30", "40", "50"];
-                        this.endMinute = ["00", "10", "20", "30", "40", "50"];
+                        this.endMinutes = ["00", "10", "20", "30", "40", "50"];
                         break;
                     case 2:
                         this.startMinutes = ["00", "15", "30", "45"];
-                        this.endMinute = ["00", "15", "30", "45"];
+                        this.endMinutes = ["00", "15", "30", "45"];
                         break;
                     case 3:
                         this.startMinutes = ["00", "20", "40"];
-                        this.endMinute = ["00", "20", "40"];
+                        this.endMinutes = ["00", "20", "40"];
                         break;
                     case 4:
                         this.startMinutes = ["00", "30"];
-                        this.endMinute = ["00", "30"];
+                        this.endMinutes = ["00", "30"];
                         break;
                     case 5:
                         this.startMinutes = ["00"];
-                        this.endMinute = ["00"];
+                        this.endMinutes = ["00"];
                         break;
                 
                }
@@ -480,19 +482,26 @@
                this.querySelector("#start-minute").disabled = false;
                this.querySelector("#end-minute").disabled = false;
                
+               //attempt to calculate schedule
+               this.calculateSchedule();
+               
             },
             
 // Start time minutes position in array output to console
             startTimeMinute: function() {
                 
-                console.log("Start Time Minute:", this.startMinutesSelected);
+                
+                //attempt to calculate schedule
+               this.calculateSchedule();
                    
             },
             
 // End time minutes position in array output to console
             endTimeMinute: function() {
                 
-                console.log("End Time Minute:", this.endMinuteSelected);
+                
+                //attempt to calculate schedule
+               this.calculateSchedule();
                    
             },
                
@@ -505,7 +514,6 @@
                     this.querySelector("#end-date").disabled = true;
                 }
                 else{
-                    console.log("Start Date:", this.startDate);
                     this.querySelector("#end-date").disabled = false;
                     this.endDate = "";
                 }
@@ -518,27 +526,39 @@
                     
                 }
                 else if(this.endDate < this.startDate){
-                    console.log("End Date Not Valid");
                     this.endDate = "";
                     document.getElementById("end-date").style.outline = "3px solid red";
 
                 } 
                 else{
-                    console.log("End Date:", this.endDate);
                     document.getElementById("end-date").style.outline = "";
                 }
                 
             },
             
             updateDueDate: function() {
-                this.dueDate = this.$.dueDate.value;
+                // this.dueDate = this.$.dueDate.value;
+            },
+            
+            calculateSchedulePrereqs: function() {
+                
+                if (this.blockInterval == undefined || this.startMinute == undefined || this.startHour == undefined || this.endMinute == undefined || this.endHour == undefined) {
+                    return false;
+                } else {
+                    return true;
+                }
+                
             },
 
             calculateSchedule: function() {
+                
+                if (!this.calculateSchedulePrereqs()) {
+                    return;
+                }
+ 
                 this.calendar = [];
                 
                 //For now we assume standard 7 days/per week, theoretically we can add more options in later
-                this.calendar = [];
                 var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
                 
                 for (var day = 0; day < days.length; day++) {
@@ -546,11 +566,11 @@
                     var newDay = {};
                     newDay.day = days[day];
                     newDay.blocks = [];
-                    var tempHour = this.startSelected;
+                    var tempHour = this.startHoursSelected;
                     var tempMinute = this.startMinutes[this.startMinutesSelected];
                     var tempInterval = this.intervals[this.intervalSelected];
                     
-                    while (!this.endReached(tempHour, tempMinute, this.endHour[this.endSelected], this.endMinute[this.endMinuteSelected])) {
+                    while (!this.endReached(tempHour, tempMinute, this.endHour, this.endMinute)) {
                         newDay.blocks.push(0);
                         var newTime = this.increaseTimeByInterval(tempHour, tempMinute, tempInterval);
                         tempHour = newTime.hour;
@@ -558,7 +578,7 @@
                     }
                     this.push("calendar", newDay);
                 }
-                this.fire("calendar-update", {blockInterval: this.blockInterval, startHour: this.startHour, startMinute: this.startMinute});
+                // this.fire("calendar-update", {blockInterval: this.blockInterval, startHour: this.startHour, startMinute: this.startMinute});
             },
             
             increaseTimeByInterval: function(hour, minute, interval) {
@@ -578,15 +598,14 @@
                 };
             },
             
-            endReached: function(currentHour, currentMinute, endHour, endMinute) {
-                if (Number(currentHour) < Number(endHour)) return false;
-                else if (Number(currentHour) > Number(endHour)) return true;
-                else if (Number(currentMinute) < Number(endMinute)) return false;
+            endReached: function(currentHour, currentMinute, endHours, endMinutes) {
+                if (Number(currentHour) < Number(endHours)) return false;
+                else if (Number(currentHour) > Number(endHours)) return true;
+                else if (Number(currentMinute) < Number(endMinutes)) return false;
                 else return true;
             },
             
             setExternalValue: function(selections, index) {
-                console.log("External Value: " + selections[index]);
                 return Number(selections[index]);
             }
            

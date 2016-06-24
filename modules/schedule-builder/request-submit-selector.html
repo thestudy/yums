@@ -1,0 +1,105 @@
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="availability-request-submit.html">
+
+<dom-module id="request-submit-selector">
+    
+    <style include="iron-flex iron-flex-alignment"></style>
+    <style>
+        .request-selector {
+        }
+    </style>
+    
+    <template>
+        <iron-ajax
+            auto
+            id="getRequestsAjax"
+            url="getAvailabilityRequests.php"
+            handle-as="json"
+            on-response="requestsReceived"
+            last-response="{{getRequestsAjaxResponse}}">
+        </iron-ajax>
+        <div class="layout vertical">
+            <template is="dom-repeat" items="{{getRequestsAjaxResponse}}">
+                <paper-button raised data-id$="{{item.id}}" disabled="{{show(item.due_date)}}" on-click="selectRequest" class="request-selector">{{item.request_name}}</paper-button>
+            </template>
+        </div>
+        
+        <iron-ajax
+            id="getRequestDataAjax"
+            url="getAvailabilityRequests.php"
+            handle-as="json"
+            last-response="{{getRequestDataAjaxResponse}}"
+            on-response="getRequestDataAjaxReceived"
+            params="{{getRequestDataAjaxParams}}">
+        </iron-ajax>
+        <availability-request-submit id="submit" hidden="{{showRequest}}" availability-id="{{selectedRequestId}}"></availability-request-submit>
+    </template>
+    
+    
+    <script>
+        Polymer({
+            is: "request-submit-selector",
+            
+            properties: {
+                selectedRequestId: Number,
+                getRequestDataAjaxParams: {
+                    type: Object,
+                    computed: "getDataParams(selectedRequestId)",
+                    observer: "observeRequestDataAjaxParams"
+                },
+                showRequest: {
+                    type: Boolean,
+                    computed: "hiddenRequest(getRequestDataAjaxResponse)",
+                    value: true
+                }
+            },
+            
+            listeners: {
+                "request-submitted": "return"
+            },
+            
+            ready: function() {
+                this.selectedRequestId = undefined;
+            },
+            
+            return: function() {
+                this.selectedRequestId = undefined;
+                this.fire("return");
+            },
+            
+            requestsReceived: function() {
+            },
+            
+            show: function(due_date) {
+                return due_date < (new Date().toJSON().slice(0,10));
+            },
+            
+            selectRequest: function(e) {
+                this.selectedRequestId = e.target.attributes['data-id'].value;
+            },
+            
+            getDataParams: function(selectedRequestId) {
+                return {
+                    selectedRequestId: selectedRequestId
+                };
+            },
+            
+            getRequestDataAjaxReceived: function() {
+                // console.log(this.getRequestDataAjaxResponse);
+            },
+            
+            hiddenRequest: function(getRequestDataAjaxResponse) {
+                return getRequestDataAjaxResponse === null;
+            },
+            
+            observeRequestDataAjaxParams: function() {
+                if (this.getRequestDataAjaxParams !== undefined) this.$.getRequestDataAjax.generateRequest();
+            }
+        });
+    </script>
+</dom-module>
