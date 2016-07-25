@@ -1,0 +1,264 @@
+<!--evan_h & lulahogg-->
+<!--attendance-page.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="category-scroller.html">
+<link rel="import" href="location-scroller.html">
+<link rel="import" href="subject-scroller.html">
+<link rel="import" href="time-scroller.html">
+<link rel="import" href="date-range.html">
+
+<dom-module id="attendance-page">
+    <style>
+        .checker {
+            float:left;
+            margin:10px;
+        }
+        .date-box {
+            float:left;
+            margin:10px;
+            /*border:dotted;*/
+        }
+        
+        .button-container {
+            float:left;
+            margin:10px;
+            height:200px;
+            width:100px;
+            position:relative;
+        }
+        .button {
+            position:absolute;
+            bottom:0px;
+        }
+        .errortext {
+            color: red;
+            text-align: center;
+            visibility: hidden;
+        }
+        #graph {
+            float:left;
+            margin:10px;
+            /*border:solid;*/
+            background-color:lightgrey;
+            height:500px;
+            width:calc(100% - 20px);
+        }
+        #dates-container {
+            float:left;
+            margin:10px;
+            /*background-color:lightgrey;*/
+            width:calc(100% - 20px);
+        }
+        #dates-container-title-box {
+            height:40px;
+            background: url(banner3.png) repeat-x;
+            position:relative;
+        }
+        #dates-container-title {
+            text-align:center;
+            width:100%;
+            position:absolute;
+            bottom:5;
+        }
+        #page {
+            margin:auto;
+            width:1000px;
+        }
+        #page-title {
+            width: 100%;
+            text-align:center;
+            direction:rtl;
+        }
+        
+    </style>
+    <template>
+        
+        <paper-material id="page">     
+            
+            <div id="page-title">
+                <h2>Tutoring Attendance Lookup</h2>
+            </div>
+            
+            <paper-material id="dates-container">
+                <paper-material id="dates-container-title-box">
+                    <div id="dates-container-title">Select Date Range(s):</div>
+                </paper-material>
+                <template is="dom-repeat" items="{{dateRanges}}">
+                    <date-range class="date-box" start-date="{{item.startDate}}" end-date="{{item.endDate}}" list-id="{{index}}"></date-range>
+                </template>
+            </paper-material>
+            
+            
+            
+            <location-scroller class="checker" locations="{{locations}}"></location-scroller>
+            <time-scroller class="checker" timescales="{{timescales}}" timescaleselected="{{timescaleselected}}"></time-scroller>
+            <subject-scroller class="checker" subjects="{{subjects}}"></subject-scroller>
+            <category-scroller class="checker" categories="{{categories}}"></category-scroller>
+            <div class="button-container">
+                <div class="errortext" id="daterangeError">Date Range Required</div>
+                <div class="errortext" id="locationError">Location Required</div>
+                <div class="errortext" id="subjectError">Subject Required</div>
+                <div class="errortext" id="categoryError">Category Required</div>
+                <paper-button raised class="button" on-click="submitReport">Submit</paper-button>
+            </div> <br>
+            <div id="graph">
+                <!--Graph Placeholder-->
+            </div>
+            <!--in order to have the containing div wrap around the floated divs, the floats must be cleared-->
+            <div style="clear:both;"></div>
+        </paper-material>  
+        
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "attendance-page",
+            
+            properties: {
+                dateRanges: Array,
+                locations: Array, locationsPacket: Array,
+                timescales: Array, timescaleselected: String,
+                subjects: Array, subjectsPacket: Array,
+                categories: Array, categoriesPacket: Array,
+                timePacket: String
+            },
+            
+            listeners: {
+              'add-date-range': 'addDateRange',
+              'remove-date-range': 'removeDateRange',
+              'date-update': 'dateUpdate'
+            },
+            
+            addDateRange: function(e) {
+                if (this.dateRanges.length <= 20)
+                    this.splice('dateRanges', e.detail.listId + 1, 0, {"startDate" : "", "endDate": ""});
+                else
+                    console.log("tried to add 21st date range, rejected.");
+            },
+            
+            removeDateRange: function(e) {
+                if (this.dateRanges.length > 1)
+                    this.splice('dateRanges', e.detail.listId, 1);
+                else
+                    console.log("tried to remove only date range, rejected.");
+            },
+            
+            ready: function() {
+                console.log("Fired up and ready to serve.");
+                
+                //[SERVER ACCESS]
+                this.dateRanges = [{"startDate" : "", "endDate": ""}];
+                this.locations = [{"loc":"All","checked":true},{"loc":"Willy T","checked":false},{"loc":"RGAN","checked":false},{"loc":"TriHouse","checked":false},{"loc":"Commons","checked":false},{"loc":"Pence Hall","checked":false}];
+                this.timescales = ["Hourly","Daily","Weekly","Monthly","Yearly"];
+                this.timescaleselected = "Hourly";
+                this.subjects = [{"sub":"All","checked":true},{"sub":"MA113","checked":false},{"sub":"CHE105","checked":false}];
+                this.categories = [{"cat":"All","checked":true},{"cat":"Math","checked":false},{"cat":"Chemistry","checked":false}];
+                this.locationsPacket = [];
+                this.subjectsPacket = [];
+                this.categoriesPacket = [];
+            },
+            
+            submitReport: function() {
+                
+                document.getElementById("daterangeError").style.visibility="hidden";
+                document.getElementById("locationError").style.visibility="hidden";
+                document.getElementById("subjectError").style.visibility="hidden";
+                document.getElementById("categoryError").style.visibility="hidden";
+                
+                this.locationsPacket = [];
+                this.subjectsPacket = [];
+                this.categoriesPacket = [];
+                
+                if (this.dateRanges[0].startDate === "" || this.dateRanges[0].endDate === "") {
+                    console.log("tried to submit with no date range, rejected.");
+                    document.getElementById("daterangeError").style.visibility="visible";
+                } else {
+                    var hasChecked = false;
+                    var i;
+                    for(i=0; i< this.locations.length; i++) {
+                        if (this.locations[i].checked == true) {
+                            if (i == 0) {
+                                for (i=1; i<this.locations.length; i++)
+                                    this.locationsPacket.push(this.locations[i].loc);
+                                hasChecked = true;
+                                break;
+                            }
+                            this.locationsPacket.push(this.locations[i].loc);
+                            hasChecked = true;
+                        }
+                    }
+                    if (!hasChecked) {
+                        //There was no location selected
+                        document.getElementById("locationError").style.visibility="visible";
+                        
+                        console.log("No location selected, rejected.");
+                    } else {
+                        hasChecked = false;
+                        //Now, check if there's a subject checked
+                        for(i=0; i< this.subjects.length; i++) {
+                            if (this.subjects[i].checked == true) {
+                                if (i == 0) {
+                                    for (i=1; i<this.subjects.length; i++) 
+                                        this.subjectsPacket.push(this.subjects[i].sub);
+                                    hasChecked = true;
+                                    break;
+                                }
+                                this.subjectsPacket.push(this.subjects[i].sub);
+                                hasChecked = true;
+                            }
+                        }
+                        if (!hasChecked) {
+                            //There was no subject selected
+                            document.getElementById("subjectError").style.visibility="visible";
+                            
+                            console.log("No subject selected, rejected.");
+                        } else {
+                            hasChecked = false;
+                            //Now, check if there's a category checked
+                            for(i=0; i< this.categories.length; i++) {
+                                if (this.categories[i].checked == true) {
+                                    if (i == 0) {
+                                        for (i=1; i<this.categories.length; i++) 
+                                            this.categoriesPacket.push(this.categories[i].cat);
+                                        hasChecked = true;
+                                        break;
+                                    }
+                                    this.categoriesPacket.push(this.categories[i].cat);
+                                    hasChecked = true;
+                                }
+                            }
+                            if (!hasChecked) {
+                                //There was no category selected
+                                document.getElementById("categoryError").style.visibility="visible";
+                                
+                                console.log("No category selected, rejected.");
+                            } else {
+
+                                //[SERVER ACCESS]
+                                console.log("Date Ranges: ", this.dateRanges);
+                                console.log("Locations: ", this.locationsPacket);
+                                console.log("Time Scale: ", this.timescaleselected);
+                                console.log("Subjects: ", this.subjectsPacket);
+                                console.log("Categories: ", this.categoriesPacket);
+                            }
+                        }
+                    }
+                }
+                
+                
+                
+                
+            },
+            
+            dateUpdate: function(e) {
+                this.dateRanges[e.detail.listId].startDate = e.detail.startDate;
+                this.dateRanges[e.detail.listId].endDate = e.detail.endDate;
+            }
+        });
+    </script>
+    
+</dom-module>

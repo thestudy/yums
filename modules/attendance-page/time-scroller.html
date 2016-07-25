@@ -1,0 +1,72 @@
+<!--evan_h & lulahogg-->
+<!--time-scroller.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+
+<dom-module id="time-scroller">
+    <style>
+        #container {
+            width:200px;
+            height:200px;
+        }
+        #title-box {
+            height:40px;
+            background: url(banner3.png) repeat-x;
+            position:relative;
+        }
+        #title {
+            text-align:center;
+            width:100%;
+            position:absolute;
+            bottom:5;
+        }
+        .content {
+            height:160px;
+            overflow:auto;
+        }
+        .checker {
+            padding:10px;
+            overflow: hidden;
+            width: calc(100% - 20px);
+        }
+        
+        
+    </style>
+    <template>
+        <paper-material id="container">
+            <paper-material id="title-box">
+                <div id="title">Time Scale</div>
+            </paper-material>
+            <paper-radio-group id="selector" class="content" selected="{{timescaleselected}}" on-iron-select="updateSelected">
+                <template is="dom-repeat" items="{{timescales}}">
+                    <paper-radio-button class="checker" name={{item}}>{{item}}</paper-radio-button>
+                </template>
+                
+            </paper-radio-group>
+        </paper-material>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "time-scroller",
+            
+            properties: {
+                timescales: Array,
+                timescaleselected: {
+                    type: String,
+                    notify: true
+                }
+            },
+            
+            updateSelected: function() {
+                // console.log(this.$.selector.selected);
+                this.timescaleselected = this.$.selector.selected;
+            }
+        });
+    </script>
+    
+</dom-module>

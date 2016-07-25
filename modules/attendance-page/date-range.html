@@ -1,0 +1,63 @@
+<!--evan_h & lulahogg-->
+<!--date-range.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="date-range">
+    <style>
+        .date-block {
+            width: 300px;
+            float:left;
+            margin:5px;
+        }
+        .buttons {
+            margin-top:22px;
+        }
+        
+        
+    </style>
+    <template>
+        <vaadin-date-picker id="start" label="Pick Start Date", class="date-block" value="{{startDate}}"></vaadin-date-picker>
+        <vaadin-date-picker id="end" label="Pick End Date", class="date-block" value="{{endDate}}"></vaadin-date-picker>
+        <paper-button raised class="buttons" on-click="addDateRange">+</paper-button>
+        <paper-button raised class="buttons" on-click="removeDateRange">-</paper-button>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "date-range",
+            
+            properties: {
+                listId: {
+                    type: Number,
+                    notify: true
+                },
+                startDate: {
+                    type: String,
+                    notify: true
+                },
+                endDate: {
+                    type: String,
+                    notify: true
+                }
+            },
+            
+            addDateRange: function() {
+                this.fire('add-date-range', {listId: this.listId});
+            },
+            removeDateRange: function() {
+                this.fire('remove-date-range', {listId: this.listId});
+            },
+            
+            // updateDate: function(e) {
+            //     this.startDate = this.$.start.value;
+            //     this.endDate = this.$.end.value;
+            //     this.fire('date-update', {listId: this.listId, startDate: this.startDate, endDate: this.endDate})
+            // }
+        });
+    </script>
+    
+</dom-module>

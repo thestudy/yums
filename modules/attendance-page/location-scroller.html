@@ -1,0 +1,74 @@
+<!--evan_h & lulahogg-->
+<!--location-scroller.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+
+<dom-module id="location-scroller">
+    <style>
+        #container {
+            width:200px;
+            height:200px;
+        }
+        #title-box {
+            height:40px;
+            background: url(banner3.png) repeat-x;
+            position:relative;
+        }
+        #title {
+            text-align:center;
+            width:100%;
+            position:absolute;
+            bottom:5;
+        }
+        .content {
+            height:160px;
+            overflow:auto;
+        }
+        .checker {
+            padding:10px;
+            width: calc(100% - 20px);
+            overflow: hidden;
+        }
+        
+        
+    </style>
+    <template>
+        <paper-material id="container">
+            <paper-material id="title-box">
+                <div id="title">Location</div>
+            </paper-material>
+            <div class="content">
+                <!--for each location from database, add a checkbox??-->
+                <template is="dom-repeat" items="{{locations}}">
+                    <paper-checkbox class="checker" checked={{item.checked}}>{{item.loc}}</paper-checkbox>
+                </template>
+                
+                
+                <!---->
+                
+                <!--<paper-checkbox class="checker">All</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">Willy T</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">Whitehall</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">RGAN</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">FPAT</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">Pence Hall</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">POT</paper-checkbox>-->
+            </div>
+        </paper-material>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "location-scroller",
+            
+            properties: {
+                locations: Array
+            }
+                
+        });
+    </script>
+    
+</dom-module>
