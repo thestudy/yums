@@ -1,0 +1,100 @@
+<!--question-block.html-->
+<!--evan_h & lulahogg-->
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+
+<dom-module id="question-block">
+    <style>
+        .collapse-content {
+            padding-top: 10px;
+            width: 100%;
+            float: left;
+        }
+        #enclosure-div {
+            float: left;
+            padding: 10px;
+            background: url(banner3.png) repeat-x;
+            background-color: white;
+            margin: 10px;
+            width: calc(100% - 40px);
+        }
+        #question-div {
+            position: relative;
+            width: calc(100% - 200px);
+            margin-top: 10px;
+            margin-left: 5px;
+            float: left;
+        }
+        #question-content {
+            min-width:0px;
+            width:100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #date-div {
+            float: right;
+            margin-top: 10px;
+        }
+        #response-div {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        #arrow-icon {
+            width: 15px;
+            height: 15px;
+            background: url(arrow.png);
+            float:left;
+            margin-top:12.5px;
+            
+            -webkit-transition: transform .2s;
+        }
+        
+    </style>
+    
+    <template>
+        <paper-material id="enclosure-div">
+            
+            <paper-material elevation=0 id="arrow-icon" on-click="tog"></paper-material>
+            
+            <paper-material id="question-div" elevation=0 on-click="tog">
+                <paper-material id="question-content" elevation=0>
+                {{question}}
+                </paper-material>
+            </paper-material>
+            <paper-material id="date-div" elevation=0>
+                Monday, May 9th, 2016
+            </paper-material>
+            
+            <iron-collapse id= "collapse" class="collapse-content">
+                <paper-textarea id="response-div" no-label-float char-counter maxlength="400" label="Response to the question"></paper-textarea>
+            </iron-collapse>
+            
+        </paper-material>
+    </template>
+    
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "question-block",
+            
+            properties: {
+              question: String,
+              date: String,
+            },
+            
+            tog: function() {
+                this.$.collapse.toggle();
+                
+                //toggle between normal and nowrap, and turn dropdown triangle
+                this.querySelector("#question-content").style.whiteSpace = this.querySelector("#question-content").style.whiteSpace == "normal" ? "nowrap" : "normal";
+                this.querySelector("#arrow-icon").style.transform = this.querySelector("#arrow-icon").style.transform == "rotate(90deg)" ? "" : "rotate(90deg)";
+                
+            }
+        });
+    </script>
+</dom-module>
