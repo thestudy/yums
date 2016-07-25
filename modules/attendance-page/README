@@ -1,0 +1,10 @@
+Files:
+    Attendance.php:             The file that runs the <attendance-page> module
+    attendance-page.html:       The Tutoring Attendance Lookup webpage module. It uses all other html files in this director
+    date-range.html:            A module that includes a start date field, an end date field, and two buttons for creating more date-ranges and deleting old ones
+    checkbox-scroller.html:     A deprecated module that creates a scrollable field with checkboxes. Use modules below
+    location-scroller.html:     A box titled "Location" with a scrollable field below containing location checkboxes.
+    time-scroller.html:         A box titled "Time Scale" with a scrollable field below containing Time Scale radio buttons.
+    subject-scroller.html:      A box titled "Subject" with a scrollable field below containing subject checkboxes.
+    category-scroller.html:     A box titled "Category" with a scrollable field below containing category checkboxes.
+    banner3.png:                The picture used for the top border in low-level modules.

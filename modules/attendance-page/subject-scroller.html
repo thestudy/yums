@@ -1,0 +1,72 @@
+<!--evan_h & lulahogg-->
+<!--subject-scroller.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+
+<dom-module id="subject-scroller">
+    <style>
+        #container {
+            width:200px;
+            height:200px;
+        }
+        #title-box {
+            height:40px;
+            background: url(banner3.png) repeat-x;
+            position:relative;
+        }
+        #title {
+            text-align:center;
+            width:100%;
+            position:absolute;
+            bottom:5;
+        }
+        .content {
+            height:160px;
+            overflow:auto;
+        }
+        .checker {
+            padding:10px;
+            overflow: hidden;
+            width: calc(100% - 20px);
+        }
+        
+        
+    </style>
+    <template>
+        <paper-material id="container">
+            <paper-material id="title-box">
+                <div id="title">Subject</div>
+            </paper-material>
+            <div class="content">
+                <!--for each subject from database, add a checkbox??-->
+                <template is="dom-repeat" items="{{subjects}}">
+                    <paper-checkbox class="checker" checked={{item.checked}}>{{item.sub}}</paper-checkbox>
+                </template>
+                
+                
+                
+                <!--<paper-checkbox class="checker">All</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">MA113</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">CHE105</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">CHE107</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">Subject5</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">Subject6</paper-checkbox><br>-->
+                <!--<paper-checkbox class="checker">Subject7</paper-checkbox>-->
+            </div>
+        </paper-material>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "subject-scroller",
+            
+            properties: {
+                subjects: Array
+            }
+        });
+    </script>
+    
+</dom-module>
