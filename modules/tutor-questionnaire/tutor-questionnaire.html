@@ -1,0 +1,65 @@
+<!--tutor-questionnaire.html-->
+<!--evan_h & lulahogg-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="question-block.html">
+
+<dom-module id="tutor-questionnaire">
+    <style>
+        paper-button {
+            text-transform: none;
+        }
+        #button-div {
+            float: left;
+            margin: 10px;
+            background-color: white;
+        }
+
+        #button-exit {
+            float: right;
+            margin: 10px;
+            background-color: white;
+        }
+        #thesquare {
+            float: left;
+            font-family: Georgia;
+            background-color: #E8E8E8;
+            max-width: 800px;
+        }
+        #title {
+            text-align: center;
+        }
+    </style>
+    <template>
+        <paper-material elevation="1" id="thesquare">
+            <div id="title">
+                <h2>Peer Tutor Report (PTR)</h2>
+            </div>
+            <paper-button raised id="button-exit">Go Back</paper-button>
+            <!--for each question from the server, make a new <question-block> with the question as "question"-->
+            <template is="dom-repeat" items="{{ptrquestions}}">
+                <question-block question={{item.question}}></question-block>
+            </template>
+            <paper-button raised id="button-div">Submit</paper-button>
+        </paper-material>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "tutor-questionnaire",
+            
+            properties: {
+                ptrquestions: Array,
+            },
+            
+            ready: function() {
+                //[SERVER ACCESS] - get questions from server
+                this.ptrquestions = [{"question":"Question 1: Is this working? Testing for very long input, text wrapping must be disabled while the question block is retracted."},{"question":"Question 2: Are you working?"},{"question":"Question 3: Lorem Ipsum?"},{"question":"Question 4: Dolor Sit Amet?"},{"question":"Question 5: I can't think of more questions?"},{"question":"Question 6: Leave any comments here"}];
+            }
+            
+        });
+    </script>
+</dom-module>
