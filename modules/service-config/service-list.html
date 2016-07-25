@@ -1,0 +1,268 @@
+<!--evan_h & lulahogg-->
+<!--service-list.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+<!--animations for the paper-dialog boxes-->
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="service-selector.html">
+
+<dom-module id="service-list">
+    <style>
+        .iron-selected {
+            background-color: #F2EF8A;
+        }
+        #container {
+            background: url(banner3.png) repeat-x;
+            width: 80%;
+            margin: auto;
+        }
+        #flexcontainer {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        #title {
+            text-align: center;
+            padding-top: 15px;
+            width: 100%;
+        }
+        #name {
+            width: 35%;
+        }
+        #locations {
+            width: 25%;
+            padding: 0 0 5 0;
+        }
+        #identification {
+            width: 10%;
+        }
+        #plus {
+            width: 35px;
+        }
+        #servicesContainer {
+            margin: auto;
+            width: 80%;
+        }
+        .addedService {
+            margin: 1px 0px 1px 0px;
+        }
+    </style>
+    <template>
+        <!--dialog box to confirm edits-->
+        <paper-dialog id="edits" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+            <h2>Are you sure you wish to Edit?</h2>
+            <div>These changes will be made to the service with ID: {{identification}}</div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button dialog-confirm on-click="editItem">Accept</paper-button>
+            </div>
+        </paper-dialog>
+        
+        <!--dialog box to confirm deletions-->
+        <paper-dialog id="deletions" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+            <h2>Are you sure you wish to Delete?</h2>
+            <div>This action cannot be undone. The service with ID: {{identification}} will be deleted forever!</div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button dialog-confirm on-click="archiveItem">Archive</paper-button>
+                <paper-button dialog-confirm on-click="deleteItem">Delete</paper-button>
+            </div>
+        </paper-dialog>
+        
+        <paper-material id="container">
+            <div id="title" on-click="debug"><h2>Service Editor</h2></div>
+            <div id="flexcontainer">
+                <paper-input on-keydown="checkForEnter" label="Name" id="name"></paper-input>
+                <div>Locations:</div>
+                <iron-selector multi id="locations">
+                    <template is="dom-repeat" items="{{allLocations}}" filter="isNotArchived">
+                        <div>{{item.displayName}} : {{item.identification}}</div>
+                    </template>
+                </iron-selector>
+                
+                <!--<paper-input on-keydown="checkForEnter" label="Location" id="location"></paper-input>-->
+                <paper-input on-keydown="checkForEnter" auto-validate allowed-pattern="[0-9]" label="ID" id="identification"></paper-input>
+                <paper-icon-button id="plus" icon="add" on-click="addItem"></paper-icon-button>
+            </div>
+        </paper-material>
+        <div id="servicesContainer">
+            <template is="dom-repeat" items="{{services}}">
+                <service-selector class="addedService" display-name="{{item.displayName}}" locations="{{constructLocationsNameArrayFromLocationsIDArray(item.locations)}}" identification="{{item.identification}}" archived="{{item.archived}}"></service-selector>
+            </template>
+        </div>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "service-list",
+            
+            properties: {
+                services: Array,
+                locations: Array,
+                identificaiton: Number
+            },
+            
+            listeners: {
+                "delete-item":"preDeleteItem"
+            },
+            
+            isNotArchived: function(item) {
+                return !(item.archived);
+            },
+            
+            constructLocationsNameArrayFromLocationsIDArray: function(locationsID) {
+                var locations = [];
+                
+                //loop through all locations in the IDarray
+                for (var i=0; i<locationsID.length; i++) {
+                    //for each, look for the corresponding location name
+                    for (var j=0; j<this.allLocations.length; j++) {
+                        
+                        if (locationsID[i] == this.allLocations[j].identification) {
+                            locations.push(this.allLocations[j].displayName);
+                            break;
+                        }
+                    }
+                }
+                
+                return locations;
+            },
+            
+            constructLocationsIDArrayFromIndexArray: function(indices) {
+                var locationsID = [];
+                //for each index
+                for (var i=0; i<indices.length; i++) {
+                    locationsID.push(this.allLocations[indices[i]].identification);
+                }
+                return locationsID;
+            },
+            
+            debug: function() {
+                console.log(this.locations);
+                console.log(this.services);
+            },
+            
+            checkForEnter: function(e) {
+                //check if 'enter' was pressed
+                if(e.keyCode === 13) {
+                    this.addItem();
+                }
+            },
+            
+            archiveItem: function() {
+                for(var i=0; i<this.services.length; i++) {
+                    if (this.services[i].identification == this.identification) {
+                        this.set("services." + String(i) + ".archived", true);
+                        return;
+                    }
+                }
+            },
+            
+            preDeleteItem: function(e) {
+                this.identification = e.detail.id;
+                this.$.deletions.open();
+            },
+            
+            deleteItem: function() {
+                for(var i=0; i<this.services.length; i++) {
+                    if (this.services[i].identification == this.identification) {
+                        this.splice("services", i, 1);
+                        return;
+                    }
+                }
+            },
+            
+            editItem: function() {
+                var nam = this.$.name.value;
+                var loc = this.$.locations.selectedValues;
+                var ide = this.$.identification.value;
+                
+                //find the item to be edited
+                for(var i=0; i<this.services.length; i++) {
+                    if (this.services[i].identification == ide) {
+                        this.splice("services", i, 1, {"displayName": nam,"locations": this.constructLocationsIDArrayFromIndexArray(loc),"identification": ide, "archived":false});
+                        break;
+                    }
+                }
+                this.$.name.value = "";
+                this.$.locations.selectedValues = [];
+                this.$.identification.value = "";
+                
+                //reset focus to allow for keyboard-only manipulation
+                this.$.name.focus();
+            },
+            
+            addItem: function() {
+                var nam = this.$.name.value;
+                var loc = this.$.locations.selectedValues;
+                var ide = this.$.identification.value;
+                
+                console.log(loc);
+                
+                //update the value for 'this.identification'
+                this.identification = ide;
+                
+                //check for invalid input
+                if (nam == "") {
+                    this.$.name.style.outline = "2px solid red";
+                } else {
+                    this.$.name.style.outline = "none";
+                }
+                if (loc == undefined) {
+                    this.$.locations.style.outline = "2px solid red";
+                } else {
+                    this.$.locations.style.outline = "none";
+                }
+                if (ide == "") {
+                    this.$.identification.style.outline = "2px solid red";
+                } else {
+                    this.$.identification.style.outline = "none";
+                }
+                if (nam == "" || loc == undefined || ide == "")
+                    return;
+                
+                //check if identification number already exists   
+                for(var i=0; i<this.services.length; i++) {
+                    if (this.services[i].identification == ide) {
+                        this.$.edits.open();
+                        return;
+                    }
+                }
+                this.$.identification.style.outline = "none";
+                this.splice("services", this.services.length, 0, {"displayName": nam,"locations": this.constructLocationsIDArrayFromIndexArray(loc),"identification": ide, "archived":false});
+                this.$.name.value = "";
+                this.$.locations.selectedValues = [];
+                this.$.identification.value = "";
+                
+                //reset focus to allow for keyboard-only manipulation
+                this.$.name.focus();
+            },
+            
+            ready: function() {
+                this.services = [   {"displayName":"Tutoring at the Study", "locations":[12345, 420, 300], "identification":1,"archived":false},
+                                    {"displayName":"Presentation U", "locations":[321], "identification":2,"archived":false},
+                                    {"displayName":"testService", "locations":[6000], "identification":3,"archived":false}];
+                
+                //get locations from database
+                this.allLocations = [   {"displayName":"The Study","location":"Commons Complex South","identification":12345,"archived":false},
+                                        {"displayName":"Study North","location":"Jewell Hall (CC1)","identification":420,"archived":false},
+                                        {"displayName":"PresentationU","location":"RGAN Commons","identification":321,"archived":false},
+                                        {"displayName":"Other Location","location":"FPAT 215","identification":300,"archived":false},
+                                        {"displayName":"Other Location2","location":"Some Building","identification":6000,"archived":true}];
+            }
+        });
+    </script>
+    
+</dom-module>

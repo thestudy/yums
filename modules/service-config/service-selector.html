@@ -1,0 +1,110 @@
+<!--evan_h & lulahogg-->
+<!--service-selector.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="service-selector">
+    <style>
+        #container {
+            width: 100%;
+            min-height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        #name {
+            margin-left: 5px;
+            width: 32%;
+        }
+        #locations {
+            width: 40%;
+            margin: 5px 0px 5px 0px;
+        }
+        #identification {
+            width: 14%;
+        }
+        #check {
+            font-size: 8pt;
+            width: 80px;
+        }
+        #minus {
+            width: 35px;
+        }
+    </style>
+    <template>
+        <paper-material id="container" on-mouseover="showX" on-mouseout="hideX">
+            <div id="name" on-click="debug">{{displayName}}</div>
+            <div id="locations">
+                Locations:
+                {{locations}}
+            </div>
+            <div id="identification">ID: {{identification}}</div>
+            <paper-checkbox id="check" checked="{{archived}}" on-click="updateArchived">archived?</paper-checkbox>
+            <paper-icon-button id="minus" icon="close" on-click="deleteItem"></paper-icon-button>
+        </paper-material>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "service-selector",
+            
+            properties: {
+                displayName: String,
+                locations: Array,
+                identification: Number,
+                displayX: {
+                    type: Boolean,
+                    value: false,
+                    observer: "updateX"
+                },
+                archived: {
+                    type: Boolean,
+                    notify: true,
+                    observer: "updateArchived2"
+                }
+            },
+            debug: function() {
+                console.log(this.locations);
+            },
+            
+            //Functions that pertain to the X appearing while hovering over a service-selector
+            showX: function() {
+                this.displayX = true;
+            },
+            hideX: function() {
+                this.displayX = false;
+            },
+            updateX: function() {
+                if (this.displayX) {
+                    this.$.minus.style.visibility = "visible";
+                } else {
+                    this.$.minus.style.visibility = "hidden";
+                }
+            },
+            
+            updateArchived: function() {
+                this.archived = this.$.check.checked;
+            },
+            updateArchived2: function() {
+                this.$.check.checked = this.archived;
+            },
+            
+            deleteItem: function() {
+                this.fire("delete-item", {id: this.identification});
+            },
+            
+            ready: function() {
+                this.displayName = "displayName";
+                this.service = "service";
+                this.identification = "12345";
+            }
+            
+        });
+    </script>
+    
+</dom-module>
