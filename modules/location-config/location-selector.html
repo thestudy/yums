@@ -1,0 +1,103 @@
+<!--evan_h & lulahogg-->
+<!--location-selector.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="location-selector">
+    <style>
+        #container {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        #name {
+            margin-left: 5px;
+            width: 32%;
+        }
+        #location {
+            width: 40%;
+        }
+        #identification {
+            width: 14%;
+        }
+        #check {
+            font-size: 8pt;
+            width: 80px;
+        }
+        #minus {
+            width: 35px;
+        }
+    </style>
+    <template>
+        <paper-material id="container" on-mouseover="showX" on-mouseout="hideX">
+            <div id="name">{{displayName}}</div>
+            <div id="location">Location: {{location}}</div>
+            <div id="identification">ID: {{identification}}</div>
+            <paper-checkbox id="check" checked="{{archived}}" on-click="updateArchived">archived?</paper-checkbox>
+            <paper-icon-button id="minus" icon="close" on-click="deleteItem"></paper-icon-button>
+        </paper-material>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "location-selector",
+            
+            properties: {
+                displayName: String,
+                location: String,
+                identification: Number,
+                displayX: {
+                    type: Boolean,
+                    value: false,
+                    observer: "updateX"
+                },
+                archived: {
+                    type: Boolean,
+                    notify: true,
+                    observer: "updateArchived2"
+                }
+            },
+            
+            //Functions that pertain to the X appearing while hovering over a location-selector
+            showX: function() {
+                this.displayX = true;
+            },
+            hideX: function() {
+                this.displayX = false;
+            },
+            updateX: function() {
+                if (this.displayX) {
+                    this.$.minus.style.visibility = "visible";
+                } else {
+                    this.$.minus.style.visibility = "hidden";
+                }
+            },
+            
+            updateArchived: function() {
+                this.archived = this.$.check.checked;
+            },
+            updateArchived2: function() {
+                this.$.check.checked = this.archived;
+            },
+            
+            deleteItem: function() {
+                this.fire("delete-item", {id: this.identification});
+            },
+            
+            ready: function() {
+                this.displayName = "displayName";
+                this.location = "location";
+                this.identification = "12345";
+            }
+            
+        });
+    </script>
+    
+</dom-module>
