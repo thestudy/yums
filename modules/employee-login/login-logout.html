@@ -1,0 +1,151 @@
+<!--evan_h & lulahogg-->
+<!--login-logout.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="tutor-log.html">
+<!--<link rel="import" herf="employee-survey.heml">-->
+
+
+<dom-module id="login-logout">
+    <style>
+    #idInputButton {
+        background-color: lightgray;
+        font: black;
+        margin: auto;
+        text-align: center;
+      
+    }
+    
+    #idInputInstructions {
+        /*background: repeat-x url("banner3.png");*/
+
+        text-align: center;
+        font-size: 20px;
+        width: auto;
+        height: 180px;
+        word-wrap: normal;
+        margin-top: 20px;
+
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: space-around;
+    }
+    
+    #idInputBox {
+        margin: auto;
+        width: 150px;
+    }
+    
+     #studentSignIn {
+        font-size: 35;
+        background-color: #105faa;
+        text-align: center;
+    }
+        
+    </style>
+    <template>
+        
+        <paper-header-panel class="flex">
+                <paper-toolbar id="studentSignIn" style="height:40px; color:white;">
+                    
+                    Login/Logout
+                   
+                </paper-toolbar>
+        
+        <div id="input" class="layout vertical center">
+<!-- idInput Page: Student ID input for those with access -->
+                <paper-material elevation="0" id="idInputInstructions">Please enter your employee ID below (do NOT include 9):
+                    <paper-input label="Enter Employee ID" id="idInputBox" on-keydown="checkForEnter" required auto-validate error-message="Employee ID Required" value="{{idNumber}}"></paper-input>
+                    <paper-button on-click="submitID" id="idInputButton"><font size="3">Enter</font></paper-button>
+                </paper-material>
+                
+                <div id="employeeLogin" class="layout vertical left">
+                    <template is="dom-repeat" items="{{employees}}">
+                        <tutor-log index="{{index}}" pic="{{item.image}}" firstname="{{item.firstName}}" lastname="{{item.lastName}}" service="{{item.serviceTitle}}"></tutor-log>
+
+                        
+                    </template>
+                    
+                    
+                </div>
+                
+                
+        </div>
+        
+        </paper-header-panel>
+
+        
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "login-logout",
+            
+            properties: {
+              idArray: Array,
+              serviceTitle: String,
+              login: String,
+              logout: String
+                
+            },
+            
+            ready: function() {
+                this.employees = [
+                    {"serviceId": "1", "serviceTitle": "The Study", "firstName": "Sarah", "lastName":"Smith", "idNumber": "10454435", "image": "../images/evans/evanglare.svg"},
+                    {"serviceId": "2", "serviceTitle": "Presentation U", "firstName": "Bob", "lastName": "Trent", "idNumber": "10454435", "image": "../images/evans/evanglasses.svg"}
+                    ];
+                
+            },
+            
+            submitID: function() {
+
+                if(this.idNumber[0] === " ") this.idNumber = String(this.idNumber).substr(1, 10);
+                if (this.idNumber[0] === ';' && String(this.idNumber).length >= 10) this.idNumber = String(this.idNumber).substr(2, 8);
+               
+                
+                for (var i = 0; i < this.student.length; i++){
+                    console.log(this.student[i].idNumber, "=", this.idNumber);
+                    
+                    if(this.student[i].idNumber === this.idNumber){
+                        this.$.selector.selected = "Class";
+                        break;
+                    }
+                    else {
+                        console.log("Student ID is not valid");
+                    }
+                    
+                }
+                this.idNumber = "";
+
+            },
+           
+            // for hitting enter after typing in student id
+            checkForEnter: function(e) {
+                //check if 'enter' was pressed
+                if(e.keyCode === 13) {
+                    console.log("Enter Pressed");
+                    this.submitID();
+                }
+            },
+            
+            
+            
+        });
+        
+        
+    </script>
+    
+</dom-module>
