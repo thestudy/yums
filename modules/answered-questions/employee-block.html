@@ -1,0 +1,128 @@
+<!--employee-block.html-->
+<!--evan_h & lulahogg-->
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+
+
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+
+
+<link rel="import" href="answer-block.html">
+
+
+
+<dom-module id="employee-block">
+    <style>
+        paper-button {
+            text-transform: none;
+        }
+        
+        .collapse-content {
+            padding-top: 10px;
+            width: 100%;
+            float: left;
+        }
+        #enclosure-div {
+            width: calc(100% - 40px);
+            float: left;
+            padding: 10px;
+            background: white;
+            margin: 10px;
+        }
+        #employee-div {
+            width: 65%;
+            float: left;
+            
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #date-div {
+            width: 180px;
+            float: right;
+        }
+        #response-div {
+            width: 90%;
+            margin-bottom: 5px;
+        }
+        
+    </style>
+    
+    
+
+ 
+    
+    
+    
+    <template>
+       
+        <div class="center">
+        
+            
+            <!--<paper-button raised on-click="toggle">{{buttontext}}</paper-button>-->
+            
+            
+            <paper-material id="enclosure-div">
+                <paper-material id="employee-div" elevation=0 on-click="tog">
+                    <span>{{employee}}</span>
+                </paper-material>
+                <paper-material id="date-div" elevation=0>
+                    {{answeredQuestions}} / {{questionsAnswers.length}}
+                </paper-material>
+                
+                <iron-collapse id= "collapse" class="collapse-content">
+                    
+<!--for each available question, get the question and the tutor's answer-->
+                    <!-- QUESITON ANSWERS -->
+                    <template is="dom-repeat" items="{{questionsAnswers}}">
+                        <answer-block date-answered={{item.dateAnswered}} text={{item.text}} answer={{item.answer}}></answer-block>
+                    </template>
+                    
+                    
+                </iron-collapse>
+
+            </paper-material>
+            
+        </div>
+    </template>
+    
+    <script>
+        /*global Polymer*/
+        Polymer({
+            is: "employee-block",
+            
+            properties: {
+                buttontext: String,
+                answeredQuestions: Number,
+                questionsAnswers: Array
+              
+            },
+            
+            ready: function() {
+                //[SERVER ACCESS]
+                this.questionsAnswers = [{"dateAnswered":"May 19, 2016","text":"Lorem", "answer":""},{"dateAnswered":"March 9, 2016","text":"Dolor","answer":""}];
+                this.answeredQuestions = this.questionsAnswers.length;
+                var i;
+                console.log("Kappa");
+                for (i=0; i<this.questionsAnswers.length; i++) {
+                    console.log("iteration: ", i);
+                    if (this.questionsAnswers[i].answer === "")
+                        this.answeredQuestions--;
+                }
+            },
+            
+            tog: function() {
+                this.$.collapse.toggle();
+                
+            }
+            
+            
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,64 @@
+<!--evan_h & lolahogg-->
+<!--answer-block-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+
+<dom-module id="answer-block">
+    <style>
+        .answer-card {
+            margin: 5px;
+            width: calc(100% - 20px);
+            background: url(banner3.png) repeat-x;
+        }
+        .card-text {
+            padding: 15px;
+            position: relative;
+        }
+        .date {
+            float: right;
+            margin: 5px;
+        }
+        .card-answer {
+            border-top: 1px solid #e8e8e8;
+            padding: 5px 15px;
+            position: relative;
+        }
+    </style>
+    
+    <template>
+        <paper-card class="answer-card">
+            <br>
+<!-- ANSWER CARD INFORMATION -->
+            <!-- DATE -->
+
+            <div class="date">{{dateAnswered}}</div>
+            
+            <!-- QUESTION/EMPLOYEE NAME -->
+            <div class="card-text">{{text}}</div>
+
+            <!-- ANSWER -->
+            <div class="card-answer">Answer: {{answer}}</div>
+        </paper-card>
+    </template>
+    
+    
+    
+    <script>
+    /* global Polymer */
+        Polymer({
+            is: "answer-block",
+            
+            properties: {
+                dateAnswered: String,
+                text: String,
+                question: String,
+                answer: String
+
+            },
+            
+           
+        });
+    </script>
+    
+</dom-module>
