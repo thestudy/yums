@@ -1,0 +1,114 @@
+<!--evan_h & lulahogg-->
+<!--course-dropdown.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="tutor-inspector.html">
+
+
+<dom-module id="course-dropdown">
+    <style>
+        .dropdown-arrow {
+            background-image: url("../images/arrow2.png");
+            float: left;
+            width: 15px;
+            height: 15px;
+            -webkit-transition: transform .2s;
+        }
+        .course-text {
+            float: left;
+            margin-left: 10px;
+            width: calc(100% - 25px);
+            height: 25px;
+        }
+        .dropdown-content {
+            width: calc(100% - 30px);
+            padding: 0px 10px 10px 10px;
+            float: left;
+        }
+        .container {
+            padding: 10px;
+            margin: 5px;
+            width: calc(100% - 30px);
+            float: left;
+        }
+        #dropdown {
+            width: calc(100% - 20px);
+        }
+        .small-tutor-inspector {
+            margin: 5px;
+            float: left;
+            width: 160px;
+            height: 210px;
+            
+        }
+        
+        
+    </style>
+    <template>
+        <paper-material class="container">
+            <div id="arrow" class="dropdown-arrow" on-click="toggle"></div>
+            <div class="course-text" on-click="toggle"><b>{{courseName}}</b></div>
+            <iron-collapse id="dropdown">
+                <div class="dropdown-content">
+                    <template is="dom-repeat" items={{trimmedTutors}}>
+                        
+                        <div class="small-tutor-inspector">
+                        
+                            <tutor-inspector tutorid="[[item.id]]" firstname="[[item.firstname]]" lastname="[[item.lastname]]" tutoring="{{item.tutoring}}"
+                                            courses="[[item.courses]]" tutor-image="[[item.tutorImage]]" valid-courses="[[validCourses]]"></tutor-inspector>
+                        
+                        </div>
+                        
+                    </template>
+                </div>
+            </iron-collapse>
+        </paper-material>
+        
+        
+        
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "course-dropdown",
+            
+            properties: {
+                validCourses: Array,
+                courseName: String,
+                trimmedTutors: {
+                    type: Array
+                },
+                open: Boolean,
+                courseId: Number
+            },
+            
+            ready: function() {
+                this.open = false;
+                
+            },
+            
+            toggle: function() {
+                this.open = !this.open;
+                if (this.open) {
+                    //[SERVER ACCESS] ?
+                    //update the array tutors based on a server lookup on the string "course"
+                    
+                }
+                
+                this.$.dropdown.toggle();
+                this.$.arrow.style.transform = this.$.arrow.style.transform == "rotate(90deg)" ? "" : "rotate(90deg)";
+            },
+            
+            
+        });
+        
+        
+    </script>
+    
+</dom-module>

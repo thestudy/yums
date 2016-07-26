@@ -1,0 +1,143 @@
+<!--evan_h & lulahogg-->
+<!--tutor-inspector.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="toggle-button.html">
+
+<dom-module id="tutor-inspector">
+    <style>
+        
+        .tutor-image {
+            background-color: grey;
+            float: left;
+            text-align: center;
+            background-size: 100%;
+            width: 100%;
+            height: 100%;
+        }
+        #tutor-name {
+            font-weight: bold;
+            font-size: 20pt;
+            margin: 5 auto;
+        }
+        #toggle-button {
+            margin: 0 auto;
+            width: 80%;
+        }
+        #infoButton {
+            color: lightgrey;
+            position: absolute;
+            visibility: hidden;
+            width: 35px;
+            height: 35px;
+            right: 0px;
+            top: 0px;
+        }
+        
+    </style>
+    <template>
+        
+        <paper-card class="tutor-image" image="{{tutorImage}}" on-click="singleClickOnTutor" on-mouseover="showInfoButton" on-mouseout="hideInfoButton">
+            
+            <paper-icon-button id="infoButton" icon="info" on-click="singleClickOnInfoButton"></paper-icon-button>
+            
+            <div id="tutor-name">{{fullname}}</div>
+            
+            <div id="toggle-button">
+                <toggle-button tutoring="{{tutoring}}"></toggle-button>
+            </div>
+            
+            <!--taking this out because it just causes lag and more problems...-->
+            <!--<paper-ripple id="ripple"></paper-ripple>-->
+            
+        </paper-card>
+        
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "tutor-inspector",
+            
+            properties: {
+                validCourses: Array,
+                tutorid: Number,
+                firstname: String,
+                lastname: String,
+                courses: Array,
+                tutorImage: String,
+                infoButtonShowing: {
+                    type: Boolean,
+                    observer: "updateInfoButton"
+                },
+                tutoring: {
+                    type: Boolean,
+                    notify: true
+                },
+                displayName: { 
+                    type: Boolean,
+                    value: false
+                },
+                noInfo: {
+                    type: Boolean,
+                    value: false
+                },
+                fullname: {
+                    type: String,
+                    computed: "computeName(firstname, lastname, displayName)"
+                }
+            },
+            
+            updateInfoButton: function() {
+                if (!this.noInfo) {
+                if (this.infoButtonShowing)
+                    this.$.infoButton.style.visibility = "visible";
+                else
+                    this.$.infoButton.style.visibility = "hidden";
+                }
+            },
+            showInfoButton: function() {
+                this.infoButtonShowing = true;
+            },
+            hideInfoButton: function() {
+                this.infoButtonShowing = false;
+            },
+            
+            
+            singleClickOnInfoButton: function(e) {
+                this.fire("update-tutor-info-window", {tutorid: this.tutorid});
+                e.stopPropagation();
+            },
+            singleClickOnTutor: function() {
+                this.tutoring = !this.tutoring;
+                this.fire("update-tutoring", {tutorid: this.tutorid, tutoring: this.tutoring});
+            },
+            
+            courseNameByCourseID: function(id) {
+                for (var i=0;i<this.validCourses.length;i++) {
+                    if (this.validCourses[i].courseID == id) {
+                        return this.validCourses[i].courseName;
+                    }
+                }
+                return "[N/A]";
+            },
+            
+            computeName: function(first, last, display) {
+                if (display)
+                    return first+" "+last;
+                else
+                    return "";
+            }
+            
+            
+        });
+    </script>
+    
+</dom-module>

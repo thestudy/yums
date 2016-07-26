@@ -1,0 +1,252 @@
+<!--evan_h & lulahogg-->
+<!--tutor-inspector.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="toggle-button.html">
+
+<dom-module id="tutor-info-window">
+    <style>
+        
+        .tutor-image {
+            float: left;
+            text-align: center;
+            margin: 5px 5px 5px 5px;
+            background-size: 160px;
+            width: 160px;
+            height: 160px;
+        }
+        #tutorinfo {
+            position: absolute;
+            background-color: white;
+            top: -70px;
+            left: 160px;
+            height: 300px;
+            width: 200px;
+            z-index: 2;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity .5s;
+        }
+        #tutor-name {
+            float: left;
+            text-align: center;
+            width: calc(100% - 10px);
+            margin: 5px;
+            font-weight: bold;
+        }
+        #tutor-picture {
+            background-color: grey;
+            display: inline-block;
+            width: 240px;
+            height: 240px;
+            margin: 5px auto;
+        }
+        #tutoring-switch-box {
+            float: left;
+            background-color: red;
+            width: calc(100% - 40px);
+            height: 30px;
+            margin: 5px 20px;
+        }
+        #tutoring-switch {
+            margin: 0px;
+            
+        }
+        #tutor-courses {
+            float: left;
+            text-align: center;
+            width: calc(100% - 10px);
+            margin: 5px;
+        }
+        #comments {
+            float: left;
+            text-align: center;
+            width: calc(100% - 20px);
+            margin: 10px;
+        }
+        #submit-button {
+            float: right;
+            padding: 4px;
+            width: 60px;
+        }
+        #infowindow {
+            text-align: center;
+            position: absolute;
+            left: calc(50% - 175px);
+            background-color: white;
+            height: 600px;
+            width: 350px;
+            z-index: 2;
+            visibility: hidden;
+        }
+        #close-button {
+            float: right;
+            height: 35px;
+            width: 35px;
+            margin: 5px;
+        }
+        
+        
+    </style>
+    <template>
+        
+        <paper-material id="infowindow" elevation=3>
+            
+            <paper-icon-button id="close-button" icon="close" on-click="closeInfoWindow"></paper-icon-button>
+            <div id="tutor-name">{{firstname}} {{lastname}}</div>
+            <paper-card id="tutor-picture" image="{{tutorImage}}"></paper-card>
+            
+            
+            <toggle-button id="tutoring-switch" tutoring="{{tutoring}}" on-click="switchTutoring"></toggle-button>
+            
+            
+            <div id="tutor-courses">
+                Tutors Courses: 
+                <template is="dom-repeat" items="{{courses}}"><li>{{item}}</li></template>
+            </div>
+            <div id="comments">
+                Leave a comment:
+                <paper-textarea></paper-textarea>
+                <paper-material id="submit-button"> Submit
+                    <paper-ripple></paper-ripple>
+                </paper-material>
+            </div>
+            
+        </paper-material>
+        
+    </template>
+    <script>
+        
+        /* global Polymer */
+        Polymer({
+            is: "tutor-info-window",
+            
+            validCourses: Array,
+            
+            properties: {
+                hidden: {
+                    type: Boolean,
+                    observer: "updateTutorInfoWindowVisibility",
+                    notify: true
+                },
+                tutors: Array,
+                selectedTutorID: Number,
+                validCourses: Array,
+                
+                firstname: {
+                    type: String,
+                    computed: "computeFirstName(tutors, selectedTutorID)"
+                },
+                lastname: {
+                    type: String,
+                    computed: "computeLastName(tutors, selectedTutorID)"
+                },
+                courses: {
+                    type: Array,
+                    computed: "computeCourses(tutors, selectedTutorID)"
+                },
+                tutorImage: {
+                    type: String,
+                    computed: "computeTutorImage(tutors, selectedTutorID)"
+                },
+                tutoring: {
+                    type: Boolean,
+                    computed: "computeTutoring(tutors, selectedTutorID)"
+                },
+                
+            },
+            switchTutoring: function() {
+                this.fire("update-tutoring", {tutorid: this.selectedTutorID, tutoring: !this.tutoring});
+                this.fire("update-tutor-info-window", {tutorid: this.selectedTutorID});
+                
+                // this.tutoring = !this.tutoring;
+            },
+            
+            computeFirstName: function(tutors, selectedTutorID) {
+                for (var i=0; i<tutors.length; i++) {
+                    if (tutors[i].id === selectedTutorID) {
+                        return tutors[i].firstname;
+                    }
+                }
+                return "nully";
+            },
+            computeLastName: function(tutors, selectedTutorID) {
+                for (var i=0; i<tutors.length; i++) {
+                    if (tutors[i].id === selectedTutorID) {
+                        return tutors[i].lastname;
+                    }
+                }
+                return "nullington";
+            },
+            computeCourses: function(tutors, selectedTutorID) {
+                var coursenames = [];
+                for (var i=0; i<tutors.length; i++) {
+                    if (tutors[i].id === selectedTutorID) {
+                        for (var j=0; j<tutors[i].courses.length; j++) {
+                            coursenames.push(this.courseNameByCourseID(tutors[i].courses[j]));
+                        }
+                        return coursenames;
+                    }
+                }
+                return [];
+            },
+            
+            computeTutorImage: function(tutors, selectedTutorID) {
+                for (var i=0; i<tutors.length; i++) {
+                    if (tutors[i].id === selectedTutorID) {
+                        return tutors[i].tutorImage;
+                    }
+                }
+                return "null";
+            },
+            
+            computeTutoring: function(tutors, selectedTutorID) {
+                for (var i=0; i<tutors.length; i++) {
+                    if (tutors[i].id === selectedTutorID) {
+                        return tutors[i].tutoring;
+                    }
+                }
+                return false;
+            },
+            
+            updateTutorInfoWindowVisibility: function() {
+                if (this.hidden) {
+                    this.$.infowindow.style.transition = "visibility 0s 0.5s,opacity 0.5s 0s";
+                    this.$.infowindow.style.opacity = 0;
+                    this.$.infowindow.style.visibility = "hidden";
+                } else {
+                    this.$.infowindow.style.transition = "visibility 0s 0s, opacity 0.5s 0s";
+                    this.$.infowindow.style.opacity = 1;
+                    this.$.infowindow.style.visibility = "visible";
+                }
+            },
+            
+            closeInfoWindow: function() {
+                this.hidden = true;
+            },
+            
+            courseNameByCourseID: function(id) {
+                for (var i=0;i<this.validCourses.length;i++) {
+                    if (this.validCourses[i].courseId == id) {
+                        return this.validCourses[i].courseName;
+                    }
+                }
+                return "[N/A]";
+            },
+            
+            ready: function() {
+                
+            },
+            
+        });
+    </script>
+    
+</dom-module>

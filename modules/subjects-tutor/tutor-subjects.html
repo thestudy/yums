@@ -1,0 +1,347 @@
+<!--employee-block.html-->
+<!--evan_h & lulahogg-->
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="course-dropdown.html">
+<link rel="import" href="toggle-button.html">
+<link rel="import" href="tutor-info-window.html">
+
+
+
+
+<dom-module id="tutor-subjects">
+    <style is="custom-style">
+        
+        .center {
+            text-align: center;
+            margin: 20px;
+            /*float: center;*/
+        }
+        paper-button {
+            text-transform: none;
+        }
+        
+        .white {
+            /*has error of 'Expected RBRACE at line 14, col 13.' but still works*/
+            --paper-card-header-color: #fff;
+        }
+        
+        #subjects-div {
+            float: left;
+            padding: 10px;
+            /*background: url(banner3.png) repeat-x;*/
+            background-color: white;
+            margin: 10px;
+            width: calc(100% - 40px);
+        }
+
+
+        #thesquare {
+            margin-top: 100px;
+            font-family: Georgia;
+            background-color: #E8E8E8;
+            max-width: 800px;
+        }
+        
+        #title {
+            text-align: center;
+        }
+        
+        #response-div {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        #course {
+            clear: both;
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        #tabs {
+            background-color: #466079;
+            color: white;
+        }
+        
+        #banner-logo {
+            background-image: url("../images/thestudylogoBANNER.svg");
+            background-color: #466079;
+            background-size: 200px;
+            width: 190px;
+
+        }
+        
+        #toggleButton{
+            width: 500px;
+            float: center;
+        }
+        
+        #tutor-info {
+            background-color: white;
+            position: absolute;
+            top: 30px;
+            width: 90%;
+            height: 90%;
+            z-index: 2;
+            
+            
+        }
+        .large-tutor-inspector {
+            width: 450px;
+            height: 540px;
+            margin: 10 auto;
+        }
+
+
+    </style>
+    
+
+    
+    <template>
+       
+        <div class="center">
+            <paper-material id="subjects-div">
+                
+            <paper-tabs id="tabs">
+                <div id="banner-logo" on-click="debug"></div>
+            </paper-tabs>
+
+            <paper-tabs selected="{{tabSelected}}" id="tabs">
+
+                <template is="dom-repeat" items="{{titles}}">
+                    
+                    <paper-tab>{{item}}</paper-tab>
+
+                </template>
+                
+                <!--<div id="banner-logo" ></div>-->
+           
+            </paper-tabs> 
+
+            
+            <iron-pages selected="{{tabSelected}}">
+                
+<!--Subjects-->
+                <div id="course" on-click="hideTutorInfoWindow">
+                    
+                    <template is="dom-repeat" items="{{validCourses}}"> 
+                        <course-dropdown valid-courses=[[validCourses]] trimmed-tutors$="{{trimTutorArrayByCourseId(item.courseId, tutors.*)}}" course-name="[[item.courseName]]" course-id="[[item.courseId]]"></course-dropdown>
+                    </template>
+                    
+                    <tutor-info-window valid-courses="{{validCourses}}" tutors="{{tutors}}" selected-tutor-i-d="[[selectedTutorID]]" hidden="{{tutorInfoWindowHidden}}"></tutor-info-window>
+                    
+                    
+                </div>
+                
+<!--ALL-->
+                <div id="tutorImages">
+                    <template is="dom-repeat" items="{{tutors}}">
+                        <!--<br>-->
+                        <!--<paper-card id="card" data-index$="{{index}}" on-click="toggleTutoring" style="max-width:350px;" sizing="cover"  class="white" image="{{item.tutorImage}}">-->
+                        <!--    <div class="card-content" data-name$="{{item.firstname}}">-->
+
+                        <!--        <div>{{item.firstname}} {{item.lastname}}</div>-->
+                               
+                        <!--        <toggle-button data-name$="{{item.firstname}}" tutor-id="{{item.id}}" tutoring="{{item.tutoring}}"></toggle-button> -->
+                              
+                                
+                        <!--    </div>-->
+                        <!--</paper-card>-->
+                        <!--<br>-->
+                       
+                        <div class="large-tutor-inspector">
+                            <tutor-inspector no-info display-name tutorid="[[item.id]]" firstname="[[item.firstname]]" lastname="[[item.lastname]]" tutoring="[[item.tutoring]]"
+                                            courses="[[item.courses]]" tutor-image="[[item.tutorImage]]" valid-courses="[[validCourses]]"></tutor-inspector>
+                        </div>
+                    
+                    </template>
+                </div>
+
+            </iron-pages>
+
+            
+            </paper-material>
+        </div>
+    </template>
+    
+    <script>
+        /*global Polymer*/
+        Polymer({
+            is: "tutor-subjects",
+            
+            properties: {
+                tutors: {
+                    type: Array,
+                },
+                
+                titles: {
+                    type: Array
+                },
+                
+                validCourses: {
+                    type: Array
+                },
+                
+                coursePicked: String,
+                subjectNames: String,
+                courseId: Number,
+                checkIfWorking: Number,
+                tabSelected: {
+                    type: Number
+                },
+                
+                selectedTutorID: Number,
+                tutorInfoWindowHidden: Boolean
+            },
+                
+            listeners: {
+                'update-tutor-info-window' : 'updateTutorInfoWindow',
+                'update-tutoring' : 'updateTutoring'
+            },
+            
+            hideTutorInfoWindow: function(e) {
+                console.log(e);
+                var src = e.srcElement;
+                while (src.parentElement != null) {
+                    if (src.id == "infowindow")
+                        return;
+                    else
+                        src = src.parentElement;
+                }
+                this.tutorInfoWindowHidden = true;
+            },
+            updateTutorInfoWindow: function(e) {
+                this.selectedTutorID = -1;
+                this.selectedTutorID = e.detail.tutorid;
+                this.tutorInfoWindowHidden = false;
+            },
+            updateTutoring: function(e) {
+                for (var i=0; i<this.tutors.length; i++) {
+                    if (e.detail.tutorid == this.tutors[i].id) {
+                        this.set('tutors.' + i + '.tutoring', e.detail.tutoring);
+                    }
+                }
+            },
+
+            computeFilter: function(string) {
+                if (!string) {
+                    return null;
+                }    
+                else {
+                    string = string.toLowerCase();
+                    return function(tutor) {
+                        var first = tutor.firstName.toLowerCase();
+                        var last = tutor.lastName.toLowerCase();
+                        console.log(first);
+                        console.log(last);
+                        return (first.indexOf(string) != -1 || last.indexOf(string) !=1);
+                    };
+                }
+ 
+            },
+            
+            debug: function() {
+                console.log(this.tutors);
+            },
+            
+            toggle: function() {
+                this.$.collapseSubjects.toggle();
+                if(this.titles == "SUBJECTS"){
+                    this.$.collapse.toggle();
+                }
+                else if(this.titles == "ALL"){
+                    console.log("all");
+                }
+                console.log("is toggling");
+                console.log(this.subjectNames);
+                
+            },
+            
+            toggleTutoring: function(e) {
+                e = e.srcElement;
+                while (e.attributes['data-index'] === undefined) e = e.parentElement;
+                this.set('tutors.' + e.attributes['data-index'].value + '.tutoring', !this.tutors[e.attributes['data-index'].value].tutoring);
+            },
+            
+            ready: function() {
+                
+                this.tutorInfoWindowHidden = true;
+                
+                this.tabSelected = 0;
+                this.titles = ["SUBJECTS", "ALL", "MORE"];
+                
+                this.validCourses = [
+                    {"courseId": 1, "courseName": "MA 114"},
+                    {"courseId": 2, "courseName": "MA 113"},
+                    {"courseId": 3, "courseName": "CS 405"},
+                    {"courseId": 4, "courseName": "TA 300"},
+                    {"courseId": 5, "courseName": "CS 275"}
+                    ];
+                
+                this.tutors= [
+                  { id: 1, firstname: "Jack", lastname: "Aubrey", courses: [1, 2], tutorImage: "../images/LION.svg", tutoring: false},
+                  { id: 2, firstname: "Anne", lastname: "Elliot", courses: [3, 4], tutorImage: "../images/thestudylogo2.svg", tutoring: false },
+                  { id: 3, firstname: "Stephen", lastname: "Maturin", courses: [5, 4], tutorImage: "../images/LION.svg", tutoring: true },
+                  { id: 4, firstname: "Evan", lastname: "Woodhouse", courses: [2, 1], tutorImage: "../images/evanSVG.svg", tutoring: false },
+                  { id: 5, firstname: "Angus", lastname: "Everton", courses: [1, 3, 4, 5], tutorImage: "../images/evans/evanglare.svg", tutoring: true },
+                  { id: 6, firstname: "Hank", lastname: "Hippopopalous", courses: [1, 2, 3, 4], tutorImage: "../images/evans/evanglasses.svg", tutoring: true },
+                  { id: 7, firstname: "Walt", lastname: "White", courses: [2, 3, 4], tutorImage: "../images/evans/evanlights.svg", tutoring: false },
+                  { id: 8, firstname: "Morty", lastname: "Whatsit", courses: [3, 4, 5], tutorImage: "../images/evans/evansmirk.svg", tutoring: false },
+                ];
+                
+                
+                
+            },
+            
+            course: function() {
+                console.log("working?", this.courseId);
+            },
+            //  document.getElementById("end-date").style.outline = "3px solid red";
+            
+            currentlyTutoring: function(e) {
+
+                console.log(e.target.attributes["data-name"].value);
+                console.log(e.srcElement.parentElement.attributes['data-name'].value);
+                console.log("clicked");
+                
+                
+                // var dataName;
+                // if (!e.target.attributes['data-name']) dataName = e.srcElement.parentElement.attributes['data-name'].value;
+                // else this.dataName = e.target.attributes['data-name'].value;
+               
+                // this.$.selector.selected = this.services[dataName].type;
+                
+                
+            },
+            
+            
+            trimTutorArrayByCourseId: function(id, tutorsUNUSED) {
+                var trimmed = [];
+                for (var i=0; i<this.tutors.length; i++) {
+                    for (var j=0; j<this.tutors[i].courses.length; j++) {
+                        if (id == this.tutors[i].courses[j]) {
+                            trimmed.push(this.tutors[i]);
+                        }
+                    }
+                }
+                return trimmed;
+            }
+           
+        });
+    </script>
+</dom-module>
