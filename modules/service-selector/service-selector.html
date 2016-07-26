@@ -1,0 +1,625 @@
+<!--evan_h, lulahogg, melhuishj-->
+<!--service selector-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<!--animations for the paper-dialog boxes-->
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+
+<link rel="import" href="class-button.html">
+
+<dom-module id="service-selector">
+    
+    <style is="custom-style" include="iron-flex">
+
+    #servicesContainer {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        
+    }
+     
+    #servicesButton {
+        /*background-color: blue;*/
+        color: black;
+        width: 200px;
+        height: 260px;
+        margin: 10px;
+        font-size: 20px;
+    }
+    
+    
+     #classGenericButton {
+        background-color: #105faa;
+        color: white;
+        width: 200px;
+        height: 200px;
+        border-top: 10px solid;
+        font-size: 20px;
+    }
+    
+    #generalButton {
+        background-color: #105faa;
+        color: white;
+        width: 200px;
+        height: 200px;
+        border-top: 10px solid;
+        font-size: 20px;
+    }
+    
+    #submit-button {
+        background-color: lightgrey;
+        font:black;
+        margin: 20px;
+
+    }
+    
+    #successfulButton {
+        background-color: lightgray;
+        font: black;
+        font-size: 15px;
+        border-top: 20px solid white;
+        text-align:center;
+    }
+    
+    #successfulText {
+        text-transform: uppercase;
+        line-height: 5;
+        color: white;
+        background: blue;
+        font-size: 40px;
+        line-height: 74px;
+        font-weight: 700;
+        margin: 0 5px 24px;
+        margin-top: 20px;
+        float: right;
+        padding: 10px;
+        font-family: 'Libre Baskerville', serif;
+    }
+    
+    #idInputButton {
+        background-color: lightgray;
+        font: black;
+        margin: 20px;
+    }
+    
+    #idGoBackButton {
+        background-color: #105faa;
+        font: black;
+        margin: 20px;
+        color: white;
+    }
+    
+    #idInputInstructions {
+        background: repeat-x url("banner3.png");
+
+        text-align: center;
+        font-size: 20px;
+        width: 250px;
+        height: 450px;
+        word-wrap: normal;
+        margin-top: 20px;
+        
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: space-around;
+    }
+    
+    #idInputBoxLogin {
+        margin: 20px;
+    }
+    #idInputBoxLogout {
+        margin: 20px;
+    }
+    
+    #countdownSpinner {
+        
+    }
+    
+    #studentSignIn {
+        font-size: 35;
+        background-color: #105faa;
+        text-align: center;
+    }
+    
+    #loginButton {
+        background-color: #105faa;
+        color: white;
+        font-family: Gadget;
+        margin: auto;
+        margin-top: 60px;
+        font-size:50;
+    }
+    
+    #switchButton {
+        background-color: #105faa;
+        color: white;
+        font-family: Gadget;
+        margin: auto;
+        margin-top: 60px;
+        font-size:35;
+    }
+
+    #logoutButton {
+        background-color: #105faa;
+        color: white;
+        font-family: Gadget;
+        margin: auto;
+        margin-top: 60px;
+        font-size: 50;
+    }
+    
+    #logoutInstructions {
+        background: repeat-x url("banner3.png");
+
+        text-align: center;
+        font-size: 20px;
+        width: 250px;
+        height: 450px;
+        word-wrap: normal;
+        margin-top: 20px;
+        
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: space-around;
+    }
+    
+    .card-content {
+        font-size: 12pt;
+    }
+    
+    
+    
+    </style>
+    
+    <template>
+        
+        <body class="fullbleed layout vertical">
+            <paper-header-panel class="flex">
+                <paper-toolbar id="studentSignIn" style="height:40px; color:white;">
+                    
+                    {{serviceTitle}}
+                   
+                </paper-toolbar>
+            
+        <iron-pages attr-for-selected="id" id="selector" selected="{{currentPage}}">
+            
+<!-- login, subject switch, logout page -->
+            <div id="loginLogoutPage" class="layout horizontal center">
+                <paper-button id="loginButton" on-click="login">
+                    Login
+                </paper-button>
+                
+                <paper-button id="switchButton" on-click="subjectSwitch">
+                    <div> Subject</div>
+                    <div>Switch</div>
+                </paper-button>
+                
+                <paper-button id="logoutButton" on-click="logout">
+                    Logout
+                </paper-button>
+            </div>
+            
+<!-- logout Page: marks student as logged out and links to survey page *Still needs to be linked to survey page*--> 
+            <div id="logoutPage" class="layout vertical center">
+                <!--paper dialog that should appear when attempting to log out ID that is not logged in-->
+                <paper-dialog id="logoutDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+                    <h2>Error Logging Out</h2>
+                    <div>Student ID not logged in. Try swiping again.</div>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss>Close</paper-button>
+                    </div>
+                </paper-dialog>
+                <paper-material id="logoutInstructions">Please enter your student ID below (do NOT include 9):
+                    <paper-input label="Enter Student ID" id="idInputBoxLogout" on-keydown="checkForEnterLogoutPage" required auto-validate error-message="Student ID Required" value="{{logoutId}}"></paper-input>
+                    <paper-button on-click="removeId" id="idInputButton"><font size="3">Continue</font></paper-button>
+                    <paper-button on-click="backToLogbook" id="idGoBackButton"><font size="3">Go Back</font></paper-button>
+                </paper-material>
+            </div>
+            
+<!-- switch Page: changes subject student is logged in for -->
+    <!-- add end and start timestamp -->
+            <div id="switchPage" class="layout vertical center">
+                <!--paper dialog that should appear when attempting to log out ID that is not logged in-->
+                <!--<paper-dialog id="logoutDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">-->
+                <!--    <h2>Error Logging Out</h2>-->
+                <!--    <div>Student ID not logged in. Try swiping again.</div>-->
+                <!--    <div class="buttons">-->
+                <!--        <paper-button dialog-dismiss>Close</paper-button>-->
+                <!--    </div>-->
+                <!--</paper-dialog>-->
+                <paper-material id="logoutInstructions">Please enter your student ID below (do NOT include 9):
+                    <paper-input label="Enter Student ID" id="idInputBoxLogout" on-keydown="checkForEnterSwitchPage" required auto-validate error-message="Student ID Required" value="{{switchId}}"></paper-input>
+                    <paper-button on-click="idSwitchSubject" id="idInputButton"><font size="3">Continue</font></paper-button>
+                    <paper-button on-click="backToLogbook" id="idGoBackButton"><font size="3">Go Back</font></paper-button>
+                </paper-material>
+            </div>
+            
+<!-- Services Page: The Study, Presentation U, etc. -->
+            <div id="servicesContainer" class="layout horizontal center">
+                <template is="dom-repeat" items="{{services}}">
+                    <paper-card id="servicesButton" data-index$="{{index}}" image="{{item.image}}" on-click="switch">
+                        <div class="card-content">{{item.name}}</div>
+                    </paper-card>
+                </template>  
+            </div>
+            
+<!-- idInput Page: Student ID input for those with access -->
+            <div id="idInput" class="layout vertical center">
+                <paper-dialog id="loginDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+                    <h2>Error Logging In</h2>
+                    <div>{{loginError}}</div>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss>Close</paper-button>
+                    </div>
+                </paper-dialog>
+                <paper-material id="idInputInstructions">Please enter your student ID below (do NOT include 9):
+                    <paper-input label="Enter Student ID" id="idInputBoxLogin" on-keydown="checkForEnter" required auto-validate error-message="Student ID Required" value="{{idNumber}}"></paper-input>
+                    <paper-button on-click="submitID" id="idInputButton"><font size="3">Submit ID</font></paper-button>
+                    <paper-button on-click="backToLogbook" id="idGoBackButton"><font size="3">Back to Login/Logout</font></paper-button>
+                </paper-material>
+            </div>
+           
+<!-- Class Page: MA 113, CHE 105, ect. -->
+            <div id="Class" class="layout vertical center">
+                    
+                    <template is="dom-repeat" items="{{courses}}">
+                        <class-button faded="{{item.checked}}" course-code="{{item.CourseCode}}" course-number="{{item.CourseNumber}}" course-id="{{item.Id}}"></class-button>
+                    </template>
+                    <paper-button on-click="submitClasses" id="submit-button"><font size="3">Submit Classes</font></paper-button>
+            </div>
+           
+<!-- Generic Class: For when a class needed but is not shown -->
+            <div id="ClassGeneric" class="layout vertical center">
+                <template is="dom-repeat" items="{{courses}}">
+                    <paper-button id="classGenericButton">{{item.CourseCode}} {{item.CourseNumber}}</paper-button>
+                </template>
+                <paper-button id="generalButton">General</paper-button>
+            </div>
+            
+<!-- signInSuccessful Page: Lets user know the process is finished and directes them back to Login/Logout Page  -->
+            <div id="signInSuccessful" class="layout vertical center">
+                <paper-material id="successfulText">
+                    You have successfully logged in!
+                </paper-material>
+                <paper-spinner active id="countdownSpinner"></paper-spinner>
+                
+                <paper-button on-click="backToLogbook" id="successfulButton">Back to Login/Logout Page</paper-button>
+            </div>
+
+        </iron-pages>
+        
+        
+        
+        </paper-header-panel> 
+        </body>
+    </template>
+
+    
+    <script>
+        /* global Polymer */
+        
+        Polymer({
+           is: "service-selector",
+           
+           properties: {
+                currentPage: {
+                    type: String, 
+                    observer: "updatePage",
+                    value: "loginLogoutPage"
+                    // value: "servicesContainer"
+                },
+               
+               timeoutID: Number,
+               services: Array,
+               courses: Array,
+               student: Array,
+               idArray: Array,
+               loggedIn: Array,
+               classes: Array,
+               timestampArray: Array,
+               serviceTitle: String,
+               loginError: String,
+               time: String,
+               timestamp: String
+           },
+           
+            updatePage: function() {
+                var that = this;
+                
+                if (this.currentPage === "signInSuccessful") {
+                    this.timeoutID = setTimeout(this.backToLogbook2, 2000, that);
+                    
+                }
+            },
+           
+           ready: function() {
+               this.services = [
+                   {serviceId: "1", name: "The Study", type: "idInput", image: "../images/thestudylogo2.svg"},
+                   {serviceId: "2", name: "Presentation U", type: "ClassGeneric", image: "../images/PresULogo.svg"},
+                   {serviceId: "3", name: "Leadership @ The Study", type: "ClassGeneric", image: "../images/StudyLogos/thestudy2.svg"},
+                   {serviceId: "4", name: "Tutoring @ The Study", type: "ClassGeneric", image: "../images/StudyLogos/thestudy3.svg"},
+                   {serviceId: "5", name: "Something @ The Study", type: "ClassGeneric", image: "../images/StudyLogos/thestudy4.svg"},
+                   {serviceId: "6", name: "What @ The Study", type: "ClassGeneric", image: "../images/StudyLogos/thestudy5.svg"}
+                   ];
+
+               this.courses = [
+                   {"Id": "1234", "CourseCode": "MA", "CourseNumber": "113", "checked" : false},
+                   {"Id": "1235", "CourseCode": "CHE", "CourseNumber": "105", "checked" : false}
+                   ];
+                   
+                // Valid Student ID Numbers   
+                this.student = [
+                    {"idNumber": "1"},
+                    {"idNumber": "10454435"}, 
+                    {"idNumber": "2"}, 
+                    {"idNumber": "3"}
+                    ];
+                    
+                this.serviceTitle = "Login/Logout";
+                this.loggedIn = [];
+                this.classes=[];
+                this.timestampArray=[];
+                
+                
+           },
+           
+            //   switch service title at top of page
+           serviceSwitch: function(serviceId) {
+               if(serviceId === ""){
+                    this.serviceTitle = "Services";
+                    console.log("title Services:", this.serviceTitle);
+                }
+                else{
+                    this.$.idInputBoxLogin.focus();
+                    this.serviceTitle = serviceId.name;
+                }
+                console.log("title:", this.serviceTitle);
+               
+           },
+
+           submitClasses: function() {
+               
+            //   this.debug = this.courses[0].checked;
+            //   console.log("courses:", this.courses);
+            //   console.log("this.courses[0].checked = ", this.debug);
+            
+               //Records class choices before they are reset
+                for (var j=0; j<this.courses.length; j++){
+                    if(this.courses[j].checked === true){
+
+                        this.classes.splice(0,0, this.courses[j].Id);
+                    }
+                }
+                console.log("classes:",this.classes);
+               
+              
+               
+               //Reset checkboxes
+               this.resetClassButtons();
+               
+               this.$.selector.selected = "signInSuccessful";
+           },
+           
+           resetClassButtons: function() {
+                for (var i=0; i<this.courses.length; i++) {
+                    this.set("courses." + String(i) + ".checked", false);
+                }
+           },
+           
+           backToServices: function(e) {
+               clearTimeout(this.timeoutID);
+               this.$.selector.selected = "servicesContainer";
+               
+              this.serviceSwitch("");
+               
+           },
+           
+           backToLogbook: function(e) {
+               clearTimeout(this.timeoutID);
+               this.$.selector.selected = "loginLogoutPage";
+               this.serviceTitle = "Login/Logout";
+               this.$.idInputBoxLogout.value = "";
+           },
+
+           backToLogbook2: function(that) {
+               that.$.selector.selected = "loginLogoutPage";
+               that.serviceTitle = "Login/Logout";
+               this.$.idInputBoxLogin.value = "";           
+               
+           },
+           
+           // for hitting enter after typing in student id
+            checkForEnter: function(e) {
+                //check if 'enter' was pressed
+                if(e.keyCode === 13) {
+                    // console.log("Enter Pressed");
+                    this.submitID();
+                }
+            },
+            checkForEnterLogoutPage: function(e) {
+                //check if 'enter' was pressed
+                if(e.keyCode === 13) {
+                    // console.log("Enter Pressed");
+                    this.removeId();
+                }
+            },
+            
+            checkForEnterSwitchPage: function(e) {
+                //check if 'enter' was pressed
+                if(e.keyCode === 13) {
+                    // console.log("Enter Pressed");
+                    this.idSwitchSubject();
+                }
+            },
+
+           // runs through valid student id numbers to check for access; otherwise flags
+           submitID: function() {
+
+                if (this.idNumber[0] === ';' && String(this.idNumber).length >= 10) this.idNumber = String(this.idNumber).substr(2, 8);
+               
+                
+                for (var i = 0; i < this.student.length; i++){
+                    
+                    console.log(this.student[i].idNumber, "=", this.idNumber);
+                    
+                    if(this.student[i].idNumber === this.idNumber){
+                        
+                        for(var j=0; j < this.loggedIn.length; j++){
+                            if(this.loggedIn[j] === this.idNumber){
+                                
+                                this.loginError = "Student ID already logged in. Go to Logout page.";
+                                this.$.loginDialog.open();
+                                return;
+                            }
+                        }
+                        this.$.selector.selected = "Class";
+                         
+                        //push idNumber onto loggedIn array
+                        this.splice("loggedIn", this.loggedIn.length, 0, this.idNumber);
+                        
+                        console.log("loggedIn: ",this.loggedIn);
+                        break; //try return
+                        
+                    }
+                    else {
+                        console.log("Student ID is not valid");
+                        this.loginError = "Student ID not approved. Try swiping again.";
+                        this.$.loginDialog.open();
+                        
+                    }
+                    
+                }
+                this.idNumber = null;
+           },
+           
+            login: function() {
+                this.$.selector.selected = "servicesContainer";
+                this.serviceTitle = "Services";
+                this.idNumber = null;
+                
+            },
+            
+            subjectSwitch: function() {
+              this.$.selector.selected = "switchPage";
+              this.$.idInputBoxLogout.focus();
+              this.serviceTitle = "Subject Switch";
+              this.idNumber = null;
+              console.log("subjectSwitch function");
+            },
+            
+            logout: function() {
+                this.$.selector.selected = "logoutPage";
+                this.$.idInputBoxLogout.focus();
+                this.serviceTitle = "Logout";
+                this.idNumber = null;
+               
+            },
+            // removes student id from loggedIn array and sends student to survey
+            removeId: function() {
+        //   ADD: send to survey page
+                if (this.logoutId[0] === ';' && String(this.logoutId).length >= 10) this.logoutId = String(this.logoutId).substr(2, 8);
+                //remove idNumber from loggedIn array
+
+                for(var i=0; i < this.loggedIn.length; i++){
+                    if(this.loggedIn[i] === this.logoutId){
+                        this.splice("loggedIn", i, 1);
+                        console.log("number removed new list: ", this.loggedIn);
+                        // end timestamp
+                        console.log("successful logout, send to survey page");
+                        return;
+                    }
+                }
+                this.$.logoutDialog.open();
+            },
+            
+            idSwitchSubject: function() {
+                console.log("hitting idSwitchSubject");
+                console.log(this.switchId);
+                console.log(this.loggedIn);
+                if (this.switchId[0] === ';' && String(this.switchId).length >= 10) this.switchId = String(this.switchId).substr(2, 8);
+                for(var k=0; k < this.loggedIn.length; k++){
+                    if(this.loggedIn[k] === this.switchId){
+                        //end timestamp
+                        //call classes function
+                        this.$.selector.selected = "Class";
+                        console.log("switch to class");
+                        //start new timestamp
+                   
+                        console.log("new date", Date.now());
+                        //gets current date and time
+                        this.timestamp = Date.now();
+                        //sends to converTimestamp to change timestamp into user friendly view
+                        this.convertTimestamp(this.timestamp);
+                        //adds the current timestamp to the array tiemstampArray
+                        this.splice("timestampArray", this.timestampArray.length, 0, this.timestamp);
+                        console.log("timestampArray:", this.timestampArray);
+                        return;
+                    }
+                    else{
+                        console.log("switch id not logged in");
+                    }
+                }
+                
+                
+                
+                
+            },
+            //use to convert timestamp into user friendly date and time view
+            convertTimestamp: function(timestamp) {
+                  var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
+                		yyyy = d.getFullYear(),
+                		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
+                		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
+                		hh = d.getHours(),
+                		h = hh,
+                		min = ('0' + d.getMinutes()).slice(-2),		// Add leading 0.
+                		ampm = 'AM';
+                		this.time;
+                			
+                	if (hh > 12) {
+                		h = hh - 12;
+                		ampm = 'PM';
+                	} else if (hh === 12) {
+                		h = 12;
+                		ampm = 'PM';
+                	} else if (hh == 0) {
+                		h = 12;
+                	}
+                	
+                	// ie: 2013-02-18, 8:35 AM	
+                	this.time = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+                		
+                	console.log("time", this.time);
+            },
+           
+            switch: function(e) {
+                
+                var dataIndex;
+                if (!e.target.attributes['data-index']) dataIndex = e.srcElement.parentElement.attributes['data-index'].value;
+                else dataIndex = e.target.attributes['data-index'].value;
+               
+                this.$.selector.selected = this.services[dataIndex].type;
+
+                this.serviceSwitch(this.services[dataIndex]);
+
+            }
+        });
+    </script>
+    
+</dom-module>

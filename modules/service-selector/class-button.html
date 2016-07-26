@@ -1,0 +1,113 @@
+<!--evan_h, lulahogg, melhuishj-->
+<!--class button-->
+<!--a 'checkable' button with a course name & number-->
+
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<dom-module id="class-button">
+    
+    <style>
+        
+        
+
+        
+    #servicesButton{
+        background-color: #105faa;
+        color: white;
+        width: 200px;
+        height: 200px;
+        /*Keeps text from wrapping and changing the button sizes*/
+        padding: 5em;
+        border-top: 10px solid;
+        font-size: 20px;
+    }
+     
+     #classGenericButton {
+        background-color: #105faa;
+        color: white;
+        width: 200px;
+        height: 200px;
+        /*Keeps text from wrapping and changing the button sizes*/
+        /*padding: 5em;*/
+        border-top: 10px solid;
+        font-size: 20px;
+        transition: background-color .3s;
+    }
+    
+    #generalButton {
+        background-color: #105faa;
+        color: white;
+        width: 200px;
+        height: 200px;
+        /*Keeps text from wrapping and changing the button sizes*/
+        /*padding: 5em;*/
+        border-top: 10px solid;
+        font-size: 20px;
+    }
+    
+    #checkbox {
+        position: absolute;
+        top: 7px;
+        right: 0px;
+    }
+
+    
+    </style>
+    
+    <template>
+        
+        <paper-button id="classGenericButton" on-click="toggle">
+            <paper-checkbox id="checkbox" disabled></paper-checkbox>
+            {{courseCode}}
+            {{courseNumber}}
+        </paper-button>
+         <!--courseId="{{Id}}" -->
+        
+    </template>
+    
+    <script>
+        /* global Polymer */
+        Polymer({
+           is: "class-button",
+           
+           properties: {
+               courseCode: String,
+               courseNumber: Number,
+               faded: {
+                   type: Boolean,
+                   observer: "updateLook",
+                   notify: true
+               }
+           },
+           
+           toggle: function() {
+               this.faded = !this.faded;
+               console.log(this.faded);
+               console.log("id: ", this.courseId);
+
+           },
+           
+           
+           updateLook: function() {
+               if (this.faded) {
+                   this.$.checkbox.checked = true;
+                   this.querySelector("#classGenericButton").style.backgroundColor = "#B3D9FF";
+                   //document.getElementById("classGenericButton").style.backgroundColor = "#80A0C0";
+               } else {
+                   this.$.checkbox.checked = false;
+                   this.querySelector("#classGenericButton").style.backgroundColor = "#3080C0";
+                   //document.getElementById("classGenericButton").style.backgroundColor = "#3080C0";
+               }
+           }
+           
+           
+        });
+    </script>
+    
+</dom-module>
