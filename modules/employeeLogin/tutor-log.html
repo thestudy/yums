@@ -1,0 +1,76 @@
+<!--evan_h & lulahogg-->
+<!--tutor-log.html-->
+
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+
+<dom-module id="tutor-log">
+    <style>
+        #container {
+            /*width: 600px;*/
+            width: 80%;
+            height: 90px;
+            margin: 4 auto 4 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        #tutorpic {
+            background-color: grey;
+            height: 80px;
+            width: 80px;
+        }
+        #name {
+            font-size: 20pt;
+            width: 300px;
+        }
+        #logo {
+            width: 140px;
+            /*height: 40px;*/
+        }
+        .card-content {
+            padding: 5px;
+        }
+        
+    </style>
+    <template>
+        <paper-material id="container">
+            <div id="number">{{indexPlus}}</div>
+            <paper-card id="tutorpic" image="{{pic}}"></paper-card>
+            <div id="name">{{lastname}}, {{firstname}}</div>
+            <paper-card id="logo" image="{{logo}}">
+                <div class="card-content">{{service}}</div>
+            </paper-card>
+        </paper-material>
+    </template>
+    <script>
+        /* global Polymer */
+        Polymer({
+            is: "tutor-log",
+            
+            properties: {
+                index: Number,
+                indexPlus: {
+                    type: Number,
+                    computed: "computeIndexPlus(index)"
+                },
+                pic: String,
+                logo: String,
+                service: String,
+                firstname: String,
+                lastname: String,
+            },
+            
+            computeIndexPlus: function(index) {
+                return index + 1;
+            },
+            
+            ready: function() {
+                this.logo = "../images/thestudylogoBANNER.svg";
+            }
+        });
+    </script>
+    
+</dom-module>
