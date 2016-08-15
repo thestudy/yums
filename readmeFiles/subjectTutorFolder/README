@@ -1,0 +1,57 @@
+
+
+evan_h & lulahogg
+Last Updated: August 9, 2016 
+Last Updated by: Lula Hogg 
+
+Subject Tutor Folder
+
+-arrow.png -> an image for a dropdown arrow, indicating hidden content. 
+-course-dropdown.html -> an element that represents a particular course. It drops down to reveal tutors who tutor that course, along with whether or not they are currently tutoring.
+-subjectsTest.php -> a php file used to run/test the "tutor-subjects" module
+-toggle-button-small.html -> a smaller sized toggle-button.html
+-toggle-button.html -> a procured toggle button that allows for text inside the button
+-toggleButtonTest.php -> a php file used to run/test the "toggle-button" module
+-tutor-info-window.html -> a larger inspector view of a tutor. It shows a picture of the tutor, which courses they tutor, whether or not they are currently tutoring, and an input line to leave comments on the tutor
+-tutor-inspector.html -> a paper-card representing a tutor. Clicking on the tutor-inspector will invert the tutor's 'tutoring' state. Use <tutor-inspector display-name> to add a name line underneath the picture. Use <tutor-inspector no-info> to remove the 'info' button that pulls up the tutor-info-window. This element is sized to 100%, so place it inside a styled div to get the correct size.
+-tutor-subjects.html -> this module hosts all other modules in this directory. A "SUBJECTS" tab allows users to search for tutors by course. The "ALL" tab is simply a long list of all tutors. The "MORE" tab can be removed.
+
+Page Purpose:
+The Subject Tutor Page is created to show each subject being tutored and which tutors are covering which subject. It also contains a toggle button to mark when a tutor is tutoring and when they are not. The toggle button can be change by clicking on the button itself or the image of the tutor (linked and updated between SUBJECTS & ALL). The ‘i’ info button under SUBJECTS can be found by hovering over the tutor image with mouse. When clicked a popup will appear displaying the tutors image, toggle button (can be changed here also), courses tutored, comment area. Clicking off of the popup will cause it to disappear.
+
+-The Study
+	-SUBJECTS
+		-MA 114 (dropdown)
+			-images of tutors & toggle button
+			-top right of image (doesn’t matter which) ‘i’ info button
+				-enlarged tutor image
+				-toggle button
+				-courses tutored
+				-leave comment
+				-submit
+		-MA 113 (dropdown)
+			-images of tutors & toggle button
+			-top right of image (doesn’t matter which) ‘i’ info button
+				-enlarged tutor image
+				-toggle button
+				-courses tutored
+				-leave comment
+				-submit
+
+
+	-ALL 
+		-paper card container
+			-large tutor image
+			-tutor name
+			-toggle button
+		-paper card container
+			-large tutor image
+			-tutor name
+			-toggle button
+
+	-MORE
+		-nothing 
+
+
+
+

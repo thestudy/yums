@@ -1,0 +1,119 @@
+
+
+evan_h & lulahogg
+Last Updated: August 8, 2016 
+Last Updated by: Lula Hogg 
+
+Service Selector Folder
+
+-banner3.png -> Boarder for ID entry
+-class-button.html -> Creates buttons containing check boxes and shadowing
+-service-selector.html -> Contains most of the program
+-signInTest.html -> Used to run the program
+-student-survey.html -> creates the student survey
+
+-Student ID login test cases: 1, 2, 3
+-Will take a complete Student ID (typed or swiped)
+-Hitting enter will move on to next page on all ID enter pages
+
+-Tracks student login correctly and places each student into an array (studentInformation)
+	-Array setup: [[studentID, start timestamp, courseID, stop timestamp],[…]]
+	-Array will not repeat Student ID. Once a student signs in they are in the system
+	-Nothing in studentInformation is ever deleted in the program 
+
+Program Purpose:
+The Service Selector Program is created for students logging into a service 
+such as The Study, Presentation U, etc. It keeps track of which service they 
+are logged into, their start and end login/logout times, and for The Study 
+what subject they are being tutored in and start/end times linked to that
+subject.
+
+                         Login/Logout 
+               --------------------------------- 
+               |Login | Subject Switch | Logout|
+               ---------------------------------
+Login -> Services
+         -----------------------------------
+         |The Study | Presentation U | etc.| 
+         -----------------------------------
+         -The Study 
+         ---------------------------------
+         |Submit ID | Back to Login/Logout|
+         ---------------------------------
+         ~Submit ID
+	 -------------------------
+	 |Error Message | Classes|
+	 -------------------------
+		~Classes (MA 114, CHE 105, etc.)
+		 -------------------------
+		 |MA 114 | CHE 105 | etc.|
+		 -------------------------
+			~MA 114 (could be any class)
+			 ------------------
+			 |Login Successful|
+			 ------------------
+				~Login Successful -> Login/Logout
+				 ---------------------------------
+				 |Login | Subject Switch | Logout|
+				 ---------------------------------
+	 ~Back to Login/Logout
+	 --------------
+	 |Login/Logout|
+	 --------------
+         -Presentation U
+         --------------
+         |NOT COMPLETE|
+         --------------
+Subject Switch -> Subject Switch
+	 	  ---------------------
+	          |Submit ID | Go Back|
+	          ---------------------
+		  ~Submit ID
+		  -------------------------
+		  |Error Message | Classes|
+		  -------------------------
+			  ~Classes 
+			  -------------------------
+			  |MA 114 | CHE 105 | etc.|
+			  -------------------------
+				  ~MA 114 (could be any class)
+				  ---------------------------
+				  |Subject Switch Successful|
+				  ---------------------------
+					  ~Subject Switch Successful -> Login/Logout
+					  ---------------------------------
+					  |Login | Subject Switch | Logout|
+					  ---------------------------------
+		  ~Go Back -> Login/Logout
+		  ---------------------------------
+		  |Login | Subject Switch | Logout|
+		  ---------------------------------
+Logout -> Logout
+	  ---------------------
+	  |Submit ID | Go Back|
+	  ---------------------
+	  ~Submit ID
+	  --------------------------------
+	  |Error Message | Student Survey|
+	  --------------------------------
+		  ~Student Survey
+		  ---------------------
+		  | 1 | 2 | 3 | 4 | 5 |
+		  ---------------------
+			  *~ 1,2,3,4,5
+			  -------------------
+			  |Logout Successful|
+			  -------------------
+			  *~ 1,2 (Opened in new tab)
+			  ------------------
+			  |High Five Survey|
+			  ------------------
+				  ~Logout Successful
+				  ---------------------------------
+				  |Login | Subject Switch | Logout|
+ 				  ---------------------------------
+	  ~Go Back -> Login/Logout
+	  ---------------------------------
+	  |Login | Subject Switch | Logout|
+	  ---------------------------------
+ 

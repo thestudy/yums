@@ -1,0 +1,11 @@
+evan_h
+lula_hogg
+
+Weird things about polymer that you should probably know:
+	•	“{{ }}” is two way binding: from parent to child and child to parent. Make sure that the property in the child has “notify: true” if you want updates to propagate correctly back up.
+	•	“[[ ]]” is one way binding: only from parent to child.
+	•	Properties defined in an html tag, for example “no-space” in <tutor-log class=“student” no-space=“true”></tutor-log> CANNOT be camelCase. If the property in the child element (tutor-log in this case) is defined in camelCase (noSpace: boolean,) it will be converted to snake-case in the tag. To clarify, the property in the hypothetical module <tutor-log> called noSpace will actually be controlled by using <tutor-log no-space> in the parent module. Why did they make it this way? Your guess is as good as mine.
+	•	All modules must have two words separated by a dash, e.g. tutor-log.
+	•	Editing a value in an array must be done through the approved array mutation methods (https://www.polymer-project.org/1.0/docs/devguide/properties#array-mutation). You must not use something like array[i] = 3; as this will not propagate changes to other modules correctly. I’ve mostly been using this.splice(“array”, index, removeCount, [item1, …, itemN])
+	•	An observer function will trigger every time a property value changes. You can use these to “bind” css parameters to your properties.
+	•	and more…
