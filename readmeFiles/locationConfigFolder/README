@@ -1,0 +1,21 @@
+
+
+evan_h & lulahogg
+Last Updated: August 9, 2016 
+Last Updated by: Lula Hogg 
+
+Location Configure Folder
+
+-banner3.png -> creates the top blue bar
+-location-list.html -> creates entire page
+-location-selector.html -> sorts the current and added information
+-locationTest.php -> displays the page 
+
+Page Purpose:
+The Location Configure Page is created to add new services with a location and unique ID. If the service is not active anymore it can be ‘archived’ (by clicking the box) or deleted by clicking the ‘X’ when the paper element is hovered over. It is recommended that the service is only archived never deleted for history data. Each service can be updated by using the same ID number when adding a new service. 
+
+
+-A visual example of how to move through this page can be found in the images folder for Location Configure Folder
+
+
+

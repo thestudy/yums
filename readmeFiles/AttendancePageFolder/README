@@ -1,0 +1,24 @@
+
+
+evan_h & lulahogg
+Last Updated: August 9, 2016 
+Last Updated by: Lula Hogg 
+
+Attendance Page Folder
+
+Attendance.php -> the file that runs the <attendance-page> module
+attendance-page.html -> the Tutoring Attendance Lookup webpage module. It uses all other html files in this director
+date-range.html -> a module that includes a start date field, an end date field, and two buttons for creating more date-ranges and deleting old ones
+checkbox-scroller.html -> a deprecated module that creates a scrollable field with checkboxes. Use modules below
+location-scroller.html -> a box titled "Location" with a scrollable field below containing location checkboxes.
+time-scroller.html -> a box titled "Time Scale" with a scrollable field below containing Time Scale radio buttons.
+subject-scroller.html -> a box titled "Subject" with a scrollable field below containing subject checkboxes.
+category-scroller.html -> a box titled "Category" with a scrollable field below containing category checkboxes.
+banner3.png -> the picture used for the top border in low-level modules.
+
+Page Purpose:
+The Attendance Page is created to look up employees by dates (one set or more), locations (All, Willy T, RGAN, etc.), time scale (hourly, daily, etc.), subject (All, MA 113, MA 114, etc.), category (All, Math, Chemistry, etc.). Data findings should be shown below the ’Submit’ button.   
+
+
+
+

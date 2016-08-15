@@ -1,0 +1,35 @@
+
+
+evan_h & lulahogg
+Last Updated: August 15, 2016 
+Last Updated by: Evan Heaton 
+
+Schedule Grid Folder
+
+BEFORE READING ANYTHING ELSE, READ THIS:
+This module is very buggy. There are some problems with making deep edits on arrays (edits on arrays within arrays)
+sometimes these edits will not propagate an "edited" alert to modules above them, so we had to do some workaraounds.
+these workaraounds were implemented by Jesse Melhuish, so it's hard to say if we'll ever understand how they work.
+Basically instead of changing just a single element in a nested array, he updates the entire schedule-column. I think.
+Anyways, heres the rest of the README:
+
+banner3.png -> banner image (this is in almost everything)
+ColorSelectorTest.php -> just a test file for selecting active colors
+GridTest.php -> another test file for the schedule-grid
+highlight-radio-label.html -> a label with a small swatch indicating the color
+schedule-cell.html -> a cell in the schedule-grid. It can be colored
+schedule-color-selector.html -> module tested by ColorSelectorTest.php
+schedule-column.html -> a group of schedule-cells, into a column
+schedule-grid.html -> a group of schedule-columns, into the full grid
+schedule-order.html -> the module that controls minute interval, start time, end time, start date, end date... it determines the size of the schedule-grid
+schedule-times.html -> a module that controls how much of the schedule must be filled out as 'available' by a tutor
+ScheduleGrid.php -> the test file for EVERYTHING
+TimeTest.php -> a test file for schedule-times.html
+
+Page Purpose:
+The Schedule Grid is created to show when a particular tutor is available/unavailabe for a specific time.
+Right now the schedule only shows 1 week. This could be changed.
+
+
+
+

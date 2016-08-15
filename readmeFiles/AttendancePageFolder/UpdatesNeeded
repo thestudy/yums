@@ -1,0 +1,8 @@
+
+
+Attendance Page Needed
+
+-Needs linked to the database 
+-The ‘All’ button adds the correct information to the array but does not make the other buttons inactive
+-Displayed information at the bottom needs added
+-Dates need to have error if end date is before start date

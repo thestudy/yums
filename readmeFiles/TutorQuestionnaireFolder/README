@@ -1,0 +1,20 @@
+
+
+evan_h & lulahogg
+Last Updated: August 15, 2016 
+Last Updated by: Evan Heaton
+
+Tutor Questionnaire Folder
+
+arrow.png -> an arrow indicating hidden content. Turns down when hidden content is revealed
+banner3.png -> you already know
+question-block.html -> a single question in the questionnaire. Has a dropdown area for a response.
+questions.php -> test file that runs tutor-questionnaire.html
+tutor-questionnaire.html -> the module that displays a questionnaire for tutors. Hosts multiple question-block modules.
+
+Page Purpose:
+The Tutor Questionnaire Page is exactly what it sounds like. It's a page that gives a questionnaire to tutors.
+
+
+
+
