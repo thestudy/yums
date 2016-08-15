@@ -1,0 +1,34 @@
+
+
+
+evan_h & lulahogg
+Last Updated: August 9, 2016 
+Last Updated by: Lula Hogg
+
+answerQuestionsFolder
+
+-answer-block.html -> creates individual blocks based on questions asked
+-answeredQuestions.php -> used to test pages
+-banner3.png -> banner image used at top of names and responses 
+-employee-block.html -> date answered
+-map.php -> used to test/create graph ~ not used
+-ptr-response.html -> creates everything else and pulls other files into one
+-question-block.html -> creates individual blocks based on employee name
+
+-to install calendar: $ bower install --save vaadin-date-picker
+
+Page Purpose:
+The Answered Questions Page is created for Employee PTR Responses. It displays the information gathered from employees based on team, start date - end date, and by tutor or by question. 
+
+-Team Name  -Start Date  -End Date  -By Tutor/Question  -Submit
+
+-Employee Name			-questions answered/total questions
+	-Question		-Date of question
+	-Answer
+-Question			-questions answered/total questions	
+	-Employee Name		-Date of question
+	-Answer			
+
+
+
+

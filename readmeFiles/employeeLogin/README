@@ -1,0 +1,26 @@
+
+
+evan_h & lulahogg
+Last Updated: August 9, 2016 
+Last Updated by: Lula Hogg 
+
+Employee Login Folder
+
+-banner3.png -> not used at this time
+-employee-loginTest.html -> displays main employee login page
+-employee-survey.html -> creates the employee survey
+-login-logout.html -> creates full employee login page
+-survey-test.html -> displays the employee survey only
+-tutor-log.html -> creates block containing tutor information
+
+Page Purpose:
+The Employee Login Page is created to add tutor to page when logging in and remove tutor when logging out. When tutor logs out they are sent to employee-survey.html. They will rank their session 1-5. If 1 or 2 is selected an email will be sent to SPC informing them of the tutor name and that a followup inquiry is needed.  
+
+		-Employee ID
+		-Enter
+-1  -employee picture  -employee name  -service employee is working through
+-2  -employee picture  -employee name  -service employee is working through
+.
+.
+.
+
