@@ -15,8 +15,15 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<!--animations for the paper-dialog boxes-->
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
 <link rel="import" href="tutor-log.html">
-<!--<link rel="import" herf="employee-survey.heml">-->
+<link rel="import" href="employee-survey.html">
 
 
 <dom-module id="login-logout">
@@ -59,32 +66,42 @@
     <template>
         
         <paper-header-panel class="flex">
-                <paper-toolbar id="studentSignIn" style="height:40px; color:white;">
-                    
-                    Login/Logout
-                   
-                </paper-toolbar>
-        
-        <div id="input" class="layout vertical center">
-<!-- idInput Page: Student ID input for those with access -->
-                <paper-material elevation="0" id="idInputInstructions">Please enter your employee ID below (do NOT include 9):
-                    <paper-input label="Enter Employee ID" id="idInputBox" on-keydown="checkForEnter" required auto-validate error-message="Employee ID Required" value="{{idNumber}}"></paper-input>
-                    <paper-button on-click="submitID" id="idInputButton"><font size="3">Enter</font></paper-button>
-                </paper-material>
+            <paper-toolbar id="studentSignIn" style="height:40px; color:white;">
+                {{toolbarMessage}}
+            </paper-toolbar>
+            
+            <iron-pages attr-for-selected="id" id="selector" selected="loginLogout">
                 
-                <div id="employeeLogin" class="layout vertical left">
-                    <template is="dom-repeat" items="{{employees}}">
-                        <tutor-log index="{{index}}" pic="{{item.image}}" firstname="{{item.firstName}}" lastname="{{item.lastName}}" service="{{item.serviceTitle}}"></tutor-log>
-
+                <div id="loginLogout">
+                    
+                
+                    <div id="input" class="layout vertical center">
+                        <!-- idInput Page: Student ID input for those with access -->
+                        <paper-material elevation="0" id="idInputInstructions">Please enter your employee ID below (do NOT include 9):
+                            <paper-input label="Enter Employee ID" id="idInputBox" on-keydown="checkForEnter" required auto-validate error-message="Employee ID Required" value="{{idNumber}}"></paper-input>
+                            <paper-button on-click="submitID" id="idInputButton"><font size="3">Enter</font></paper-button>
+                        </paper-material>
                         
-                    </template>
-                    
-                    
+                        <div id="employeeLogin" class="layout vertical left">
+                            <template is="dom-repeat" items="{{employees}}">
+                                <tutor-log index="{{index}}" pic="{{item.image}}" firstname="{{item.firstName}}" lastname="{{item.lastName}}" service="{{item.serviceTitle}}"></tutor-log>
+                            </template>
+                        </div>
+                    </div>
                 </div>
                 
+                <div id="survey">
+                    <employee-survey></employee-survey>
+                </div>
                 
-        </div>
-        
+            </iron-pages>
+            <paper-dialog id="logDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+                <h2>{{dialogHeader}}</h2>
+                <div>{{dialogMessage}}</div>
+                <div class="buttons">
+                    <paper-button dialog-dismiss on-click="clearID">Close</paper-button>
+                </div>
+            </paper-dialog>
         </paper-header-panel>
 
         
@@ -95,19 +112,42 @@
             is: "login-logout",
             
             properties: {
-              idArray: Array,
-              serviceTitle: String,
-              login: String,
-              logout: String
-                
+                idNumber: String,
+                idArray: Array,
+                serviceTitle: String,
+                login: String,
+                logout: String,
+                employees: Array,
+                dialogHeader: String,
+                dialogMessage: String,
+                toolbarMessage: String
+            },
+            
+            listeners: {
+                "submit" : "returnFromSurvey"
+            },
+            
+            returnFromSurvey: function(e) {
+                if (e.detail.rating <= 2) {
+                    //SEND EMAIL TO SPC
+                    console.log("send email to SPC");
+                }
+                this.toolbarMessage = "Login/Logout";
+                this.$.selector.selected= "loginLogout";
             },
             
             ready: function() {
+                this.toolbarMessage = "Login/Logout";
                 this.employees = [
-                    {"serviceId": "1", "serviceTitle": "The Study", "firstName": "Sarah", "lastName":"Smith", "idNumber": "10454435", "image": "../images/evans/evanglare.svg"},
-                    {"serviceId": "2", "serviceTitle": "Presentation U", "firstName": "Bob", "lastName": "Trent", "idNumber": "10454435", "image": "../images/evans/evanglasses.svg"}
+                    {"serviceId": "1", "serviceTitle": "The Study", "firstName": "Sarah", "lastName":"Smith", "idNumber": "1", "image": "../images/evans/evanglare.svg"},
+                    {"serviceId": "2", "serviceTitle": "Presentation U", "firstName": "Bob", "lastName": "Trent", "idNumber": "2", "image": "../images/evans/evanglasses.svg"}
                     ];
                 
+            },
+            
+            clearID: function() {
+                this.$.idInputBox.value = "";
+                this.$.idInputBox.focus();
             },
             
             submitID: function() {
@@ -116,18 +156,42 @@
                 if (this.idNumber[0] === ';' && String(this.idNumber).length >= 10) this.idNumber = String(this.idNumber).substr(2, 8);
                
                 
-                for (var i = 0; i < this.student.length; i++){
-                    console.log(this.student[i].idNumber, "=", this.idNumber);
+                for (var i = 0; i < this.employees.length; i++){
                     
-                    if(this.student[i].idNumber === this.idNumber){
-                        this.$.selector.selected = "Class";
-                        break;
+                    if(this.employees[i].idNumber === this.idNumber){
+                        
+                        /*
+                        [LOG OUT STUDENT]
+                        */
+                        
+                        this.splice("employees", i, 1);
+                        this.dialogHeader = "Logging Out";
+                        this.dialogMessage = "You will be logged out once you complete the survey.";
+                        this.$.logDialog.open();
+                        
+                        this.toolbarMessage = "Employee Survey";
+                        this.$.selector.selected = "survey";
+                        
+                        return;
                     }
-                    else {
-                        console.log("Student ID is not valid");
-                    }
-                    
                 }
+                
+                /*
+                [LOOK UP STUDENT BY ID IN DATABASE] via an iron-ajax & getUserInfo.php
+                [if it exists, splice to the array]
+                [otherwise, id not valid error]
+                */
+                
+                if (/*student exists in database*/ false) {
+                    this.splice("employees", this.employees.length, 0, {/*student from database*/});
+                } else {
+                    this.dialogHeader = "Error Logging In";
+                    this.dialogMessage = "Student ID does not exist in database. Try swiping again.";
+                    this.$.logDialog.open();
+                }
+                
+                
+                
                 this.idNumber = "";
 
             },

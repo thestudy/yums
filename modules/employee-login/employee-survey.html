@@ -14,7 +14,11 @@
 
 <dom-module id="employee-survey">
     <style>
-    
+    .buttonContainer {
+        display: flex;
+        justify-content: space-between;
+        
+    }
     #employeeSurvey {
         font-size: 35;
         background-color: #105faa;
@@ -33,11 +37,11 @@
         margin: 40px;
     }
     
-    #idInputButton {
+    .idInputButton {
         background-color: #105faa;
         color: white;
         text-align: center;
-        margin: 20px;
+        max-width: 30px;
     }
         
         
@@ -48,11 +52,6 @@
     <template>
         
         <paper-header-panel class="flex">
-                <paper-toolbar id="employeeSurvey" style="height:40px; color:white;">
-                    
-                    Employee Survey
-                   
-                </paper-toolbar>
                 
                 <paper-material elevation="0" id="surveyHello">
                     Hello, this is the staff survey page for The Study!
@@ -60,15 +59,15 @@
                         Before you are logged out, please rate the overall quality of your latest shift using the buttons below.
                     </div>
                     <!--<div label="Survey" id="idInputBox" on-keydown="checkForEnter" required auto-validate error-message="Employee ID Required" value="{{idNumber}}"></div>-->
-                    <div>
-                        <paper-button raised on-click="submitSurvey" id="idInputButton">
+                    <div class="buttonContainer">
+                        <paper-button raised on-click="submit1" class="idInputButton">
                             <iron-icon icon="thumb-down"></iron-icon>
                             1
                         </paper-button>
-                        <paper-button raised on-click="submitSurvey" id="idInputButton">2</paper-button>
-                        <paper-button raised on-click="submitSurvey" id="idInputButton">3</paper-button>
-                        <paper-button raised on-click="submitSurvey" id="idInputButton">4</paper-button>
-                        <paper-button raised on-click="submitSurvey" id="idInputButton">
+                        <paper-button raised on-click="submit2" class="idInputButton">2</paper-button>
+                        <paper-button raised on-click="submit3" class="idInputButton">3</paper-button>
+                        <paper-button raised on-click="submit4" class="idInputButton">4</paper-button>
+                        <paper-button raised on-click="submit5" class="idInputButton">
                             5 
                             <iron-icon icon="thumb-up"></iron-icon>
                             
@@ -95,9 +94,23 @@
             
             ready: function() {
                 
-                
             },
-  
+            
+            submit1: function() {
+                this.fire("submit", {rating: 1});
+            },
+            submit2: function() {
+                this.fire("submit", {rating: 2});
+            },
+            submit3: function() {
+                this.fire("submit", {rating: 3});
+            },
+            submit4: function() {
+                this.fire("submit", {rating: 4});
+            },
+            submit5: function() {
+                this.fire("submit", {rating: 5});
+            },
            
             // for hitting enter after typing in student id
             checkForEnter: function(e) {
