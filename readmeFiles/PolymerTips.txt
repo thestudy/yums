@@ -1,6 +1,12 @@
 evan_h
 lula_hogg
 
+This guide shows how to run unit tests to test elements locally, against all installed browsers, or remotely, vis Sauce Labs.
+https://www.polymer-project.org/1.0/docs/tools/tests
+
+Here is your data-binding bible:
+https://www.polymer-project.org/1.0/docs/devguide/data-binding
+
 Weird things about polymer that you should probably know:
 	•	“{{ }}” is two way binding: from parent to child and child to parent. Make sure that the property in the child has “notify: true” if you want updates to propagate correctly back up.
 	•	“[[ ]]” is one way binding: only from parent to child.
