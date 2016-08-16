@@ -15,3 +15,4 @@ Weird things about polymer that you should probably know:
 	•	Editing a value in an array must be done through the approved array mutation methods (https://www.polymer-project.org/1.0/docs/devguide/properties#array-mutation). You must not use something like array[i] = 3; as this will not propagate changes to other modules correctly. I’ve mostly been using this.splice(“array”, index, removeCount, [item1, …, itemN])
 	•	An observer function will trigger every time a property value changes. You can use these to “bind” css parameters to your properties.
 	•	and more…
+	•	good luck!
